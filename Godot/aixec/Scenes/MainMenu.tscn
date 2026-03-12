@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://c51bxjgtpxrcy"]
+
+[node name="Menu" type="Control" unique_id=393563443]
+layout_mode = 3
+anchor_right = 1.667
+anchor_bottom = 1.667
+offset_right = -1280.6401
+offset_bottom = -720.3601
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_vertical_guides_ = [-203.0]
+
+[node name="Boton_Perfil" type="Button" parent="." unique_id=877588962]
+layout_mode = 0
+offset_left = 49.0
+offset_top = 923.0
+offset_right = 349.0
+offset_bottom = 1023.0
+text = "Perfil"
+
+[node name="ContenedorHorizontal_Botones" type="HBoxContainer" parent="." unique_id=200936352]
+layout_mode = 0
+offset_right = 768.0
+offset_bottom = 320.0
+alignment = 1
+
+[node name="ContenedorVertical_Izquierda" type="VBoxContainer" parent="ContenedorHorizontal_Botones" unique_id=320457422]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Boton_Jugar" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Izquierda" unique_id=1531430313]
+layout_mode = 2
+text = "Jugar"
+
+[node name="Boton_Clasificacion" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Izquierda" unique_id=543834084]
+layout_mode = 2
+text = "Clasificacion"
+
+[node name="Boton_CerrarSesion" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Izquierda" unique_id=234339061]
+layout_mode = 2
+text = "Cerrar Sesion"
+
+[node name="ContenedorVertical_Derecha" type="VBoxContainer" parent="ContenedorHorizontal_Botones" unique_id=1585950539]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Boton_Tienda" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Derecha" unique_id=1749534690]
+layout_mode = 2
+text = "Tienda"
+
+[node name="Boton_Opciones" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Derecha" unique_id=2145688685]
+layout_mode = 2
+text = "Opciones
+"
+
+[node name="Boton_Salir" type="Button" parent="ContenedorHorizontal_Botones/ContenedorVertical_Derecha" unique_id=2099293305]
+layout_mode = 2
+text = "Salir
+"
