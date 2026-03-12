@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://c51bxjgtpxrcy"]
+
+[node name="Control" type="Control" unique_id=393563443]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BtnJugar" type="Button" parent="." unique_id=1531430313]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="BtnPerfil" type="Button" parent="." unique_id=877588962]
+layout_mode = 0
+offset_top = 293.0
+offset_right = 300.0
+offset_bottom = 393.0
+text = "Perfil"
+
+[node name="BtnTienda" type="Button" parent="." unique_id=1072004948]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="BtnOpciones" type="Button" parent="." unique_id=2145688685]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="BtnClasificacion" type="Button" parent="." unique_id=1515220761]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button5" type="Button" parent="." unique_id=234339061]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button6" type="Button" parent="." unique_id=494477430]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button7" type="Button" parent="." unique_id=306550978]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
