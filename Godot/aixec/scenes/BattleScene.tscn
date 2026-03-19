@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://dm2qof160ff7e"]
+
+[ext_resource type="Script" uid="uid://4jl6th0fghdo" path="res://scripts/BattleScene.gd" id="1_gkmpl"]
+[ext_resource type="Script" uid="uid://dew4gqm2a86vk" path="res://scripts/GameState.gd" id="1_ltshs"]
+
+[node name="BattleScene" type="Node2D" unique_id=29667140]
+script = ExtResource("1_gkmpl")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=697446093]
+
+[node name="Background" type="ColorRect" parent="UI" unique_id=892251721]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101960786, 0.22745098, 0.101960786, 1)
+
+[node name="BotZone" type="VBoxContainer" parent="UI" unique_id=2092967887]
+custom_minimum_size = Vector2(0, 300)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 27.0
+grow_horizontal = 2
+
+[node name="BotStats" type="HBoxContainer" parent="UI/BotZone" unique_id=1101985543]
+layout_mode = 2
+
+[node name="BotHP" type="Label" parent="UI/BotZone/BotStats" unique_id=487892356]
+layout_mode = 2
+
+[node name="BotMana" type="Label" parent="UI/BotZone/BotStats" unique_id=1388790801]
+layout_mode = 2
+
+[node name="BotField" type="HBoxContainer" parent="UI/BotZone" unique_id=1079739201]
+layout_mode = 2
+
+[node name="Separator" type="HSeparator" parent="UI" unique_id=1989568000]
+offset_right = 40.0
+offset_bottom = 4.0
+
+[node name="PlayerZone" type="VBoxContainer" parent="UI" unique_id=1908889947]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerField" type="HBoxContainer" parent="UI/PlayerZone" unique_id=1832997205]
+layout_mode = 2
+
+[node name="PlayerStats" type="HBoxContainer" parent="UI/PlayerZone" unique_id=1799774324]
+layout_mode = 2
+
+[node name="PlayerHP" type="Label" parent="UI/PlayerZone/PlayerStats" unique_id=676904467]
+layout_mode = 2
+
+[node name="PlayerMana" type="Label" parent="UI/PlayerZone/PlayerStats" unique_id=214829783]
+layout_mode = 2
+
+[node name="PlayerHand" type="HBoxContainer" parent="UI" unique_id=1852160868]
+custom_minimum_size = Vector2(0, 180)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ActionBar" type="HBoxContainer" parent="UI" unique_id=2121286504]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(0, -50)
+
+[node name="EndTurnButton" type="Button" parent="UI/ActionBar" unique_id=153643570]
+layout_mode = 2
+text = "Fin de Turno"
+
+[node name="TurnLabel" type="Label" parent="UI/ActionBar" unique_id=1521060662]
+layout_mode = 2
+text = "Turno: Jugador"
+
+[node name="LogLabel" type="Label" parent="UI" unique_id=542926941]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="GameState" type="Node" parent="." unique_id=1958692189]
+script = ExtResource("1_ltshs")

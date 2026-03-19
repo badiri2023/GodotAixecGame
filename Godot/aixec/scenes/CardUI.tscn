@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cpjcrd2pf1aod"]
+
+[ext_resource type="Script" uid="uid://bajjfu7w7pdtp" path="res://scripts/cards/CardUI.gd" id="1_7bkrs"]
+
+[node name="CardUI" type="PanelContainer" unique_id=1127336047]
+custom_minimum_size = Vector2(120, 160)
+script = ExtResource("1_7bkrs")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=135736530]
+layout_mode = 2
+
+[node name="CardName" type="Label" parent="VBoxContainer" unique_id=1747356329]
+layout_mode = 2
+
+[node name="CardType" type="Label" parent="VBoxContainer" unique_id=322290093]
+layout_mode = 2
+
+[node name="CardDesc" type="Label" parent="VBoxContainer" unique_id=878409057]
+layout_mode = 2
+
+[node name="CardStats" type="Label" parent="VBoxContainer" unique_id=264274288]
+layout_mode = 2
