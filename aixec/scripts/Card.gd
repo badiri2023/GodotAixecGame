@@ -6,19 +6,19 @@ extends Panel
 var card_data = {
 	"id":          0,
 	"name":        "",
-	"type":        1,        # 1=Monstruo 2=Hechizo 3=Equipamiento
-	"rarity":      1,        # 1=Común 2=Rara 3=Legendaria
-	"expansion":   "",       # backend, sin uso por ahora
+	"type":        1,
+	"rarity":      1,
+	"expansion":   "",
 	"description": "",
 	"imageUrl":    "",
 	"attack":      0,
 	"defense":     0,
 	"mana":        0,
-	"isPassive":   false,    # backend
 	"ability": {
-		"id":          0,    # backend — se resuelve en CardDatabase.gd
-		"name":        "",   # se usa en el panel de acciones al seleccionar carta
-		"description": ""    # visible en HabilidadLabel
+		"id":          0,
+		"name":        "",
+		"description": "",
+		"isPassive":   false    # <-- ahora está aquí
 	}
 }
 
@@ -99,19 +99,19 @@ func actualizar_ui():
 
 func _actualizar_stats():
 	match card_data["type"]:
-		1:  # Monstruo — muestra atk, mana y vida
-			atk_label.text  = "Atk: %d"  % get_attack_total()
+		1:  # Monstruo
+			atk_label.text  = "Atk: %d"  % card_data["attack"]
 			mana_label.text = "Mana: %d" % card_data["mana"]
 			vida_label.text = "Vida: %d" % defense_actual
 			$StatsPanel/AtkPanel.visible  = true
 			$StatsPanel/VidaPanel.visible = true
 
-		2:  # Hechizo — solo mana, sin atk ni vida
+		2:  # Hechizo
 			mana_label.text = "Mana: %d" % card_data["mana"]
 			$StatsPanel/AtkPanel.visible  = false
 			$StatsPanel/VidaPanel.visible = false
 
-		3:  # Equipamiento — muestra bonus como +atk y +vida
+		3:  # Equipamiento
 			atk_label.text  = "+Atk: %d"  % card_data["attack"]
 			mana_label.text = "Mana: %d"  % card_data["mana"]
 			vida_label.text = "+Vida: %d" % card_data["defense"]
@@ -158,7 +158,6 @@ func _on_imagen_descargada(result: int, response_code: int, headers: PackedStrin
 	
 	imagen_carta.texture = ImageTexture.create_from_image(image)
 
-
 func _aplicar_color_tipo(tipo: int):
 	# El color de fondo de la carta cambia según el tipo
 	# Se modifica el StyleBox heredado de CardColor.tres
@@ -171,11 +170,11 @@ func _aplicar_color_tipo(tipo: int):
 
 	var style = StyleBoxFlat.new()
 	style.bg_color                   = color_fondo
-	style.corner_radius_top_left     = 8
-	style.corner_radius_top_right    = 8
-	style.corner_radius_bottom_left  = 8
-	style.corner_radius_bottom_right = 8
-	style.corner_detail              = 5
+	style.corner_radius_top_left     = 3
+	style.corner_radius_top_right    = 3
+	style.corner_radius_bottom_left  = 3
+	style.corner_radius_bottom_right = 3
+	style.corner_detail              = 3
 	add_theme_stylebox_override("panel", style)
 
 func _rareza_texto(rarity: int) -> String:
@@ -193,17 +192,11 @@ func equipar(carta_equip) -> bool:
 		return false   # solo monstruos
 	if equipamiento != null:
 		return false   # ya tiene uno equipado
-	equipamiento    = carta_equip
-	defense_actual += carta_equip.card_data["defense"]
+	equipamiento           = carta_equip
+	defense_actual         += carta_equip.card_data["defense"]
+	card_data["attack"]    += carta_equip.card_data["attack"]
 	actualizar_ui()
 	return true
-
-func desequipar():
-	if equipamiento == null:
-		return
-	defense_actual = max(1, defense_actual - equipamiento.card_data["defense"])
-	equipamiento   = null
-	actualizar_ui()
 
 # ─────────────────────────────────────────
 #  COMBATE
@@ -224,13 +217,6 @@ func resetear_turno():
 # ─────────────────────────────────────────
 #  HELPERS — usados desde Game.gd
 # ─────────────────────────────────────────
-
-# Ataque total (base + bonus de equipamiento si lo hay)
-func get_attack_total() -> int:
-	var total = card_data["attack"]
-	if equipamiento != null:
-		total += equipamiento.card_data["attack"]
-	return total
 
 func get_mana_cost() -> int:
 	return card_data["mana"]
@@ -257,17 +243,20 @@ func get_equip_ability_name() -> String:
 
 # ¿Tiene habilidad activa propia?
 func tiene_habilidad_activa_propia() -> bool:
-	return not card_data["isPassive"] and card_data["ability"]["id"] != 0
+	return not card_data["ability"]["isPassive"] and card_data["ability"]["id"] != 0
 
 # ¿Tiene habilidad activa del equipamiento?
 func tiene_habilidad_activa_equip() -> bool:
 	if equipamiento == null:
 		return false
-	return not equipamiento.card_data["isPassive"] and equipamiento.card_data["ability"]["id"] != 0
+	return not equipamiento.card_data["ability"]["isPassive"] and equipamiento.card_data["ability"]["id"] != 0
 
 # ¿Tiene alguna habilidad activa disponible este turno?
 func tiene_alguna_habilidad_activa() -> bool:
 	return tiene_habilidad_activa_propia() or tiene_habilidad_activa_equip()
+
+func is_passive() -> bool:
+	return card_data["ability"]["isPassive"]
 
 # ─────────────────────────────────────────
 #  INPUT

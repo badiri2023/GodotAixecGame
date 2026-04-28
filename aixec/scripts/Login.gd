@@ -45,7 +45,7 @@ func _hacer_login(email: String, password: String) -> void:
 		_mostrar_error("Error de conexión con el servidor")
 		_set_cargando(false)
 
-func _on_login_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+func _on_login_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
 	_set_cargando(false)
 

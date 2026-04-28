@@ -1,242 +1,243 @@
 [
 	{
 		"ability": {
-			"description": "Cuando es atacado, el atacante sufre 1 de daño si no tiene equipamiento.",
+			"description": "Cuando es atacado, el atacante sufre 1 de dano si no tiene equipamiento.",
 			"id": 1,
+			"isPassive": true,
 			"name": "Cuerpo elemental"
 		},
 		"attack": 1,
 		"defense": 1,
-		"description": "Habiendo comido mucho chilly pikante, se volvió resistente al fuego",
-		"expansion": "Fantásticas",
+		"description": "Habiendo comido mucho chilly pikante, se volvio resistente al fuego",
+		"expansion": "Fantasticas",
 		"id": 1,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card001.jpg",
 		"mana": 1,
 		"name": "MagmaSlime",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Cuando es atacado, el atacante sufre 1 de daño si no tiene equipamiento.",
+			"description": "Cuando es atacado, el atacante sufre 1 de dano si no tiene equipamiento.",
 			"id": 1,
+			"isPassive": true,
 			"name": "Cuerpo elemental"
 		},
 		"attack": 1,
 		"defense": 1,
-		"description": "Habiendo usado Twitter durante años, se volvió muy acido",
-		"expansion": "Fantásticas",
+		"description": "Habiendo usado Twitter durante anos, se volvio muy acido",
+		"expansion": "Fantasticas",
 		"id": 2,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card002.jpg",
 		"mana": 1,
 		"name": "AcidSlime",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Puedes fusionar un slime del campo o la mano para curarle o aumentarle el daño.",
+			"description": "Puedes fusionar un slime del campo o la mano para curarle o aumentarle el dano.",
 			"id": 2,
+			"isPassive": false,
 			"name": "Familia"
 		},
 		"attack": 3,
 		"defense": 3,
-		"description": "Habiendo sido cazados durante años, decidieron unirse para formar algo mejor.",
-		"expansion": "Fantásticas",
+		"description": "Habiendo sido cazados durante anos, decidieron unirse para formar algo mejor.",
+		"expansion": "Fantasticas",
 		"id": 3,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card003.jpg",
 		"mana": 5,
 		"name": "KingSlime",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Cada turno puedes convencer a 1 solo slime de fusionarse contigo curandote y aumentar el daño.",
+			"description": "Cada turno puedes convencer a 1 solo slime de fusionarse contigo curandote y aumentar el dano.",
 			"id": 3,
-			"name": "Sugestión"
+			"isPassive": false,
+			"name": "Sugestion"
 		},
 		"attack": 1,
 		"defense": 1,
-		"description": "Un slime que tomó conciencia y quería mas poder, a base de tacticas de politico corrupto",
-		"expansion": "Fantásticas",
+		"description": "Un slime que tomo conciencia y queria mas poder, a base de tacticas de politico corrupto",
+		"expansion": "Fantasticas",
 		"id": 4,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card004.jpg",
 		"mana": 5,
 		"name": "FakeKingSlime",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Si el daño no es letal, no se le reduce la vida.",
+			"description": "Si el dano no es letal, no se le reduce la vida.",
 			"id": 4,
+			"isPassive": true,
 			"name": "Resiliencia"
 		},
 		"attack": 2,
 		"defense": 2,
-		"description": "Descubrió que eran las pesas y empezó a ejercitarse para que no lo mataran de 1 golpe",
-		"expansion": "Fantásticas",
+		"description": "Descubrio que eran las pesas y empezo a ejercitarse para que no lo mataran de 1 golpe",
+		"expansion": "Fantasticas",
 		"id": 5,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card005.jpg",
 		"mana": 1,
 		"name": "IronSlime",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Si el daño no es letal, no se le reduce la vida.",
+			"description": "Si el dano no es letal, no se le reduce la vida.",
 			"id": 4,
+			"isPassive": true,
 			"name": "Resiliencia"
 		},
 		"attack": 0,
 		"defense": 3,
-		"description": "Un Goblin que le gustaron muchos los slimes, creó uno de madera para no estar solo",
-		"expansion": "Fantásticas",
+		"description": "Un Goblin que le gustaron muchos los slimes, creo uno de madera para no estar solo",
+		"expansion": "Fantasticas",
 		"id": 6,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card006.jpg",
 		"mana": 3,
 		"name": "PuppetSlime",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Hackeas al enemigo y tomas posesion de un monstruo suyo desechando esta carta.",
 			"id": 5,
-			"name": "Supresión sacrificial"
+			"isPassive": false,
+			"name": "Supresion sacrificial"
 		},
 		"attack": 0,
 		"defense": 0,
 		"description": "Un glich que trajo del futuro este slime.",
-		"expansion": "Fantásticas",
+		"expansion": "Fantasticas",
 		"id": 7,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card007.jpg",
 		"mana": 3,
 		"name": "DigitalSlime",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "El daño recibido que no sea letal es reflectido al atacante.",
+			"description": "El dano recibido que no sea letal es reflectido al atacante.",
 			"id": 6,
-			"name": "Espejito rebotín"
+			"isPassive": true,
+			"name": "Espejito rebotin"
 		},
 		"attack": 1,
 		"defense": 3,
-		"description": "Le gustan tanto los espejos que se convirtió en uno.",
-		"expansion": "Fantásticas",
+		"description": "Le gustan tanto los espejos que se convirtio en uno.",
+		"expansion": "Fantasticas",
 		"id": 8,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card008.jpg",
 		"mana": 3,
 		"name": "MirorSlime",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Antes de cada ataque, puede decidir si curar 1 de vida a un aliado o atacar.",
 			"id": 7,
+			"isPassive": false,
 			"name": "Dualidad"
 		},
 		"attack": 1,
 		"defense": 3,
 		"description": "Estuvo estudiando durante siglos medicina para curar y ayudar a su familia.",
-		"expansion": "Fantásticas",
+		"expansion": "Fantasticas",
 		"id": 9,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card009.jpg",
 		"mana": 3,
 		"name": "HealingSlime",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Cuando otra carta entra, si no es un juguete, su salud se reduce en 1.",
 			"id": 8,
+			"isPassive": true,
 			"name": "Penitencia racial"
 		},
 		"attack": 0,
 		"defense": 2,
-		"description": "Pequeña, discreta y molesta.",
+		"description": "Pequena, discreta y molesta.",
 		"expansion": "Juguetes",
 		"id": 11,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card011.jpg",
 		"mana": 1,
 		"name": "Pieza de LIGO",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Cada vez que ataca, su ataque aumenta en 1.",
 			"id": 9,
+			"isPassive": true,
 			"name": "Foco"
 		},
 		"attack": 3,
 		"defense": 5,
-		"description": "Cuando se unen todos los juguetes, lo que parecía inofensivo se convierte en una fuerza imparable.",
+		"description": "Cuando se unen todos los juguetes, lo que parecia inofensivo se convierte en una fuerza imparable.",
 		"expansion": "Juguetes",
 		"id": 12,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card012.jpg",
 		"mana": 5,
 		"name": "Megabimbazo",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Sacrifica esta carta para sacar un juguete que no sea legendario.",
 			"id": 10,
+			"isPassive": false,
 			"name": "Nostalgia"
 		},
 		"attack": 1,
 		"defense": 1,
-		"description": "Un tesoro lleno de recuerdos… y un ejército de juguetes listo para la batalla.",
+		"description": "Un tesoro lleno de recuerdos… y un ejercito de juguetes listo para la batalla.",
 		"expansion": "Juguetes",
 		"id": 13,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card013.jpg",
 		"mana": 3,
-		"name": "Baúl de la infancia",
+		"name": "Baul de la infancia",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Si esta carta ha atacado, crea un duplicado de esta carta si hay espacios disponibles en el campo.",
 			"id": 11,
-			"name": "Escuadrón"
+			"isPassive": true,
+			"name": "Escuadron"
 		},
 		"attack": 1,
 		"defense": 2,
-		"description": "Pequeños, numerosos y siempre listos para marchar al combate, creciendo con cada enfrentamiento.",
+		"description": "Pequenos, numerosos y siempre listos para marchar al combate, creciendo con cada enfrentamiento.",
 		"expansion": "Juguetes",
 		"id": 14,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card014.jpg",
 		"mana": 1,
 		"name": "Milicia de soldaditos",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Causa 4 de daño a una carta al azar.",
+			"description": "Causa 4 de dano a una carta al azar.",
 			"id": 12,
+			"isPassive": false,
 			"name": "Precoz"
 		},
 		"attack": 2,
@@ -244,233 +245,233 @@
 		"description": "Grande, exagerado… y sorprendentemente efectivo cuando apunta hacia la amenaza correcta.",
 		"expansion": "Juguetes",
 		"id": 17,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card017.jpg",
 		"mana": 3,
-		"name": "Cañón cómicamente grande",
+		"name": "Canon comicamente grande",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Cuando esta carta muera, robas 1 carta y descartas una carta de tu mano al azar.",
 			"id": 13,
+			"isPassive": true,
 			"name": "Sacrificio prometido"
 		},
 		"attack": 4,
 		"defense": 2,
-		"description": "Siempre deja algo atrás, incluso en la derrota.",
+		"description": "Siempre deja algo atras, incluso en la derrota.",
 		"expansion": "Juguetes",
 		"id": 18,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card018.jpg",
 		"mana": 3,
-		"name": "Benjamin Díez",
+		"name": "Benjamin Diez",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Cuando esta carta muera, robas 1 carta y descartas una carta de tu mano al azar.",
 			"id": 13,
+			"isPassive": true,
 			"name": "Sacrificio prometido"
 		},
 		"attack": 0,
 		"defense": 1,
-		"description": "Sin la clave correcta, la información no es más que ruido sin sentido.",
-		"expansion": "Futurístico",
+		"description": "Sin la clave correcta, la informacion no es mas que ruido sin sentido.",
+		"expansion": "Futuristico",
 		"id": 27,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card027.jpg",
 		"mana": 3,
 		"name": "Descifrador de datos",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Cada vez que esta carta no ataque, su ataque aumenta en 1. Cuando ataque, reduce su ataque al base.",
 			"id": 14,
+			"isPassive": true,
 			"name": "Paciencia"
 		},
 		"attack": 2,
 		"defense": 3,
-		"description": "Listo para saltar a la acción en cualquier momento, acumulando fuerza mientras espera su oportunidad.",
+		"description": "Listo para saltar a la accion en cualquier momento, acumulando fuerza mientras espera su oportunidad.",
 		"expansion": "Juguetes",
 		"id": 19,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card019.jpg",
 		"mana": 3,
-		"name": "Hombre de Acción de edición limitada",
+		"name": "Hombre de Accion de edicion limitada",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Reduce a la mitad la vida de una carta.",
 			"id": 15,
-			"name": "Maldición"
+			"isPassive": false,
+			"name": "Maldicion"
 		},
 		"attack": 1,
 		"defense": 2,
 		"description": "No subestimes su aspecto dulce: tras sus ojos brillantes, hay una magia que destruye sin piedad.",
 		"expansion": "Juguetes",
 		"id": 20,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card020.jpg",
 		"mana": 5,
-		"name": "Muñeca Trini Encantada",
+		"name": "Muneca Trini Encantada",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Si tienes un USB Cifrado y un Descifrador de datos, esta carta evoluciona a Hacker Experto y descartas todas las cartas mencionadas.",
 			"id": 16,
+			"isPassive": false,
 			"name": "Sudo update"
 		},
 		"attack": 1,
 		"defense": 2,
-		"description": "Todo gran experto empezó probando pequeñas vulnerabilidades.",
-		"expansion": "Futurístico",
+		"description": "Todo gran experto empezo probando pequenas vulnerabilidades.",
+		"expansion": "Futuristico",
 		"id": 22,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card022.jpg",
 		"mana": 1,
 		"name": "Hacker",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Al desplegar esta carta teniendo un robot, el robot evoluciona a Robot Blindado.",
 			"id": 17,
+			"isPassive": false,
 			"name": "Reforjado"
 		},
 		"attack": 0,
 		"defense": 2,
-		"description": "Una simple mejora puede convertir chatarra en una máquina de guerra.",
-		"expansion": "Futurístico",
+		"description": "Una simple mejora puede convertir chatarra en una maquina de guerra.",
+		"expansion": "Futuristico",
 		"id": 23,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card023.jpg",
 		"mana": 1,
-		"name": "Blindaje robótico",
+		"name": "Blindaje robotico",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Quema una carta enemiga durante 3 turnos, infligiendo 1 de daño cada turno.",
+			"description": "Quema una carta enemiga durante 3 turnos, infligiendo 1 de dano cada turno.",
 			"id": 18,
+			"isPassive": false,
 			"name": "Firewall"
 		},
 		"attack": 1,
 		"defense": 2,
-		"description": "Donde otros reparan, él también sabe cómo hacer que todo arda lentamente.",
-		"expansion": "Futurístico",
+		"description": "Donde otros reparan, el tambien sabe como hacer que todo arda lentamente.",
+		"expansion": "Futuristico",
 		"id": 24,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card024.jpg",
-		"isPassive": false,
 		"mana": 1,
 		"name": "Soldador",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Si tienes un Soldador y un Cañón de plasma desplegados, esta carta evoluciona a Robot Exterminador.",
+			"description": "Si tienes un Soldador y un Canon de plasma desplegados, esta carta evoluciona a Robot Exterminador.",
 			"id": 19,
+			"isPassive": false,
 			"name": "Mega Update"
 		},
 		"attack": 2,
 		"defense": 4,
-		"description": "Diseñado para resistir impactos extremos, su avance es lento pero imparable.",
-		"expansion": "Futurístico",
+		"description": "Disenado para resistir impactos extremos, su avance es lento pero imparable.",
+		"expansion": "Futuristico",
 		"id": 25,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card025.jpg",
-		"isPassive": false,
 		"mana": 3,
 		"name": "Robot Blindado",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Hace 2 de daño a un enemigo aleatorio.",
+			"description": "Hace 2 de dano a un enemigo aleatorio.",
 			"id": 20,
+			"isPassive": false,
 			"name": "Troyan"
 		},
 		"attack": 3,
 		"defense": 1,
-		"description": "Un arma experimental que concentra energía pura en un solo disparo devastador.",
-		"expansion": "Futurístico",
+		"description": "Un arma experimental que concentra energia pura en un solo disparo devastador.",
+		"expansion": "Futuristico",
 		"id": 26,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card026.jpg",
-		"isPassive": false,
 		"mana": 3,
-		"name": "Cañón de plasma",
+		"name": "Canon de plasma",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Al entrar en el campo de batalla roba una carta al azar de tu baraja.",
 			"id": 21,
+			"isPassive": true,
 			"name": "Datapack"
 		},
 		"attack": 0,
 		"defense": 1,
-		"description": "Un dispositivo aparentemente simple que oculta información crítica imposible de descifrar.",
-		"expansion": "Futurístico",
+		"description": "Un dispositivo aparentemente simple que oculta informacion critica imposible de descifrar.",
+		"expansion": "Futuristico",
 		"id": 28,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card028.jpg",
 		"mana": 3,
 		"name": "USB Cifrado",
 		"rarity": 2,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Inhabilita 1 carta por 3 turnos.",
 			"id": 22,
+			"isPassive": false,
 			"name": "Antivirus"
 		},
 		"attack": 4,
 		"defense": 2,
-		"description": "Donde otros ven sistemas seguros, él ve puertas abiertas.",
-		"expansion": "Futurístico",
+		"description": "Donde otros ven sistemas seguros, el ve puertas abiertas.",
+		"expansion": "Futuristico",
 		"id": 29,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card029.jpg",
 		"mana": 5,
 		"name": "Hacker Experto",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "Extermina una carta al ser desplegado.",
 			"id": 23,
+			"isPassive": true,
 			"name": "Exterminator"
 		},
 		"attack": 5,
 		"defense": 3,
 		"description": "No fue creado para luchar… fue creado para acabar con todo.",
-		"expansion": "Futurístico",
+		"expansion": "Futuristico",
 		"id": 30,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card030.jpg",
-		"isPassive": false,
 		"mana": 5,
 		"name": "Robot Exterminador",
 		"rarity": 3,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
-			"description": "Hay un 1% de probabilidad de anular el daño cuando un enemigo te ataque.",
+			"description": "Hay un 1% de probabilidad de anular el dano cuando un enemigo te ataque.",
 			"id": 24,
+			"isPassive": false,
 			"name": "Antiabductor"
 		},
 		"attack": 1,
@@ -479,16 +480,16 @@
 		"expansion": "Equipamiento",
 		"id": 31,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card031.jpg",
-		"isPassive": false,
 		"mana": 1,
 		"name": "Sombrero de aluminio",
 		"rarity": 1,
-		"type": "Equipamiento"
+		"type": 3
 	},
 	{
 		"ability": {
 			"description": "Al equipar la carta al monstruo, puedes mirar y seleccionar una carta de la mano del enemigo para eliminarla.",
 			"id": 25,
+			"isPassive": false,
 			"name": "Ataque sorpresa"
 		},
 		"attack": 3,
@@ -497,52 +498,52 @@
 		"expansion": "Equipamiento",
 		"id": 35,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card035.jpg",
-		"isPassive": false,
 		"mana": 5,
 		"name": "Zapato del medio",
 		"rarity": 3,
-		"type": "Equipamiento"
+		"type": 3
 	},
 	{
 		"ability": {
 			"description": "Te curas 2 de vida.",
 			"id": 26,
+			"isPassive": false,
 			"name": "Heal"
 		},
 		"attack": 0,
 		"defense": 0,
-		"description": "Una poción pequeña, pero suficiente para seguir en pie un poco más de tiempo.",
+		"description": "Una pocion pequena, pero suficiente para seguir en pie un poco mas de tiempo.",
 		"expansion": "Magias",
 		"id": 36,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card036.jpg",
 		"mana": 3,
 		"name": "PotiPoti",
 		"rarity": 2,
-		"type": "Magia"
+		"type": 2
 	},
 	{
 		"ability": {
-			"description": "Haces 2 de daño a un monstruo o 1 de daño al jugador.",
+			"description": "Haces 2 de dano a un monstruo o 1 de dano al jugador.",
 			"id": 27,
+			"isPassive": false,
 			"name": "Terremoto"
 		},
 		"attack": 0,
 		"defense": 0,
-		"description": "A veces, los números son más letales que la fuerza bruta.",
+		"description": "A veces, los numeros son mas letales que la fuerza bruta.",
 		"expansion": "Magias",
 		"id": 37,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card037.jpg",
 		"mana": 1,
 		"name": "Factura",
 		"rarity": 1,
-		"type": "Magia"
+		"type": 2
 	},
 	{
 		"ability": {
 			"description": "Activa la habilidad de la carta una segunda vez.",
 			"id": 28,
+			"isPassive": false,
 			"name": "Otra vez"
 		},
 		"attack": 0,
@@ -551,34 +552,34 @@
 		"expansion": "Magias",
 		"id": 38,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card038.jpg",
-		"isPassive": false,
 		"mana": 3,
 		"name": "Disco rayado",
 		"rarity": 2,
-		"type": "Magia"
+		"type": 2
 	},
 	{
 		"ability": {
-			"description": "Robas 2 cartas de la baraja y las añades a tu mano.",
+			"description": "Robas 2 cartas de la baraja y las anades a tu mano.",
 			"id": 29,
+			"isPassive": false,
 			"name": "Paguitas"
 		},
 		"attack": 0,
 		"defense": 0,
-		"description": "Un pequeño impulso que te recuerda que siempre hay recursos esperando ser tomados.",
+		"description": "Un pequeno impulso que te recuerda que siempre hay recursos esperando ser tomados.",
 		"expansion": "Magias",
 		"id": 39,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card039.jpg",
-		"isPassive": false,
 		"mana": 1,
-		"name": "Día de pago",
+		"name": "Dia de pago",
 		"rarity": 1,
-		"type": "Magia"
+		"type": 2
 	},
 	{
 		"ability": {
-			"description": "Aplica una maldición a una de tus cartas desplegadas. Cuando reciba daño, el jugador enemigo recibe 1 de daño.",
+			"description": "Aplica una maldicion a una de tus cartas desplegadas. Cuando reciba dano, el jugador enemigo recibe 1 de dano.",
 			"id": 30,
+			"isPassive": false,
 			"name": "Ligamento cruzado"
 		},
 		"attack": 0,
@@ -586,89 +587,89 @@
 		"description": "Un pacto peligroso que convierte tu sacrificio en sufrimiento para el enemigo.",
 		"expansion": "Magias",
 		"id": 40,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card040.jpg",
 		"mana": 5,
 		"name": "Contrato maldito",
 		"rarity": 3,
-		"type": "Magia"
+		"type": 2
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 0,
 		"defense": 1,
 		"description": "Esta bonito.",
-		"expansion": "Fantásticas",
+		"expansion": "Fantasticas",
 		"id": 10,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card010.jpg",
 		"mana": 1,
 		"name": "Slimel",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 1,
 		"defense": 2,
-		"description": "Pequeña pero traviesa, siempre lista para unirse a la batalla o distraer al enemigo.",
+		"description": "Pequena pero traviesa, siempre lista para unirse a la batalla o distraer al enemigo.",
 		"expansion": "Juguetes",
 		"id": 15,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card015.jpg",
 		"mana": 1,
-		"name": "Muñeca Trini",
+		"name": "Muneca Trini",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 2,
 		"defense": 1,
-		"description": "Listo para entrar en combate en cualquier momento, aunque su tamaño no lo haga intimidante.",
+		"description": "Listo para entrar en combate en cualquier momento, aunque su tamano no lo haga intimidante.",
 		"expansion": "Juguetes",
 		"id": 16,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card016.jpg",
 		"mana": 1,
-		"name": "Hombre de Acción",
+		"name": "Hombre de Accion",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 2,
 		"defense": 1,
-		"description": "Unidades básicas programadas para tareas simples… o para el combate.",
-		"expansion": "Futurístico",
+		"description": "Unidades basicas programadas para tareas simples… o para el combate.",
+		"expansion": "Futuristico",
 		"id": 21,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card021.jpg",
 		"mana": 1,
 		"name": "Robot",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 0,
@@ -677,16 +678,16 @@
 		"expansion": "Equipamiento",
 		"id": 32,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card032.jpg",
-		"isPassive": false,
 		"mana": 1,
-		"name": "Cordón de zapato",
+		"name": "Cordon de zapato",
 		"rarity": 1,
-		"type": "Equipamiento"
+		"type": 3
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 0,
@@ -694,47 +695,46 @@
 		"description": "con el pecho por delante",
 		"expansion": "Equipamiento",
 		"id": 33,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card033.jpg",
 		"mana": 3,
 		"name": "Pechera",
 		"rarity": 2,
-		"type": "Equipamiento"
+		"type": 3
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 3,
 		"defense": 0,
-		"description": "Lo que usaba tu padre de pequeño cuando sacabas malas notas, duele mucho...",
+		"description": "Lo que usaba tu padre de pequeno cuando sacabas malas notas, duele mucho...",
 		"expansion": "Equipamiento",
 		"id": 34,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card034.jpg",
-		"isPassive": false,
 		"mana": 3,
-		"name": "Cinturón de Puchi",
+		"name": "Cinturon de Puchi",
 		"rarity": 2,
-		"type": "Equipamiento"
+		"type": 3
 	},
 	{
 		"ability": {
 			"description": "No hace nada.",
 			"id": 32,
+			"isPassive": true,
 			"name": "Existencia"
 		},
 		"attack": 0,
 		"defense": 0,
 		"description": "Si estas viendo esto, hay un error en el juego",
-		"expansion": "Fantásticas",
+		"expansion": "Fantasticas",
 		"id": 50,
-		"imageUrl": "",
-		"isPassive": false,
+		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card050.jpg",
 		"mana": 0,
 		"name": "None",
 		"rarity": 1,
-		"type": "Monstruo"
+		"type": 1
 	}
 ]

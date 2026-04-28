@@ -27,7 +27,7 @@ func _obtener_cartas() -> void:
 		http.queue_free()
 		_reset_boton()
 
-func _on_cartas_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+func _on_cartas_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
 
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
@@ -57,12 +57,12 @@ func _on_cartas_completed(result: int, response_code: int, headers: PackedString
 			"ability": {
 				"id":          int(item["ability"].get("id", 32)) if item.get("ability") and item["ability"].get("id") != null else 32,
 				"name":        item["ability"].get("name", "") if item.get("ability") else "",
-				"description": item["ability"].get("description", "") if item.get("ability") else ""
+				"description": item["ability"].get("description", "") if item.get("ability") else "",
+				"isPassive":   item["ability"].get("isPassive", false),
 			},
 			"expansion":   item.get("expansion", "Base"),
 			"mana":        int(item.get("mana", 0)) if item.get("mana") != null else 0,
 			"type":        int(item.get("type", 0)) if item.get("type") != null else 0,
-			"isPassive":   item.get("isPassive", false),
 			"imageUrl":    "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card%s.jpg" % str(int(item.get("id", 50))).pad_zeros(3) if (item.get("imageUrl") != null and item.get("imageUrl", "").strip_edges() != "") else "",
 		})
 

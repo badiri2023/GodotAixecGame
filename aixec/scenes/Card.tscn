@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d2c6sm6l55tk0" path="res://scripts/Card.gd" id="1_tgmmg"]
 [ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/leovinus-confirmation-803715.jpg" id="1_yiag5"]
+[ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="3_4dx8l"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yiag5"]
 corner_radius_top_left = 3
@@ -193,8 +194,12 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
+[node name="CardReverse" parent="." unique_id=1078090010 instance=ExtResource("3_4dx8l")]
+visible = false
+layout_mode = 0
+
 [node name="Button" type="Button" parent="." unique_id=1102841963]
 visible = false
 layout_mode = 0
-offset_right = 100.0
-offset_bottom = 150.0
+offset_right = 160.0
+offset_bottom = 230.0

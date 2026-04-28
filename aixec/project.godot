@@ -18,6 +18,7 @@ config/icon="res://assets/ui/icon.svg"
 [autoload]
 
 ApiServicio="*uid://daxmnwhlbfqn0"
+GameState="*uid://dew4gqm2a86vk"
 
 [display]
 
