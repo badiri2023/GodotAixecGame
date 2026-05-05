@@ -17,12 +17,19 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="CardReverse" type="Panel" unique_id=1078090010]
+[node name="CardReverseControl" type="Control" unique_id=1619691161]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 160.0
+offset_bottom = 230.0
+
+[node name="CardReverse" type="Panel" parent="." unique_id=1078090010]
+layout_mode = 0
 offset_right = 160.0
 offset_bottom = 230.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4yp6")
 
-[node name="ReversoPanel" type="Panel" parent="." unique_id=356999347]
+[node name="ReversoPanel" type="Panel" parent="CardReverse" unique_id=356999347]
 clip_children = 1
 layout_mode = 0
 offset_left = 5.0
@@ -31,7 +38,7 @@ offset_right = 155.0
 offset_bottom = 225.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_uy8ks")
 
-[node name="ImagenReverso" type="TextureRect" parent="ReversoPanel" unique_id=2127331284]
+[node name="ImagenReverso" type="TextureRect" parent="CardReverse/ReversoPanel" unique_id=2127331284]
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 220.0

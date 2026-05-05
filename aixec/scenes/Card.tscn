@@ -34,12 +34,19 @@ font_color = Color(0, 0.78431374, 0, 1)
 line_spacing = -3.0
 font_size = 9
 
-[node name="Carta" type="Panel" unique_id=169417891]
+[node name="CartaControl" type="Control" unique_id=36295436]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 160.0
 offset_bottom = 230.0
 script = ExtResource("1_tgmmg")
 
-[node name="ImgPanel" type="Panel" parent="." unique_id=639088559]
+[node name="Carta" type="Panel" parent="." unique_id=169417891]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 230.0
+
+[node name="ImgPanel" type="Panel" parent="Carta" unique_id=639088559]
 clip_children = 1
 layout_mode = 0
 offset_left = 5.0
@@ -48,21 +55,21 @@ offset_right = 155.0
 offset_bottom = 95.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yiag5")
 
-[node name="ImagenCarta" type="TextureRect" parent="ImgPanel" unique_id=361794065]
+[node name="ImagenCarta" type="TextureRect" parent="Carta/ImgPanel" unique_id=361794065]
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 90.0
 texture = ExtResource("1_yiag5")
 expand_mode = 1
 
-[node name="NombrePanel" type="Panel" parent="ImgPanel" unique_id=1533911460]
+[node name="NombrePanel" type="Panel" parent="Carta/ImgPanel" unique_id=1533911460]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 91.0
 offset_bottom = 15.0
 
-[node name="NombreLabel" type="Label" parent="ImgPanel/NombrePanel" unique_id=1557027015]
+[node name="NombreLabel" type="Label" parent="Carta/ImgPanel/NombrePanel" unique_id=1557027015]
 layout_mode = 0
 offset_left = 2.0
 offset_right = 87.0
@@ -73,14 +80,14 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="CalidadPanel" type="Panel" parent="ImgPanel" unique_id=859899077]
+[node name="CalidadPanel" type="Panel" parent="Carta/ImgPanel" unique_id=859899077]
 layout_mode = 0
 offset_left = 93.0
 offset_top = 2.0
 offset_right = 148.0
 offset_bottom = 15.0
 
-[node name="CalidadLabel" type="Label" parent="ImgPanel/CalidadPanel" unique_id=1875924392]
+[node name="CalidadLabel" type="Label" parent="Carta/ImgPanel/CalidadPanel" unique_id=1875924392]
 layout_mode = 0
 offset_left = 2.0
 offset_right = 54.0
@@ -92,14 +99,14 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="HabilidadPanel" type="Panel" parent="." unique_id=1335148783]
+[node name="HabilidadPanel" type="Panel" parent="Carta" unique_id=1335148783]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 100.0
 offset_right = 155.0
 offset_bottom = 145.0
 
-[node name="HabilidadLabel" type="Label" parent="HabilidadPanel" unique_id=1543692905]
+[node name="HabilidadLabel" type="Label" parent="Carta/HabilidadPanel" unique_id=1543692905]
 layout_mode = 0
 offset_left = 3.0
 offset_right = 147.0
@@ -111,21 +118,21 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="StatsPanel" type="Panel" parent="." unique_id=1900049886]
+[node name="StatsPanel" type="Panel" parent="Carta" unique_id=1900049886]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 150.0
 offset_right = 155.0
 offset_bottom = 175.0
 
-[node name="AtkPanel" type="Panel" parent="StatsPanel" unique_id=1490857292]
+[node name="AtkPanel" type="Panel" parent="Carta/StatsPanel" unique_id=1490857292]
 layout_mode = 0
 offset_left = 4.0
 offset_top = 2.0
 offset_right = 48.0
 offset_bottom = 23.0
 
-[node name="AtkLabel" type="Label" parent="StatsPanel/AtkPanel" unique_id=432197579]
+[node name="AtkLabel" type="Label" parent="Carta/StatsPanel/AtkPanel" unique_id=432197579]
 layout_mode = 0
 offset_left = 3.0
 offset_right = 41.0
@@ -137,14 +144,14 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="ManaPanel" type="Panel" parent="StatsPanel" unique_id=2062188094]
+[node name="ManaPanel" type="Panel" parent="Carta/StatsPanel" unique_id=2062188094]
 layout_mode = 0
 offset_left = 53.0
 offset_top = 2.0
 offset_right = 97.0
 offset_bottom = 23.0
 
-[node name="ManaLabel" type="Label" parent="StatsPanel/ManaPanel" unique_id=545488109]
+[node name="ManaLabel" type="Label" parent="Carta/StatsPanel/ManaPanel" unique_id=545488109]
 layout_mode = 0
 offset_left = 3.0
 offset_right = 41.0
@@ -156,14 +163,14 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="VidaPanel" type="Panel" parent="StatsPanel" unique_id=997528023]
+[node name="VidaPanel" type="Panel" parent="Carta/StatsPanel" unique_id=997528023]
 layout_mode = 0
 offset_left = 102.0
 offset_top = 2.0
 offset_right = 146.0
 offset_bottom = 23.0
 
-[node name="VidaLabel" type="Label" parent="StatsPanel/VidaPanel" unique_id=1748355047]
+[node name="VidaLabel" type="Label" parent="Carta/StatsPanel/VidaPanel" unique_id=1748355047]
 layout_mode = 0
 offset_left = 3.0
 offset_right = 41.0
@@ -175,14 +182,14 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="DescripcionPanel" type="Panel" parent="." unique_id=1684289108]
+[node name="DescripcionPanel" type="Panel" parent="Carta" unique_id=1684289108]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 180.0
 offset_right = 155.0
 offset_bottom = 225.0
 
-[node name="DescripcionLabel" type="Label" parent="DescripcionPanel" unique_id=954632985]
+[node name="DescripcionLabel" type="Label" parent="Carta/DescripcionPanel" unique_id=954632985]
 layout_mode = 0
 offset_left = 3.0
 offset_right = 147.0
@@ -194,11 +201,11 @@ vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 
-[node name="CardReverse" parent="." unique_id=1078090010 instance=ExtResource("3_4dx8l")]
+[node name="CardReverse" parent="Carta" unique_id=1078090010 instance=ExtResource("3_4dx8l")]
 visible = false
 layout_mode = 0
 
-[node name="Button" type="Button" parent="." unique_id=1102841963]
+[node name="Button" type="Button" parent="Carta" unique_id=1102841963]
 visible = false
 layout_mode = 0
 offset_right = 160.0
