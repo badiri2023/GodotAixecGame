@@ -383,8 +383,13 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 	var carta_nodo: Card = CARD_SCENE.instantiate()
 	var org: HBoxContainer = jugador_disponibles_org if quien == "jugador" \
 							 else oponente_disponibles_org
+
+	# Añadir al árbol ANTES de cargar datos para que _ready() inicialice @onready
 	org.add_child(carta_nodo)
 	carta_nodo.propietario = quien
+
+	# Los datos del GameManager usan claves del JSON original directamente
+	# (CardLoader.construir_baraja los copia tal cual desde cards.json)
 	carta_nodo.cargar_desde_json(datos)
 
 	# Cartas del oponente en mano: boca abajo
@@ -394,22 +399,11 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 	# Conecta señal de muerte
 	carta_nodo.carta_muerta.connect(_on_carta_nodo_muerta)
 
-	# Conecta drag & drop para cartas del jugador robadas en runtime
+	# Conecta drag & drop: el CardDragDrop expone connect_card() como método público
 	if quien == "jugador":
-		var panel: Panel = carta_nodo.get_node_or_null("Carta")
-		if panel:
-			panel.mouse_filter = Control.MOUSE_FILTER_STOP
-			if not panel.gui_input.is_connected(_on_carta_mano_gui_input.bind(carta_nodo)):
-				panel.gui_input.connect(_on_carta_mano_gui_input.bind(carta_nodo))
-
-
-## Redirige el gui_input de una carta recién robada al CardDragDrop del nodo padre.
-func _on_carta_mano_gui_input(event: InputEvent, carta: Card) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		# Llama directamente al método de drag del nodo Control padre
-		var drag_script = get_parent()
-		if drag_script.has_method("_start_drag"):
-			drag_script._start_drag(carta)
+		var drag = get_parent()
+		if drag.has_method("connect_card"):
+			drag.connect_card(carta_nodo)
 
 
 func _on_carta_nodo_muerta(carta: Card) -> void:

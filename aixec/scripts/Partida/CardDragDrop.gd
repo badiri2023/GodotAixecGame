@@ -48,15 +48,11 @@ var _ghost:              Control = null
 #  INICIALIZACIÓN
 # ─────────────────────────────────────────────
 func _ready() -> void:
-	_connect_hand_cards()
+	pass   # Las cartas se conectan en runtime desde GameUI.connect_card()
 
 
-func _connect_hand_cards() -> void:
-	for carta in disponibles_organizador.get_children():
-		_connect_card(carta)
-
-
-func _connect_card(carta: Control) -> void:
+## API PÚBLICA — GameUI llama a esto cada vez que instancia una carta en la mano.
+func connect_card(carta: Control) -> void:
 	var panel: Panel = carta.get_node_or_null("Carta")
 	if panel == null:
 		push_warning("[CardDragDrop] Carta sin nodo 'Carta': %s" % carta.name)
