@@ -18,7 +18,9 @@ config/icon="res://assets/ui/icon.svg"
 [autoload]
 
 ApiServicio="*uid://daxmnwhlbfqn0"
-GameState="*uid://dew4gqm2a86vk"
+GameManager="*uid://dlv1hmkfx7y1o"
+AbilityManager="*uid://r3o0obt33oyo"
+CardLoader="*uid://w1q0oyqd38bq"
 
 [display]
 

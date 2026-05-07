@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bex61n8qilskf"]
 
-[ext_resource type="Script" uid="uid://d2c6sm6l55tk0" path="res://scripts/Card.gd" id="1_tgmmg"]
+[ext_resource type="Script" uid="uid://bfolpjr6p3kb4" path="res://scripts/Partida/Card.gd" id="1_4dx8l"]
 [ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/leovinus-confirmation-803715.jpg" id="1_yiag5"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="3_4dx8l"]
 
@@ -39,7 +39,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 160.0
 offset_bottom = 230.0
-script = ExtResource("1_tgmmg")
+script = ExtResource("1_4dx8l")
 
 [node name="Carta" type="Panel" parent="." unique_id=169417891]
 layout_mode = 0
@@ -204,9 +204,3 @@ clip_text = true
 [node name="CardReverse" parent="Carta" unique_id=1078090010 instance=ExtResource("3_4dx8l")]
 visible = false
 layout_mode = 0
-
-[node name="Button" type="Button" parent="Carta" unique_id=1102841963]
-visible = false
-layout_mode = 0
-offset_right = 160.0
-offset_bottom = 230.0

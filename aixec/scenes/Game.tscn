@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bmbi2xwiu1jf6"]
 
+[ext_resource type="Script" uid="uid://dhwvavyl2l072" path="res://scripts/Partida/CardDragDrop.gd" id="1_aug50"]
 [ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/leovinus-confirmation-803715.jpg" id="1_cpr0p"]
 [ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/getCardsJson.gd" id="1_ibkli"]
 [ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/ui/options_icon.png" id="1_qbsmt"]
-[ext_resource type="Script" uid="uid://cg53e0nelmuf8" path="res://scripts/Game.gd" id="1_s0nni"]
-[ext_resource type="Script" uid="uid://bmgdqknaayyb2" path="res://scripts/Slot.gd" id="4_aug50"]
+[ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_78awf"]
@@ -45,8 +45,24 @@ line_spacing = -14.0
 font_size = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_400sg"]
-line_spacing = 0.0
+line_spacing = -2.0
 font_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_400sg"]
+bg_color = Color(0, 0.39215687, 0, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aug50"]
+bg_color = Color(0.39215687, 0, 0, 1)
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kiw3p"]
+bg_color = Color(0, 0, 0.39215687, 1)
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_detail = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_kiw3p"]
 line_spacing = -14.0
@@ -61,9 +77,12 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_s0nni")
-metadata/_edit_vertical_guides_ = [1910.0, 1920.0, 0.0, 10.0, 260.0, 1660.0, 1610.0, 310.0, 1410.0, 1400.0, 620.0, 315.0, 1605.0, 955.0, 950.0, 460.0, 790.0, 785.0, 625.0, 455.0, 320.0, 965.0, 970.0, 1105.0, 1110.0, 1270.0, 1275.0, 1435.0, 1440.0, 1600.0, 15.0, 255.0, 1210.0, 1205.0, 715.0, 710.0, 1905.0, 264.0, 1200.0]
-metadata/_edit_horizontal_guides_ = [260.0, 280.0, 820.0, 800.0, 380.0, 390.0, 700.0, 690.0, 0.0, 10.0, 1080.0, 1070.0, 1005.0, -49.0, 550.0, 555.0, 795.0, 560.0, 790.0, 530.0, 600.0, 605.0, 285.0, 290.0, 525.0, 520.0, 330.0, 335.0, 825.0, 1065.0, 870.0, 875.0, 15.0, 255.0, 830.0, 1060.0, 645.0, 650.0, 695.0, 735.0, 740.0]
+script = ExtResource("1_aug50")
+metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0]
+metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0]
+
+[node name="GameUI" type="Node" parent="." unique_id=1677084643]
+script = ExtResource("2_aug50")
 
 [node name="Info" type="Node" parent="." unique_id=595100759]
 
@@ -333,166 +352,110 @@ offset_top = 550.0
 offset_right = 1610.0
 offset_bottom = 800.0
 
-[node name="DespliegueMonstruos" type="Panel" parent="Jugador/DespliegueJugador" unique_id=828595953]
+[node name="BotonAtaque" type="Button" parent="Jugador/DespliegueJugador" unique_id=1065974587]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
-offset_right = 645.0
-offset_bottom = 245.0
-
-[node name="MonstruosLabel" type="Label" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1525493390]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 140.0
-offset_bottom = 45.0
-text = "MONSTRUOS"
-label_settings = SubResource("LabelSettings_s0nni")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 1
-clip_text = true
-text_overrun_behavior = 1
-
-[node name="BotonAtaque" type="Button" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1065974587]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 50.0
-offset_right = 140.0
-offset_bottom = 90.0
+offset_right = 120.0
+offset_bottom = 55.0
 text = "Atacar
 "
 
-[node name="BotonHabilidadPropia" type="Button" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1459177260]
+[node name="BotonHabilidad" type="Button" parent="Jugador/DespliegueJugador" unique_id=1459177260]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 95.0
-offset_right = 140.0
-offset_bottom = 135.0
-text = "Habilidad Prop
+offset_top = 60.0
+offset_right = 120.0
+offset_bottom = 110.0
+text = "Habilidad
 "
 
-[node name="BotonHabilidadEquipamiento" type="Button" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1439066822]
+[node name="FeedbackLabel" type="Label" parent="Jugador/DespliegueJugador" unique_id=1024759578]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 140.0
-offset_right = 140.0
-offset_bottom = 180.0
-text = "Habilidad Equip
-"
-
-[node name="FeedbackLabel" type="Label" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1024759578]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 185.0
-offset_right = 140.0
-offset_bottom = 235.0
-text = "Feedback "
+offset_top = 115.0
+offset_right = 120.0
+offset_bottom = 245.0
+text = "Feedback"
 label_settings = SubResource("LabelSettings_400sg")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 text_overrun_behavior = 1
+
+[node name="DespliegueEquipamiento" type="Panel" parent="Jugador/DespliegueJugador" unique_id=291050773]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 5.0
+offset_right = 295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_400sg")
+
+[node name="SlotEquipamiento" type="Panel" parent="Jugador/DespliegueJugador/DespliegueEquipamiento" unique_id=1321906415]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="DespliegueMonstruos" type="Panel" parent="Jugador/DespliegueJugador" unique_id=828595953]
+layout_mode = 0
+offset_left = 295.0
+offset_top = 5.0
+offset_right = 795.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aug50")
 
 [node name="SlotMonstruos1" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1514703785]
 layout_mode = 0
-offset_left = 145.0
+offset_left = 5.0
 offset_top = 5.0
-offset_right = 305.0
+offset_right = 165.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
 
 [node name="SlotMonstruos2" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=760143440]
 layout_mode = 0
-offset_left = 310.0
+offset_left = 170.0
 offset_top = 5.0
-offset_right = 470.0
+offset_right = 330.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 1
 
 [node name="SlotMonstruos3" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=873139263]
 layout_mode = 0
-offset_left = 475.0
+offset_left = 335.0
 offset_top = 5.0
-offset_right = 635.0
+offset_right = 495.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 2
 
 [node name="DespliegueHechizos" type="Panel" parent="Jugador/DespliegueJugador" unique_id=815090765]
 layout_mode = 0
-offset_left = 655.0
+offset_left = 795.0
 offset_top = 5.0
 offset_right = 1295.0
 offset_bottom = 245.0
-
-[node name="HechizosLabel" type="Label" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=1597535475]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 140.0
-offset_bottom = 45.0
-text = "HECHIZOS"
-label_settings = SubResource("LabelSettings_s0nni")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 1
-clip_text = true
-text_overrun_behavior = 1
-
-[node name="BotonHabilidadPropia" type="Button" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=545482554]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 50.0
-offset_right = 140.0
-offset_bottom = 90.0
-text = "Habilidad Prop
-"
-
-[node name="FeedbackLabel" type="Label" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=197856058]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 185.0
-offset_right = 140.0
-offset_bottom = 235.0
-text = "Feedback "
-label_settings = SubResource("LabelSettings_400sg")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 1
-clip_text = true
-text_overrun_behavior = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiw3p")
 
 [node name="SlotHechizos1" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=15908567]
 layout_mode = 0
-offset_left = 145.0
+offset_left = 5.0
 offset_top = 5.0
-offset_right = 305.0
+offset_right = 165.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-tipo = "hechizo"
 
 [node name="SlotHechizos2" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=2126829977]
 layout_mode = 0
-offset_left = 310.0
+offset_left = 170.0
 offset_top = 5.0
-offset_right = 470.0
+offset_right = 330.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 1
-tipo = "hechizo"
 
 [node name="SlotHechizos3" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=1431101646]
 layout_mode = 0
-offset_left = 475.0
+offset_left = 335.0
 offset_top = 5.0
-offset_right = 635.0
+offset_right = 495.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 2
-tipo = "hechizo"
 
 [node name="MuertosJugador" type="Panel" parent="Jugador" unique_id=272563872]
 offset_left = 10.0
@@ -532,6 +495,16 @@ icon = ExtResource("1_qbsmt")
 flat = true
 icon_alignment = 1
 expand_icon = true
+
+[node name="AcabarTurno" type="Button" parent="Jugador" unique_id=584842421]
+offset_left = 1220.0
+offset_top = 820.0
+offset_right = 1400.0
+offset_bottom = 980.0
+theme_override_font_sizes/font_size = 40
+text = "Acabar 
+Turno
+"
 
 [node name="Oponente" type="Node" parent="." unique_id=499788673]
 
@@ -726,108 +699,92 @@ offset_top = 280.0
 offset_right = 1610.0
 offset_bottom = 530.0
 
-[node name="DespliegueMonstruos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=216495764]
+[node name="LogLabel" type="Label" parent="Oponente/DespliegueOponente" unique_id=452321889]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
-offset_right = 645.0
+offset_right = 120.0
 offset_bottom = 245.0
-
-[node name="MonstruosLabel" type="Label" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=346264750]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 140.0
-offset_bottom = 45.0
-text = "MONSTRUOS"
-label_settings = SubResource("LabelSettings_s0nni")
+text = "Log Partida"
+label_settings = SubResource("LabelSettings_400sg")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 clip_text = true
 text_overrun_behavior = 1
 
-[node name="SlotMonstruos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=667408852]
+[node name="DespliegueEquipamiento" type="Panel" parent="Oponente/DespliegueOponente" unique_id=541726669]
 layout_mode = 0
-offset_left = 145.0
+offset_left = 125.0
 offset_top = 5.0
-offset_right = 305.0
-offset_bottom = 235.0
-script = ExtResource("4_aug50")
-es_enemigo = true
+offset_right = 295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_400sg")
 
-[node name="SlotMonstruos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=1374043514]
+[node name="SlotEquipamiento" type="Panel" parent="Oponente/DespliegueOponente/DespliegueEquipamiento" unique_id=1484379512]
 layout_mode = 0
-offset_left = 310.0
+offset_left = 5.0
 offset_top = 5.0
-offset_right = 470.0
+offset_right = 165.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 1
-es_enemigo = true
 
-[node name="SlotMonstruos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=262962359]
+[node name="DespliegueMonstruos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=1461943183]
 layout_mode = 0
-offset_left = 475.0
+offset_left = 295.0
 offset_top = 5.0
-offset_right = 635.0
-offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 2
-es_enemigo = true
+offset_right = 795.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aug50")
 
-[node name="DespliegueHechizos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=560147220]
+[node name="SlotMonstruos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=1147726023]
 layout_mode = 0
-offset_left = 655.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=445076456]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=430792572]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 5.0
+offset_right = 495.0
+offset_bottom = 235.0
+
+[node name="DespliegueHechizos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=573797759]
+layout_mode = 0
+offset_left = 795.0
 offset_top = 5.0
 offset_right = 1295.0
 offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiw3p")
 
-[node name="HechizosLabel" type="Label" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=837119126]
+[node name="SlotHechizos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=1411130500]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
-offset_right = 140.0
-offset_bottom = 45.0
-text = "HECHIZOS"
-label_settings = SubResource("LabelSettings_s0nni")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 1
-clip_text = true
-text_overrun_behavior = 1
-
-[node name="SlotHechizos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=758059242]
-layout_mode = 0
-offset_left = 145.0
-offset_top = 5.0
-offset_right = 305.0
+offset_right = 165.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-tipo = "hechizo"
-es_enemigo = true
 
-[node name="SlotHechizos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=1816692156]
+[node name="SlotHechizos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=770056972]
 layout_mode = 0
-offset_left = 310.0
+offset_left = 170.0
 offset_top = 5.0
-offset_right = 470.0
+offset_right = 330.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 1
-tipo = "hechizo"
-es_enemigo = true
 
-[node name="SlotHechizos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=1848974691]
+[node name="SlotHechizos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=246875939]
 layout_mode = 0
-offset_left = 475.0
+offset_left = 335.0
 offset_top = 5.0
-offset_right = 635.0
+offset_right = 495.0
 offset_bottom = 235.0
-script = ExtResource("4_aug50")
-indice = 2
-tipo = "hechizo"
-es_enemigo = true
 
 [node name="MuertosOponente" type="Panel" parent="Oponente" unique_id=1467971964]
 offset_left = 10.0
@@ -858,11 +815,11 @@ offset_bottom = 285.0
 scale = Vector2(0.826, 0.826)
 theme_override_constants/separation = 7
 
-[node name="(BORRAR)ObtenerCartasBBDD" type="Button" parent="." unique_id=1997028684]
+[node name="(DEBUG)ObtenerCartasBBDD" type="Button" parent="." unique_id=1997028684]
 layout_mode = 0
-offset_left = 1275.0
-offset_top = 820.0
-offset_right = 1400.0
-offset_bottom = 960.0
+offset_left = 565.0
+offset_top = 145.0
+offset_right = 690.0
+offset_bottom = 201.0
 text = "Obtener cartas"
 script = ExtResource("1_ibkli")

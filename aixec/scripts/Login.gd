@@ -66,6 +66,11 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	# Guardamos el token en Autoload para usarlo en game.tscn
 	ApiServicio.token = datos["token"]
 	print("✅ Login correcto, cambiando de escena...")
+	# ✅ Ahora — convierte IDs a Dictionaries primero
+	var ids := [1,2,3,4,5,11,12,13,14,15,26,27,28,29,30,31,35,36,37,38]
+	var baraja_j := CardLoader.construir_baraja(ids)
+	var baraja_o := CardLoader.construir_baraja(ids)
+	GameManager.iniciar_partida(baraja_j, baraja_o)
 
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
