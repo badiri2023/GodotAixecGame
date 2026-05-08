@@ -70,7 +70,10 @@ var propietario: String = ""
 var mostrar_reverso: bool = false:
 	set(valor):
 		mostrar_reverso = valor
-		_actualizar_visibilidad_reverso()
+		if is_node_ready():
+			_actualizar_visibilidad_reverso()
+		else:
+			ready.connect(_actualizar_visibilidad_reverso, CONNECT_ONE_SHOT)
 
 
 # ═════════════════════════════════════════════

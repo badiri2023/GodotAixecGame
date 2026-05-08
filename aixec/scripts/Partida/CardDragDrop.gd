@@ -188,6 +188,10 @@ func _place_card_in_slot(carta: Control, slot: Panel) -> void:
 	slot.add_child(carta)
 	carta.layout_mode = 1
 	carta.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Marca la carta como desplegada para que GameManager pueda encontrarla
+	# al aplicar buffs de equipamiento (excluye cartas en mano)
+	if carta is Card and carta.tipo != Card.TIPO_EQUIPAMIENTO:
+		carta.add_to_group("desplegadas")
 	print("[CardDragDrop] '%s' colocada en '%s'" % [carta.name, slot.name])
 
 

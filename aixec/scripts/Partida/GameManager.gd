@@ -41,8 +41,8 @@ const TIPO_EQUIPAMIENTO: int = 3
 # ═════════════════════════════════════════════
 var partida_activa:      bool  = false
 var tiempo_transcurrido: float = 0.0
-var ids_baraja_jugador:  Array = [1,2,3,4,5,11,12,13,14,15,26,27,28,29,30,31,35,36,37,38]
-var ids_baraja_oponente: Array = [1,2,3,4,5,11,12,13,14,15,26,27,28,29,30,31,35,36,37,38]
+var ids_baraja_jugador:  Array = []
+var ids_baraja_oponente: Array = []
 
 
 # ═════════════════════════════════════════════
@@ -236,8 +236,10 @@ func colocar_equipamiento(quien: String, equip_dict: Dictionary) -> bool:
 	if equip_dict.get("tipo", -1) != TIPO_EQUIPAMIENTO:
 		return false
 
-	if not p["mano"].has(equip_dict):
+	var equip_en_mano: Dictionary = _buscar_en_mano_por_id(p["mano"], equip_dict)
+	if equip_en_mano.is_empty():
 		return false
+	equip_dict = equip_en_mano
 
 	var coste: int = equip_dict.get("mana", 0)
 	if not gastar_mana(quien, coste):
@@ -321,17 +323,13 @@ func _buscar_card_por_id_recursivo(nodo: Node, card_id: int, propietario: String
 
 ## Devuelve los nodos Card monstruo desplegados de `quien`.
 func _get_nodos_monstruos(quien: String) -> Array:
+	# Solo devuelve cartas que estén en el grupo "desplegadas", es decir,
+	# colocadas en un slot del tablero. Las cartas en mano NO están en este grupo.
 	var resultado: Array = []
-	var raiz: Node = get_tree().get_root()
-	_buscar_monstruos_recursivo(raiz, quien, resultado)
+	for nodo in get_tree().get_nodes_in_group("desplegadas"):
+		if nodo is Card and nodo.propietario == quien and nodo.tipo == Card.TIPO_MONSTRUO:
+			resultado.append(nodo)
 	return resultado
-
-
-func _buscar_monstruos_recursivo(nodo: Node, propietario: String, resultado: Array) -> void:
-	if nodo is Card and nodo.propietario == propietario and nodo.tipo == Card.TIPO_MONSTRUO:
-		resultado.append(nodo)
-	for hijo in nodo.get_children():
-		_buscar_monstruos_recursivo(hijo, propietario, resultado)
 
 
 ## Helper para Card.gd: devuelve el bonus de vida del equipamiento activo.
@@ -364,11 +362,15 @@ func desplegar_carta(quien: String, carta: Dictionary, carta_nodo: Card = null) 
 	var p := _get_jugador(quien)
 	if p.is_empty(): return false
 
-	if not p["mano"].has(carta):
-		print("[GameManager] Carta no está en la mano de %s" % quien)
+	# Busca la carta en la mano por ID (los dicts pueden tener claves distintas
+	# según vengan del JSON original o de get_datos_actuales())
+	var carta_en_mano: Dictionary = _buscar_en_mano_por_id(p["mano"], carta)
+	if carta_en_mano.is_empty():
+		print("[GameManager] Carta id=%d no está en la mano de %s" % [carta.get("id", carta.get("id",-1)), quien])
 		return false
 
-	var tipo: int = carta.get("tipo", -1)
+	# A partir de aquí usamos carta_en_mano (claves del JSON) para todo
+	var tipo: int = carta_en_mano.get("type", carta_en_mano.get("tipo", -1))
 	var destino: String = ""
 	match tipo:
 		TIPO_MONSTRUO:     destino = "monstruos"
@@ -386,21 +388,21 @@ func desplegar_carta(quien: String, carta: Dictionary, carta_nodo: Card = null) 
 		print("[GameManager] Zona '%s' de %s llena" % [destino, quien])
 		return false
 
-	var coste: int = carta.get("mana", 0)
+	var coste: int = carta_en_mano.get("mana", 0)
 	if not gastar_mana(quien, coste):
 		print("[GameManager] %s no tiene mana suficiente (%d)" % [quien, coste])
 		return false
 
-	p["mano"].erase(carta)
-	lista_destino.append(carta)
+	p["mano"].erase(carta_en_mano)
+	lista_destino.append(carta_en_mano)
 
 	# Si es monstruo y hay equipamiento activo, aplica el buff al nodo
 	if tipo == TIPO_MONSTRUO and carta_nodo != null:
 		_aplicar_buff_a_monstruo_si_procede(quien, carta_nodo)
 
-	emit_signal("carta_desplegada", quien, carta, destino)
+	emit_signal("carta_desplegada", quien, carta_en_mano, destino)
 	print("[GameManager] %s despliega '%s' en %s (coste %d)" % [
-		quien, carta.get("nombre","???"), destino, coste
+		quien, carta_en_mano.get("name", carta_en_mano.get("nombre","???")), destino, coste
 	])
 	return true
 
@@ -414,8 +416,14 @@ func enviar_al_cementerio(quien: String, carta: Dictionary, origen: String) -> v
 	if not p[origen].has(carta): return
 	p[origen].erase(carta)
 	p["cementerio"].append(carta)
+	# Quita la carta del grupo "desplegadas" si el nodo sigue en escena
+	var card_id: int = carta.get("id", -1)
+	for nodo in get_tree().get_nodes_in_group("desplegadas"):
+		if nodo is Card and nodo.id == card_id and nodo.propietario == quien:
+			nodo.remove_from_group("desplegadas")
+			break
 	emit_signal("carta_enviada_al_cementerio", quien, carta)
-	print("[GameManager] '%s' → cementerio" % carta.get("nombre","???"))
+	print("[GameManager] '%s' → cementerio" % carta.get("name", carta.get("nombre","???")))
 	_comprobar_derrota_sin_cartas(quien)
 
 
@@ -476,6 +484,19 @@ func tiene_equipamiento(quien: String) -> bool:
 # ═════════════════════════════════════════════
 #  INTERNO
 # ═════════════════════════════════════════════
+## Busca un Dictionary en la lista mano comparando por "id".
+## Necesario porque la carta puede venir de get_datos_actuales() (claves ES)
+## o directamente del JSON (claves EN), pero el "id" siempre existe en ambos.
+func _buscar_en_mano_por_id(mano: Array, carta: Dictionary) -> Dictionary:
+	var card_id: int = carta.get("id", -1)
+	if card_id == -1:
+		return {}
+	for c in mano:
+		if c.get("id", -2) == card_id:
+			return c
+	return {}
+
+
 func _get_jugador(quien: String) -> Dictionary:
 	match quien:
 		"jugador":  return jugador

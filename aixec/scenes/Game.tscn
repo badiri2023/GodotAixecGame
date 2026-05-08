@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bmbi2xwiu1jf6"]
 
 [ext_resource type="Script" uid="uid://dhwvavyl2l072" path="res://scripts/Partida/CardDragDrop.gd" id="1_aug50"]
-[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/leovinus-confirmation-803715.jpg" id="1_cpr0p"]
+[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/None.jpg" id="1_cpr0p"]
 [ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/getCardsJson.gd" id="1_ibkli"]
 [ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/ui/options_icon.png" id="1_qbsmt"]
 [ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
@@ -78,8 +78,8 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_aug50")
-metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0]
-metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0]
+metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0, 1410.0, 1420.0, 1670.0, 1660.0, 510.0, 500.0, 250.0, 260.0]
+metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0, 1070.0, 1060.0, 260.0, 250.0]
 
 [node name="GameUI" type="Node" parent="." unique_id=1677084643]
 script = ExtResource("2_aug50")
@@ -171,7 +171,7 @@ offset_bottom = 1070.0
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
-offset_right = 200.0
+offset_right = 250.0
 offset_bottom = 80.0
 text = "Name"
 label_settings = SubResource("LabelSettings_cpr0p")
@@ -185,7 +185,7 @@ text_overrun_behavior = 1
 layout_mode = 0
 offset_left = 10.0
 offset_top = 105.0
-offset_right = 200.0
+offset_right = 250.0
 offset_bottom = 135.0
 text = "Vida: 0/0"
 label_settings = SubResource("LabelSettings_qbsmt")
@@ -198,7 +198,7 @@ clip_text = true
 layout_mode = 0
 offset_left = 10.0
 offset_top = 135.0
-offset_right = 200.0
+offset_right = 250.0
 offset_bottom = 160.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_cpr0p")
 value = 100.0
@@ -208,7 +208,7 @@ show_percentage = false
 layout_mode = 0
 offset_left = 10.0
 offset_top = 185.0
-offset_right = 200.0
+offset_right = 250.0
 offset_bottom = 215.0
 text = "Mana: 0/0"
 label_settings = SubResource("LabelSettings_qbsmt")
@@ -221,7 +221,7 @@ clip_text = true
 layout_mode = 0
 offset_left = 10.0
 offset_top = 215.0
-offset_right = 200.0
+offset_right = 250.0
 offset_bottom = 240.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_78awf")
 value = 100.0
@@ -516,7 +516,7 @@ offset_bottom = 260.0
 
 [node name="NombreLabel" type="Label" parent="Oponente/InfoOponente" unique_id=1992547245]
 layout_mode = 0
-offset_left = 300.0
+offset_left = 250.0
 offset_top = 10.0
 offset_right = 490.0
 offset_bottom = 80.0
@@ -530,7 +530,7 @@ text_overrun_behavior = 1
 
 [node name="VidaLabel" type="Label" parent="Oponente/InfoOponente" unique_id=1738053729]
 layout_mode = 0
-offset_left = 300.0
+offset_left = 250.0
 offset_top = 105.0
 offset_right = 490.0
 offset_bottom = 135.0
@@ -543,7 +543,7 @@ clip_text = true
 
 [node name="VidaBar" type="ProgressBar" parent="Oponente/InfoOponente" unique_id=1120744141]
 layout_mode = 0
-offset_left = 300.0
+offset_left = 250.0
 offset_top = 135.0
 offset_right = 490.0
 offset_bottom = 160.0
@@ -553,7 +553,7 @@ show_percentage = false
 
 [node name="ManaLabel" type="Label" parent="Oponente/InfoOponente" unique_id=870900218]
 layout_mode = 0
-offset_left = 300.0
+offset_left = 250.0
 offset_top = 185.0
 offset_right = 490.0
 offset_bottom = 215.0
@@ -566,7 +566,7 @@ clip_text = true
 
 [node name="ManaBar" type="ProgressBar" parent="Oponente/InfoOponente" unique_id=194488365]
 layout_mode = 0
-offset_left = 300.0
+offset_left = 250.0
 offset_top = 215.0
 offset_right = 490.0
 offset_bottom = 240.0

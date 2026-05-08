@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvd1fk7tvyaau"
-path="res://.godot/imported/leovinus-confirmation-803715.jpg-435b96d3b4dc89e548167ad621610f63.ctex"
+path="res://.godot/imported/None.jpg-07274d5ac568e296768620615d99e0d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/leovinus-confirmation-803715.jpg"
-dest_files=["res://.godot/imported/leovinus-confirmation-803715.jpg-435b96d3b4dc89e548167ad621610f63.ctex"]
+source_file="res://assets/cards/None.jpg"
+dest_files=["res://.godot/imported/None.jpg-07274d5ac568e296768620615d99e0d7.ctex"]
 
 [params]
 

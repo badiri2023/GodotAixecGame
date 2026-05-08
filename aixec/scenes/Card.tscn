@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bex61n8qilskf"]
 
 [ext_resource type="Script" uid="uid://bfolpjr6p3kb4" path="res://scripts/Partida/Card.gd" id="1_4dx8l"]
-[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/leovinus-confirmation-803715.jpg" id="1_yiag5"]
+[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/None.jpg" id="1_yiag5"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="3_4dx8l"]
+[ext_resource type="StyleBox" uid="uid://v1enxyhoauny" path="res://assets/cards/CardBox.tres" id="3_qf083"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yiag5"]
 corner_radius_top_left = 3
@@ -15,24 +16,54 @@ corner_detail = 5
 line_spacing = -3.0
 font_size = 9
 
+[sub_resource type="LabelSettings" id="LabelSettings_qbjcq"]
+line_spacing = -3.0
+font_size = 9
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qf083"]
+bg_color = Color(0.78431374, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
 [sub_resource type="LabelSettings" id="LabelSettings_tgmmg"]
 line_spacing = -3.0
 font_size = 12
-font_color = Color(0.78431374, 0, 0, 1)
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40ytf"]
+bg_color = Color(0, 0, 0.78431374, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_4dx8l"]
 line_spacing = -3.0
 font_size = 12
-font_color = Color(0, 0, 0.78431374, 1)
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5273u"]
+bg_color = Color(0, 0.78431374, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_40ytf"]
 line_spacing = -3.0
 font_size = 12
-font_color = Color(0, 0.78431374, 0, 1)
+font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_5273u"]
 line_spacing = -3.0
 font_size = 9
+font_color = Color(0, 0, 0, 1)
 
 [node name="CartaControl" type="Control" unique_id=36295436]
 layout_mode = 3
@@ -105,6 +136,7 @@ offset_left = 5.0
 offset_top = 100.0
 offset_right = 155.0
 offset_bottom = 145.0
+theme_override_styles/panel = ExtResource("3_qf083")
 
 [node name="HabilidadLabel" type="Label" parent="Carta/HabilidadPanel" unique_id=1543692905]
 layout_mode = 0
@@ -112,7 +144,7 @@ offset_left = 3.0
 offset_right = 147.0
 offset_bottom = 45.0
 text = "Habilidad"
-label_settings = SubResource("LabelSettings_qf083")
+label_settings = SubResource("LabelSettings_qbjcq")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
@@ -124,6 +156,7 @@ offset_left = 5.0
 offset_top = 150.0
 offset_right = 155.0
 offset_bottom = 175.0
+theme_override_styles/panel = ExtResource("3_qf083")
 
 [node name="AtkPanel" type="Panel" parent="Carta/StatsPanel" unique_id=1490857292]
 layout_mode = 0
@@ -131,6 +164,7 @@ offset_left = 4.0
 offset_top = 2.0
 offset_right = 48.0
 offset_bottom = 23.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qf083")
 
 [node name="AtkLabel" type="Label" parent="Carta/StatsPanel/AtkPanel" unique_id=432197579]
 layout_mode = 0
@@ -150,6 +184,7 @@ offset_left = 53.0
 offset_top = 2.0
 offset_right = 97.0
 offset_bottom = 23.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_40ytf")
 
 [node name="ManaLabel" type="Label" parent="Carta/StatsPanel/ManaPanel" unique_id=545488109]
 layout_mode = 0
@@ -169,6 +204,7 @@ offset_left = 102.0
 offset_top = 2.0
 offset_right = 146.0
 offset_bottom = 23.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5273u")
 
 [node name="VidaLabel" type="Label" parent="Carta/StatsPanel/VidaPanel" unique_id=1748355047]
 layout_mode = 0
@@ -188,6 +224,7 @@ offset_left = 5.0
 offset_top = 180.0
 offset_right = 155.0
 offset_bottom = 225.0
+theme_override_styles/panel = ExtResource("3_qf083")
 
 [node name="DescripcionLabel" type="Label" parent="Carta/DescripcionPanel" unique_id=954632985]
 layout_mode = 0

@@ -384,25 +384,25 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 	var org: HBoxContainer = jugador_disponibles_org if quien == "jugador" \
 							 else oponente_disponibles_org
 
-	# Añadir al árbol ANTES de cargar datos para que _ready() inicialice @onready
+	# add_child PRIMERO para que _ready() inicialice los @onready antes de cargar datos
 	org.add_child(carta_nodo)
 	carta_nodo.propietario = quien
 
-	# Los datos del GameManager usan claves del JSON original directamente
-	# (CardLoader.construir_baraja los copia tal cual desde cards.json)
+	# Carga los datos (usa claves del JSON: "name", "type", "attack"...)
 	carta_nodo.cargar_desde_json(datos)
 
-	# Cartas del oponente en mano: boca abajo
+	# Cartas del oponente: mostrar_reverso DESPUÉS de add_child (nodos ya inicializados)
 	if quien == "oponente":
 		carta_nodo.mostrar_reverso = true
 
 	# Conecta señal de muerte
-	carta_nodo.carta_muerta.connect(_on_carta_nodo_muerta)
+	if not carta_nodo.carta_muerta.is_connected(_on_carta_nodo_muerta):
+		carta_nodo.carta_muerta.connect(_on_carta_nodo_muerta)
 
-	# Conecta drag & drop: el CardDragDrop expone connect_card() como método público
+	# Conecta drag & drop solo para cartas del jugador
 	if quien == "jugador":
 		var drag = get_parent()
-		if drag.has_method("connect_card"):
+		if drag and drag.has_method("connect_card"):
 			drag.connect_card(carta_nodo)
 
 
