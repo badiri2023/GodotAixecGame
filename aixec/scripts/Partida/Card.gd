@@ -91,6 +91,11 @@ var mostrar_reverso: bool = false:
 @onready var card_reverse:      Control     = $Carta/CardReverse
 @onready var atk_panel:         Panel       = $Carta/StatsPanel/AtkPanel
 @onready var vida_panel:        Panel       = $Carta/StatsPanel/VidaPanel
+# Paneles de contenido que se ocultan al mostrar el reverso
+@onready var img_panel:         Panel       = $Carta/ImgPanel
+@onready var habilidad_panel:   Panel       = $Carta/HabilidadPanel
+@onready var stats_panel:       Panel       = $Carta/StatsPanel
+@onready var descripcion_panel: Panel       = $Carta/DescripcionPanel
 
 
 # ═════════════════════════════════════════════
@@ -202,9 +207,13 @@ func _actualizar_stats_visibilidad() -> void:
 func _actualizar_visibilidad_reverso() -> void:
 	if not is_node_ready():
 		return
-	card_reverse.visible = mostrar_reverso
-	imagen_carta.visible = not mostrar_reverso
-	panel_carta.visible  = not mostrar_reverso
+	# $Carta (panel_carta) SIEMPRE visible: es el padre de card_reverse.
+	# Solo ocultamos los paneles de contenido internos.
+	card_reverse.visible      = mostrar_reverso
+	img_panel.visible         = not mostrar_reverso
+	habilidad_panel.visible   = not mostrar_reverso
+	stats_panel.visible       = not mostrar_reverso
+	descripcion_panel.visible = not mostrar_reverso
 
 
 func _cargar_imagen() -> void:

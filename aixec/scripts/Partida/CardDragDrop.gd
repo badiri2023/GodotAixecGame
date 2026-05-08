@@ -189,9 +189,12 @@ func _place_card_in_slot(carta: Control, slot: Panel) -> void:
 	carta.layout_mode = 1
 	carta.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# Marca la carta como desplegada para que GameManager pueda encontrarla
-	# al aplicar buffs de equipamiento (excluye cartas en mano)
 	if carta is Card and carta.tipo != Card.TIPO_EQUIPAMIENTO:
 		carta.add_to_group("desplegadas")
+	# Desactiva el input para que la carta en slot no sea arrastrable
+	var panel: Panel = carta.get_node_or_null("Carta")
+	if panel:
+		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	print("[CardDragDrop] '%s' colocada en '%s'" % [carta.name, slot.name])
 
 

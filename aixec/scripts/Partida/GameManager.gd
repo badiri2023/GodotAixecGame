@@ -40,6 +40,8 @@ const TIPO_EQUIPAMIENTO: int = 3
 #  ESTADO DE PARTIDA
 # ═════════════════════════════════════════════
 var partida_activa:      bool  = false
+## false = singleplayer (bot), true = multijugador online
+var es_multijugador:         bool  = false
 var tiempo_transcurrido: float = 0.0
 var ids_baraja_jugador:  Array = []
 var ids_baraja_oponente: Array = []
