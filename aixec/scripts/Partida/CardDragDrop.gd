@@ -157,11 +157,6 @@ func _intentar_despliegue(mouse_pos: Vector2) -> void:
 
 	_place_card_in_slot(_drag_card, slot_objetivo)
 
-	# Notifica a AbilityManager del despliegue para habilidades pasivas
-	AbilityManager.notificar_evento(AbilityManager.EVENTO_CARTA_DESPLEGADA, {
-		"carta":       _drag_card,
-		"propietario": "jugador"
-	})
 
 
 func _get_slot_vacio_bajo_mouse(mouse_pos: Vector2, tipo: int) -> Panel:
@@ -226,8 +221,6 @@ func _intentar_colocar_equipamiento(mouse_pos: Vector2) -> void:
 	# Mueve el nodo visualmente al slot
 	_place_card_in_slot(_drag_card, slot_equipamiento)
 
-	# Notifica a AbilityManager por si el equipamiento tiene habilidad al equipar (hab 25)
-	AbilityManager.notificar_equipamiento(_drag_card, _drag_card, "jugador")
 
 	print("[CardDragDrop] Equipamiento '%s' colocado en slot global" % _drag_card.nombre)
 

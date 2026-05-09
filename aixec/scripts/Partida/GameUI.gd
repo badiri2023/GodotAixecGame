@@ -222,10 +222,7 @@ func _on_turno_cambiado(turno: String) -> void:
 	_afk_activo         = false
 	tiempo_restante_panel.visible = false
 	boton_reportar.visible        = false
-	# Ticks de AbilityManager al cambiar de turno
-	AbilityManager.tick_efectos_turno()
-	if turno == "jugador":
-		AbilityManager.tick_paciencia("jugador")
+
 
 
 func _on_vida_cambiada(quien: String, nueva_vida: int) -> void:
@@ -407,10 +404,6 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 
 
 func _on_carta_nodo_muerta(carta: Card) -> void:
-	AbilityManager.notificar_evento(AbilityManager.EVENTO_CARTA_MUERTA, {
-		"carta":       carta,
-		"propietario": carta.propietario
-	})
 	_añadir_log("%s murió: '%s'" % [carta.propietario.capitalize(), carta.nombre])
 
 

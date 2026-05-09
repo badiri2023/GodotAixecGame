@@ -235,7 +235,8 @@ func colocar_equipamiento(quien: String, equip_dict: Dictionary) -> bool:
 		print("[GameManager] %s ya tiene equipamiento en el slot" % quien)
 		return false
 
-	if equip_dict.get("tipo", -1) != TIPO_EQUIPAMIENTO:
+	var equip_tipo: int = int(equip_dict.get("type", equip_dict.get("tipo", -1)))
+	if equip_tipo != TIPO_EQUIPAMIENTO:
 		return false
 
 	var equip_en_mano: Dictionary = _buscar_en_mano_por_id(p["mano"], equip_dict)
@@ -243,7 +244,7 @@ func colocar_equipamiento(quien: String, equip_dict: Dictionary) -> bool:
 		return false
 	equip_dict = equip_en_mano
 
-	var coste: int = equip_dict.get("mana", 0)
+	var coste: int = int(equip_dict.get("mana", 0))
 	if not gastar_mana(quien, coste):
 		print("[GameManager] Mana insuficiente para equipamiento (necesita %d)" % coste)
 		return false
@@ -371,8 +372,8 @@ func desplegar_carta(quien: String, carta: Dictionary, carta_nodo: Card = null) 
 		print("[GameManager] Carta id=%d no está en la mano de %s" % [carta.get("id", carta.get("id",-1)), quien])
 		return false
 
-	# A partir de aquí usamos carta_en_mano (claves del JSON) para todo
-	var tipo: int = carta_en_mano.get("type", carta_en_mano.get("tipo", -1))
+	# tipo puede venir como "type" (JSON, float) o "tipo" (get_datos_actuales, int)
+	var tipo: int = int(carta_en_mano.get("type", carta_en_mano.get("tipo", -1)))
 	var destino: String = ""
 	match tipo:
 		TIPO_MONSTRUO:     destino = "monstruos"
@@ -390,7 +391,7 @@ func desplegar_carta(quien: String, carta: Dictionary, carta_nodo: Card = null) 
 		print("[GameManager] Zona '%s' de %s llena" % [destino, quien])
 		return false
 
-	var coste: int = carta_en_mano.get("mana", 0)
+	var coste: int = int(carta_en_mano.get("mana", 0))
 	if not gastar_mana(quien, coste):
 		print("[GameManager] %s no tiene mana suficiente (%d)" % [quien, coste])
 		return false

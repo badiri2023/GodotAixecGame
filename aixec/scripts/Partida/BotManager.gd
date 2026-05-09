@@ -70,8 +70,8 @@ func _intentar_colocar_carta() -> bool:
 	# y que haya hueco en su zona correspondiente
 	var candidatas: Array = []
 	for carta in p["mano"]:
-		var tipo:  int = carta.get("type",  carta.get("tipo",  -1))
-		var coste: int = carta.get("mana",  0)
+		var tipo:  int = int(carta.get("type",  carta.get("tipo",  -1)))
+		var coste: int = int(carta.get("mana",  0))
 
 		if coste > mana_disponible:
 			continue
@@ -95,17 +95,12 @@ func _intentar_colocar_carta() -> bool:
 	if candidatas.is_empty():
 		return false
 
-	# Selecciona la mejor carta según la lógica de prioridad
 	var elegida: Dictionary = _seleccionar_mejor_carta(candidatas)
 	if elegida.is_empty():
 		return false
 
-	# Despliega la carta en GameManager
 	var ok: bool = GameManager.desplegar_carta("oponente", elegida)
 	if ok:
-		# Instancia el nodo visualmente en la mano del oponente para que
-		# GameUI pueda moverlo al slot correspondiente.
-		# La UI observa la señal carta_desplegada de GameManager y actualiza el tablero.
 		_instanciar_visual_si_necesario(elegida)
 		print("[BotManager] Bot desplegó: '%s'" % elegida.get("name", elegida.get("nombre","???")))
 
@@ -123,55 +118,54 @@ func _intentar_colocar_carta() -> bool:
 ## 3. Empate en puntuación: Legendario(3) > Raro(2) > Común(1)
 ## 4. Empate en rareza:   aleatorio
 func _seleccionar_mejor_carta(candidatas: Array) -> Dictionary:
-	# Ordena por tipo primero (monstruo antes que equipamiento antes que hechizo)
+	# Criterios en orden:
+	# 1. Puntuación más alta: (ataque + vida + 1) / mana
+	# 2. Empate → mayor rareza (Legendario > Raro > Común)
+	# 3. Empate → prioridad de tipo (Monstruo > Equipamiento > Hechizo)
+	# 4. Empate total → aleatorio
 	var orden_tipo: Dictionary = {
 		GameManager.TIPO_MONSTRUO:     0,
 		GameManager.TIPO_EQUIPAMIENTO: 1,
 		GameManager.TIPO_HECHIZO:      2,
 	}
 
-	# Calcula puntuación para cada carta
 	var puntuadas: Array = []
 	for carta in candidatas:
-		var tipo:   int   = carta.get("type",    carta.get("tipo",   -1))
-		var coste:  int   = max(1, carta.get("mana",    0))
-		var atk:    int   = carta.get("attack",  carta.get("ataque_base", 0))
-		var vida:   int   = carta.get("defense", carta.get("defensa_base", 0))
-		var rareza: int   = carta.get("rarity",  carta.get("rareza", 1))
-
-		# Hechizos no tienen atk/vida, se suma 1 para que no den 0
+		# int() necesario: el JSON devuelve floats (1.0, 2.0...)
+		var tipo:   int   = int(carta.get("type",    carta.get("tipo",   -1)))
+		var coste:  int   = max(1, int(carta.get("mana",    0)))
+		var atk:    int   = int(carta.get("attack",  carta.get("ataque_base",  0)))
+		var vida:   int   = int(carta.get("defense", carta.get("defensa_base", 0)))
+		var rareza: int   = int(carta.get("rarity",  carta.get("rareza", 1)))
 		var puntuacion: float = float(atk + vida + 1) / float(coste)
 
 		puntuadas.append({
 			"carta":      carta,
-			"tipo_orden": orden_tipo.get(tipo, 99),
 			"puntuacion": puntuacion,
 			"rareza":     rareza,
+			"tipo_orden": orden_tipo.get(tipo, 99),
 		})
 
-	# Ordena: primero por tipo, luego por puntuación desc, luego por rareza desc
+	# Orden: puntuación desc → rareza desc → tipo asc
 	puntuadas.sort_custom(func(a, b):
-		if a["tipo_orden"] != b["tipo_orden"]:
-			return a["tipo_orden"] < b["tipo_orden"]
 		if a["puntuacion"] != b["puntuacion"]:
 			return a["puntuacion"] > b["puntuacion"]
 		if a["rareza"] != b["rareza"]:
 			return a["rareza"] > b["rareza"]
-		return false   # misma prioridad → el sort es estable, se elegirá aleatoriamente
+		if a["tipo_orden"] != b["tipo_orden"]:
+			return a["tipo_orden"] < b["tipo_orden"]
+		return false
 	)
 
-	# Encuentra cuántas cartas empatan completamente en el primer puesto
 	var mejor: Dictionary = puntuadas[0]
-	var empatadas: Array  = []
-	for p in puntuadas:
-		if p["tipo_orden"] == mejor["tipo_orden"] \
-		and p["puntuacion"] == mejor["puntuacion"] \
-		and p["rareza"]     == mejor["rareza"]:
-			empatadas.append(p)
+	var empatadas: Array = []
+	for entrada in puntuadas:
+		if entrada["puntuacion"] == mejor["puntuacion"] \
+		and entrada["rareza"]     == mejor["rareza"] \
+		and entrada["tipo_orden"] == mejor["tipo_orden"]:
+			empatadas.append(entrada)
 
-	# Si hay empate total, elige una al azar
-	var elegida_entry: Dictionary = empatadas[randi() % empatadas.size()]
-	return elegida_entry["carta"]
+	return empatadas[randi() % empatadas.size()]["carta"]
 
 
 # ═════════════════════════════════════════════

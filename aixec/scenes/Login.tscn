@@ -29,11 +29,13 @@ vertical_alignment = 1
 
 [node name="EmailInput" type="LineEdit" parent="VBoxContainer" unique_id=790262911]
 layout_mode = 2
+text = "mamadu3@gmail.com"
 placeholder_text = "Correo Electronico"
 alignment = 1
 
 [node name="PasswordInput" type="LineEdit" parent="VBoxContainer" unique_id=1366873759]
 layout_mode = 2
+text = "mamadu123456"
 placeholder_text = "Contraseña"
 alignment = 1
 secret = true
