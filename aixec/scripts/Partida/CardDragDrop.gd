@@ -193,24 +193,12 @@ func _place_card_in_slot(carta: Control, slot: Panel) -> void:
 		var game_ui: Node = _get_game_ui()
 		if game_ui and game_ui.has_method("conectar_carta_muerta"):
 			game_ui.conectar_carta_muerta(carta)
-	# El panel pasa a STOP para recibir clicks de selección (ya no arrastra)
+	# Desactiva drag: el panel pasa a IGNORE para no interferir con el input global
 	var panel: Panel = carta.get_node_or_null("Carta")
 	if panel:
-		panel.mouse_filter = Control.MOUSE_FILTER_STOP
-		# Conecta el click al sistema de selección de GameUI
-		if carta is Card and not panel.gui_input.is_connected(_on_carta_slot_click.bind(carta)):
-			panel.gui_input.connect(_on_carta_slot_click.bind(carta))
+		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	print("[CardDragDrop] '%s' colocada en '%s'" % [carta.name, slot.name])
 
-
-## Gestiona el click sobre una carta ya desplegada en un slot.
-func _on_carta_slot_click(event: InputEvent, carta: Card) -> void:
-	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-		return
-	if carta.propietario == "jugador":
-		SelectionManager.seleccionar_carta_propia(carta)
-	else:
-		SelectionManager.seleccionar_carta_enemiga(carta)
 
 
 # ─────────────────────────────────────────────

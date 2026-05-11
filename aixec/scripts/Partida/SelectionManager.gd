@@ -38,6 +38,36 @@ var _estilo_enemiga:      StyleBoxFlat = null   # borde rojo
 func _ready() -> void:
 	_inicializar_estilos()
 	GameManager.turno_cambiado.connect(_on_turno_cambiado)
+	set_process_input(true)
+
+
+func _input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	if not (event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+		return
+	if not GameManager.partida_activa or not GameManager.es_mi_turno("jugador"):
+		return
+
+	var mouse_pos: Vector2 = event.global_position
+
+	# Busca si hay una carta bajo el cursor en el grupo "desplegadas"
+	for carta in get_tree().get_nodes_in_group("desplegadas"):
+		if not carta is Card:
+			continue
+		# Comprueba si el cursor está dentro del rect global de la carta
+		var rect := Rect2(carta.global_position, carta.size)
+		if not rect.has_point(mouse_pos):
+			continue
+		# Carta encontrada bajo el cursor
+		if carta.propietario == "jugador":
+			if not GameManager.solo_despliegue:
+				seleccionar_carta_propia(carta)
+		else:
+			if not GameManager.solo_despliegue:
+				seleccionar_carta_enemiga(carta)
+		get_viewport().set_input_as_handled()
+		return
 
 
 func _inicializar_estilos() -> void:

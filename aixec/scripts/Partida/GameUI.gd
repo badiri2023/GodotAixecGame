@@ -254,8 +254,24 @@ func _on_carta_desplegada(quien: String, carta: Dictionary, destino: String) -> 
 
 func _on_carta_al_cementerio(quien: String, carta: Dictionary) -> void:
 	_actualizar_baraja_ui(quien)
-	_añadir_log("%s → cementerio: '%s'" % [quien.capitalize(), carta.get("nombre","???")])
-	_instanciar_carta_en_cementerio(quien, carta)
+	_añadir_log("%s → cementerio: '%s'" % [quien.capitalize(), carta.get("name", carta.get("nombre","???"))])
+	# No instanciamos carta nueva aquí: si el nodo Card ya existe en escena
+	# (caso de muerte en combate), _on_carta_nodo_muerta ya lo movió visualmente.
+	# Solo instanciamos si el nodo NO está en escena (descarte desde GameManager sin nodo).
+	var card_id: int = int(carta.get("id", -1))
+	var nodo_existe: bool = false
+	for nodo in get_tree().get_nodes_in_group("desplegadas"):
+		if nodo is Card and nodo.id == card_id and nodo.propietario == quien:
+			nodo_existe = true
+			break
+	# Busca también en los cementerios por si ya fue movido
+	var cementerio: HBoxContainer = jugador_cementerio if quien == "jugador" else oponente_cementerio
+	for nodo in cementerio.get_children():
+		if nodo is Card and nodo.id == card_id:
+			nodo_existe = true
+			break
+	if not nodo_existe:
+		_instanciar_carta_en_cementerio(quien, carta)
 
 
 func _on_equipamiento_colocado(quien: String, equip: Dictionary) -> void:
@@ -420,10 +436,16 @@ func _on_carta_nodo_muerta(carta: Card) -> void:
 	if padre_actual != null:
 		padre_actual.remove_child(carta)
 	cementerio.add_child(carta)
-	carta.layout_mode = 0   # vuelve a tamaño libre
-	carta.custom_minimum_size = Vector2(80, 110)
-	carta.mostrar_reverso = false
-	carta.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Resetea el layout para que el HBoxContainer lo gestione como los demás hijos
+	carta.layout_mode          = 0
+	carta.anchor_left          = 0.0
+	carta.anchor_top           = 0.0
+	carta.anchor_right         = 0.0
+	carta.anchor_bottom        = 0.0
+	carta.custom_minimum_size  = Vector2(80, 110)
+	carta.size                 = Vector2(80, 110)
+	carta.mostrar_reverso      = false
+	carta.mouse_filter         = Control.MOUSE_FILTER_IGNORE
 
 
 ## Conecta la señal carta_muerta a un nodo Card (usado por BotManager y CardDragDrop)
@@ -437,10 +459,13 @@ func _instanciar_carta_en_cementerio(quien: String, datos: Dictionary) -> void:
 	var cementerio: HBoxContainer = jugador_cementerio if quien == "jugador" \
 								   else oponente_cementerio
 	cementerio.add_child(carta_nodo)
-	carta_nodo.propietario = quien
+	carta_nodo.propietario        = quien
+	carta_nodo.layout_mode         = 0
+	carta_nodo.custom_minimum_size = Vector2(80, 110)
+	carta_nodo.size                = Vector2(80, 110)
 	carta_nodo.cargar_desde_json(datos)
-	carta_nodo.mostrar_reverso = false
-	carta_nodo.mouse_filter    = Control.MOUSE_FILTER_IGNORE
+	carta_nodo.mostrar_reverso     = false
+	carta_nodo.mouse_filter        = Control.MOUSE_FILTER_IGNORE
 
 
 # ═════════════════════════════════════════════

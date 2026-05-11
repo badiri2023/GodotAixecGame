@@ -280,16 +280,20 @@ func retirar_equipamiento(quien: String) -> void:
 
 ## Llama a esto desde desplegar_carta() cuando se despliega un monstruo
 ## para aplicarle el buff si hay equipamiento activo.
-func _aplicar_buff_a_monstruo_si_procede(quien: String, carta_nodo: Card) -> void:
+func _aplicar_buff_a_monstruo_si_procede(quien: String, carta_nodo: Card = null) -> void:
 	var p := _get_jugador(quien)
 	if p.is_empty() or p["equipamiento"].is_empty():
 		return
+	var equip_nodo: Card = _buscar_nodo_equip(quien)
+	if equip_nodo == null:
+		return
+	# Si no se pasa el nodo, aplica a todos los monstruos desplegados
+	if carta_nodo == null:
+		_aplicar_buff_equip_a_monstruos(quien)
+		return
 	if carta_nodo.tipo != Card.TIPO_MONSTRUO:
 		return
-	# Busca el nodo Card del equipamiento para pasarlo
-	var equip_nodo: Card = _buscar_nodo_equip(quien)
-	if equip_nodo:
-		carta_nodo.aplicar_buff_equipamiento(equip_nodo)
+	carta_nodo.aplicar_buff_equipamiento(equip_nodo)
 
 
 func _aplicar_buff_equip_a_monstruos(quien: String) -> void:
@@ -310,9 +314,19 @@ func _revertir_buff_equip_de_monstruos(quien: String) -> void:
 func _buscar_nodo_equip(quien: String) -> Card:
 	var p := _get_jugador(quien)
 	if p.is_empty() or p["equipamiento"].is_empty(): return null
-	var equip_id: int = p["equipamiento"].get("id", -1)
+	var equip_id: int = int(p["equipamiento"].get("id", -1))
 	var raiz: Node = get_tree().get_root()
-	return _buscar_card_por_id_recursivo(raiz, equip_id, quien)
+	# Busca sin filtro de propietario por si no se asignó correctamente
+	return _buscar_card_por_id_sin_propietario(raiz, equip_id)
+
+
+func _buscar_card_por_id_sin_propietario(nodo: Node, card_id: int) -> Card:
+	if nodo is Card and nodo.id == card_id and nodo.tipo == Card.TIPO_EQUIPAMIENTO:
+		return nodo
+	for hijo in nodo.get_children():
+		var resultado: Card = _buscar_card_por_id_sin_propietario(hijo, card_id)
+		if resultado: return resultado
+	return null
 
 
 func _buscar_card_por_id_recursivo(nodo: Node, card_id: int, propietario: String) -> Card:
@@ -399,8 +413,8 @@ func desplegar_carta(quien: String, carta: Dictionary, carta_nodo: Card = null) 
 	p["mano"].erase(carta_en_mano)
 	lista_destino.append(carta_en_mano)
 
-	# Si es monstruo y hay equipamiento activo, aplica el buff al nodo
-	if tipo == TIPO_MONSTRUO and carta_nodo != null:
+	# Si es monstruo y hay equipamiento activo, aplica el buff
+	if tipo == TIPO_MONSTRUO:
 		_aplicar_buff_a_monstruo_si_procede(quien, carta_nodo)
 
 	emit_signal("carta_desplegada", quien, carta_en_mano, destino)

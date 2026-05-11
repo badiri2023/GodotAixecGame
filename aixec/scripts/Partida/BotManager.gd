@@ -99,12 +99,25 @@ func _intentar_colocar_carta() -> bool:
 	if elegida.is_empty():
 		return false
 
-	var ok: bool = GameManager.desplegar_carta("oponente", elegida)
-	if ok:
-		_instanciar_visual_si_necesario(elegida)
-		print("[BotManager] Bot desplegó: '%s'" % elegida.get("name", elegida.get("nombre","???")))
+	var tipo: int = int(elegida.get("type", elegida.get("tipo", -1)))
 
-	return ok
+	# Para monstruos: primero instanciar visual (add_to_group) y DESPUÉS aplicar buff
+	if tipo == GameManager.TIPO_MONSTRUO:
+		# Temporalmente desplegamos sin buff para que el nodo entre al grupo primero
+		var ok: bool = GameManager.desplegar_carta("oponente", elegida)
+		if ok:
+			_instanciar_visual_si_necesario(elegida)
+			# Ahora el nodo está en "desplegadas", aplicamos el buff si hay equipamiento
+			if GameManager.tiene_equipamiento("oponente"):
+				GameManager._aplicar_buff_equip_a_monstruos("oponente")
+			print("[BotManager] Bot desplegó: '%s'" % elegida.get("name", elegida.get("nombre","???")))
+		return ok
+	else:
+		var ok: bool = GameManager.desplegar_carta("oponente", elegida)
+		if ok:
+			_instanciar_visual_si_necesario(elegida)
+			print("[BotManager] Bot desplegó: '%s'" % elegida.get("name", elegida.get("nombre","???")))
+		return ok
 
 
 # ═════════════════════════════════════════════
@@ -203,13 +216,6 @@ func _instanciar_visual_si_necesario(carta_dict: Dictionary) -> void:
 	# no se instanció), no hace nada — GameUI ya actualizará el log.
 
 
-func _on_carta_enemiga_click(event: InputEvent, carta: Card) -> void:
-	print("[BotManager] gui_input recibido en carta enemiga '%s' — evento: %s" % [carta.nombre, event.get_class()])
-	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-		return
-	print("[BotManager] Click izquierdo en carta enemiga '%s' → seleccionando" % carta.nombre)
-	SelectionManager.seleccionar_carta_enemiga(carta)
-
 
 func _get_disponibles_oponente() -> Node:
 	var raiz: Node = get_tree().get_root()
@@ -277,10 +283,3 @@ func _buscar_hijo_directo(nodo: Node, nombre: String) -> Node:
 		if r:
 			return r
 	return null
-
-
-func _set_mouse_filter_recursivo(nodo: Node, filtro: int) -> void:
-	for hijo in nodo.get_children():
-		if hijo is Control:
-			hijo.mouse_filter = filtro
-		_set_mouse_filter_recursivo(hijo, filtro)
