@@ -482,7 +482,7 @@ offset_top = 55.0
 offset_right = 295.5569
 offset_bottom = 285.0
 scale = Vector2(0.826, 0.826)
-theme_override_constants/separation = 7
+theme_override_constants/separation = -72
 
 [node name="Opciones" type="Button" parent="Jugador" unique_id=1225897864]
 offset_left = 1325.0
