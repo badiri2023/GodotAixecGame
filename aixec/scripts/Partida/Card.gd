@@ -60,6 +60,9 @@ var ataque_actual: int = 0
 ## true si ya recibió el buff del equipamiento global del slot
 var buffed: bool = false
 
+## Guarda el StyleBox de color para restaurarlo tras quitar el resaltado de selección
+var _estilo_color: StyleBoxFlat = null
+
 ## true si ya actuó este turno (atacó o usó habilidad activa)
 var usada_este_turno: bool = false
 
@@ -103,6 +106,29 @@ var mostrar_reverso: bool = false:
 # ═════════════════════════════════════════════
 func _ready() -> void:
 	_actualizar_visibilidad_reverso()
+	# Hitbox es la única superficie de input; todo lo demás en IGNORE
+	var hitbox: Control = get_node_or_null("Hitbox")
+	if hitbox:
+		hitbox.mouse_filter = Control.MOUSE_FILTER_STOP
+	self.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_set_children_ignore_except_hitbox()
+
+
+func _set_children_ignore_except_hitbox() -> void:
+	# Pone todos los nodos excepto Hitbox en IGNORE
+	for hijo in get_children():
+		if hijo.name == "Hitbox":
+			continue
+		if hijo is Control:
+			hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_ignore_recursivo(hijo)
+
+
+func _ignore_recursivo(nodo: Node) -> void:
+	for hijo in nodo.get_children():
+		if hijo is Control:
+			hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_ignore_recursivo(hijo)
 
 
 # ═════════════════════════════════════════════
@@ -183,10 +209,10 @@ func _actualizar_textos() -> void:
 	nombre_label.text      = nombre
 	descripcion_label.text = descripcion
 	calidad_label.text     = _texto_rareza(rareza)
-	mana_label.text        = "Mana: %d" % mana_coste
-	habilidad_label.text   = habilidad_nombre if habilidad_nombre != "" else habilidad_descripcion
-	atk_label.text         = "Atk: %d"  % ataque_actual
-	vida_label.text        = "Vida: %d" % vida_actual
+	mana_label.text        = str(mana_coste)
+	habilidad_label.text   = habilidad_descripcion   # descripción en la carta
+	atk_label.text         = str(ataque_actual)
+	vida_label.text        = str(vida_actual)
 
 
 func _actualizar_color_fondo() -> void:
@@ -195,7 +221,22 @@ func _actualizar_color_fondo() -> void:
 		TIPO_MONSTRUO:     color = COLOR_MONSTRUO
 		TIPO_HECHIZO:      color = COLOR_HECHIZO
 		TIPO_EQUIPAMIENTO: color = COLOR_EQUIPAMIENTO
-	panel_carta.modulate = color
+	# Cambia el bg_color del StyleBoxFlat del panel Carta sin tocar modulate
+	# (modulate tinta TODA la carta incluyendo imagen y textos)
+	var estilo := StyleBoxFlat.new()
+	estilo.bg_color              = color
+	estilo.border_width_left     = 1
+	estilo.border_width_top      = 1
+	estilo.border_width_right    = 1
+	estilo.border_width_bottom   = 1
+	estilo.border_color          = Color(0, 0, 0, 1)
+	estilo.corner_radius_top_left     = 3
+	estilo.corner_radius_top_right    = 3
+	estilo.corner_radius_bottom_right = 3
+	estilo.corner_radius_bottom_left  = 3
+	_estilo_color = estilo
+	panel_carta.add_theme_stylebox_override("panel", estilo)
+	panel_carta.modulate = Color(1, 1, 1, 1)   # reset por si acaso
 
 
 func _actualizar_stats_visibilidad() -> void:
@@ -254,7 +295,7 @@ func recibir_danyo(cantidad: int) -> void:
 	if tipo != TIPO_MONSTRUO:
 		return
 	vida_actual -= cantidad
-	vida_label.text = "Vida: %d" % vida_actual
+	vida_label.text = str(vida_actual)
 	print("[Card] '%s' recibe %d daño — vida: %d" % [nombre, cantidad, vida_actual])
 	if vida_actual <= 0:
 		emit_signal("carta_muerta", self)
@@ -267,7 +308,7 @@ func recibir_curacion(cantidad: int) -> void:
 	var bonus_vida: int = GameManager.get_buff_vida_equip(propietario) if buffed else 0
 	var vida_max: int = defensa_base + bonus_vida
 	vida_actual = min(vida_actual + cantidad, vida_max)
-	vida_label.text = "Vida: %d" % vida_actual
+	vida_label.text = str(vida_actual)
 
 
 # ═════════════════════════════════════════════
@@ -288,6 +329,13 @@ func marcar_como_usada() -> bool:
 # ═════════════════════════════════════════════
 #  HELPERS
 # ═════════════════════════════════════════════
+func restaurar_color_fondo() -> void:
+	if _estilo_color != null:
+		panel_carta.add_theme_stylebox_override("panel", _estilo_color)
+	else:
+		_actualizar_color_fondo()
+
+
 func tiene_habilidad_activa() -> bool:
 	return habilidad_id >= 0 and not habilidad_es_pasiva
 

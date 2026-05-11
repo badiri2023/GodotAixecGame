@@ -53,13 +53,13 @@ func _ready() -> void:
 
 ## API PÚBLICA — GameUI llama a esto cada vez que instancia una carta en la mano.
 func connect_card(carta: Control) -> void:
-	var panel: Panel = carta.get_node_or_null("Carta")
-	if panel == null:
-		push_warning("[CardDragDrop] Carta sin nodo 'Carta': %s" % carta.name)
+	var hitbox: Control = carta.get_node_or_null("Hitbox")
+	if hitbox == null:
+		push_warning("[CardDragDrop] Carta sin nodo Hitbox: %s" % carta.name)
 		return
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	if not panel.gui_input.is_connected(_on_card_gui_input.bind(carta)):
-		panel.gui_input.connect(_on_card_gui_input.bind(carta))
+	hitbox.mouse_filter = Control.MOUSE_FILTER_STOP
+	if not hitbox.gui_input.is_connected(_on_card_gui_input.bind(carta)):
+		hitbox.gui_input.connect(_on_card_gui_input.bind(carta))
 
 
 # ─────────────────────────────────────────────
@@ -193,10 +193,11 @@ func _place_card_in_slot(carta: Control, slot: Panel) -> void:
 		var game_ui: Node = _get_game_ui()
 		if game_ui and game_ui.has_method("conectar_carta_muerta"):
 			game_ui.conectar_carta_muerta(carta)
-	# Desactiva drag: el panel pasa a IGNORE para no interferir con el input global
-	var panel: Panel = carta.get_node_or_null("Carta")
-	if panel:
-		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# En el slot la carta no se arrastra; desactiva la Hitbox
+	# (SelectionManager detecta clicks por posición global, no necesita gui_input)
+	var hitbox: Control = carta.get_node_or_null("Hitbox")
+	if hitbox:
+		hitbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	print("[CardDragDrop] '%s' colocada en '%s'" % [carta.name, slot.name])
 
 

@@ -18,7 +18,7 @@ extends Node
 #  SEÑALES
 # ═════════════════════════════════════════════
 ## GameUI conecta esta señal para actualizar el estado de los botones
-signal botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool)
+signal botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool, nombre_habilidad: String)
 
 
 # ═════════════════════════════════════════════
@@ -55,8 +55,13 @@ func _input(event: InputEvent) -> void:
 	for carta in get_tree().get_nodes_in_group("desplegadas"):
 		if not carta is Card:
 			continue
-		# Comprueba si el cursor está dentro del rect global de la carta
-		var rect := Rect2(carta.global_position, carta.size)
+		# Usa la Hitbox si existe, si no usa el rect de la carta
+		var hitbox: Control = carta.get_node_or_null("Hitbox")
+		var rect: Rect2
+		if hitbox:
+			rect = Rect2(hitbox.global_position, hitbox.size)
+		else:
+			rect = Rect2(carta.global_position, carta.size)
 		if not rect.has_point(mouse_pos):
 			continue
 		# Carta encontrada bajo el cursor
@@ -154,6 +159,9 @@ func _quitar_resaltado(carta: Card) -> void:
 	var panel: Panel = carta.get_node_or_null("Carta")
 	if panel:
 		panel.remove_theme_stylebox_override("panel")
+		# Restaura el color de tipo de la carta (rojo/azul/verde)
+		if carta.has_method("restaurar_color_fondo"):
+			carta.restaurar_color_fondo()
 
 
 # ═════════════════════════════════════════════
@@ -241,7 +249,10 @@ func _actualizar_botones() -> void:
 
 	var atacar_dis: bool    = not (puede_combatir and es_monstruo and no_usada)
 	var habilidad_dis: bool = not (puede_combatir and hay_carta and no_usada and tiene_hab_activa)
-	emit_signal("botones_actualizados", atacar_dis, habilidad_dis)
+	var nombre_hab: String  = ""
+	if hay_carta and tiene_hab_activa:
+		nombre_hab = carta_seleccionada.habilidad_nombre
+	emit_signal("botones_actualizados", atacar_dis, habilidad_dis, nombre_hab)
 
 
 # ═════════════════════════════════════════════

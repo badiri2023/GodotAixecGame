@@ -811,13 +811,13 @@ offset_top = 55.0
 offset_right = 295.5569
 offset_bottom = 285.0
 scale = Vector2(0.826, 0.826)
-theme_override_constants/separation = 7
+theme_override_constants/separation = -72
 
 [node name="(DEBUG)ObtenerCartasBBDD" type="Button" parent="." unique_id=1997028684]
 layout_mode = 0
-offset_left = 565.0
-offset_top = 145.0
-offset_right = 690.0
-offset_bottom = 201.0
+offset_left = 555.0
+offset_top = 149.0
+offset_right = 680.0
+offset_bottom = 205.0
 text = "Obtener cartas"
 script = ExtResource("1_ibkli")

@@ -141,6 +141,8 @@ func _conectar_botones() -> void:
 	AbilityManager.habilidad_fallida.connect(_on_habilidad_fallida)
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
 	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
+	# Texto por defecto del botón habilidad
+	boton_habilidad.text = "Habilidad"
 
 
 func _inicializar_ui() -> void:
@@ -492,9 +494,11 @@ func _set_feedback(texto: String) -> void:
 # ═════════════════════════════════════════════
 #  HELPERS
 # ═════════════════════════════════════════════
-func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool) -> void:
+func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool, nombre_habilidad: String) -> void:
 	boton_atacar.disabled    = atacar_disabled
 	boton_habilidad.disabled = habilidad_disabled
+	# Muestra el nombre de la habilidad activa en el botón, o el texto por defecto
+	boton_habilidad.text = nombre_habilidad if nombre_habilidad != "" else "Habilidad"
 
 
 func _set_botones_accion(activos: bool) -> void:
