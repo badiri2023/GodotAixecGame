@@ -18,7 +18,7 @@ font_size = 9
 
 [sub_resource type="LabelSettings" id="LabelSettings_qbjcq"]
 line_spacing = -3.0
-font_size = 9
+font_size = 8
 font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qf083"]
