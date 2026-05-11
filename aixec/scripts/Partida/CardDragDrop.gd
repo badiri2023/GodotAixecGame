@@ -88,6 +88,9 @@ func _start_drag(carta: Control) -> void:
 	if not GameManager.es_mi_turno("jugador"):
 		print("[CardDragDrop] No es tu turno")
 		return
+	# Las cartas ya desplegadas en el tablero no se pueden arrastrar
+	if carta is Card and carta.is_in_group("desplegadas"):
+		return
 
 	_dragging           = true
 	_drag_card          = carta
@@ -183,14 +186,31 @@ func _place_card_in_slot(carta: Control, slot: Panel) -> void:
 	slot.add_child(carta)
 	carta.layout_mode = 1
 	carta.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	# Marca la carta como desplegada para que GameManager pueda encontrarla
+	# Marca la carta como desplegada
 	if carta is Card and carta.tipo != Card.TIPO_EQUIPAMIENTO:
 		carta.add_to_group("desplegadas")
-	# Desactiva el input para que la carta en slot no sea arrastrable
+		# Conecta señal de muerte para gestión visual
+		var game_ui: Node = _get_game_ui()
+		if game_ui and game_ui.has_method("conectar_carta_muerta"):
+			game_ui.conectar_carta_muerta(carta)
+	# El panel pasa a STOP para recibir clicks de selección (ya no arrastra)
 	var panel: Panel = carta.get_node_or_null("Carta")
 	if panel:
-		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		# Conecta el click al sistema de selección de GameUI
+		if carta is Card and not panel.gui_input.is_connected(_on_carta_slot_click.bind(carta)):
+			panel.gui_input.connect(_on_carta_slot_click.bind(carta))
 	print("[CardDragDrop] '%s' colocada en '%s'" % [carta.name, slot.name])
+
+
+## Gestiona el click sobre una carta ya desplegada en un slot.
+func _on_carta_slot_click(event: InputEvent, carta: Card) -> void:
+	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+		return
+	if carta.propietario == "jugador":
+		SelectionManager.seleccionar_carta_propia(carta)
+	else:
+		SelectionManager.seleccionar_carta_enemiga(carta)
 
 
 # ─────────────────────────────────────────────
@@ -234,3 +254,10 @@ func _return_card_to_hand() -> void:
 		_drag_origin_parent.add_child(_drag_card)
 	_drag_origin_parent.move_child(_drag_card, _drag_origin_index)
 	print("[CardDragDrop] '%s' devuelta a la mano" % _drag_card.name)
+
+
+func _get_game_ui() -> Node:
+	for hijo in get_parent().get_children():
+		if hijo.name == "GameUI":
+			return hijo
+	return null

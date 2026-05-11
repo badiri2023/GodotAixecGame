@@ -72,9 +72,6 @@ var _tiempo_afk:         float = 0.0
 var _log_lineas: Array = []
 const LOG_MAX_LINEAS: int = 12
 
-## Carta seleccionada para atacar o usar habilidad (lógica pendiente próxima fase)
-var _carta_seleccionada: Card = null
-
 ## Evita instanciar cartas en mano mientras la sincronización inicial no ha terminado
 var _sincronizacion_completada: bool = false
 
@@ -87,9 +84,10 @@ func _ready() -> void:
 	_conectar_botones()
 	_inicializar_ui()
 	# Si la partida ya fue iniciada antes de que esta escena cargara
-	# (p.ej. desde el Login), sincronizamos el estado completo ahora.
+	# (p.ej. desde Login), sincronizamos el estado ahora.
 	if GameManager.partida_activa:
 		_sincronizar_estado_inicial()
+
 
 
 func _sincronizar_estado_inicial() -> void:
@@ -118,6 +116,8 @@ func _sincronizar_estado_inicial() -> void:
 		GameManager.ronda_actual, GameManager.turno_actual.capitalize()
 	])
 	_sincronizacion_completada = true
+	# Fuerza actualización de botones según el turno actual
+	SelectionManager._actualizar_botones()
 
 
 func _conectar_senales_gamemanager() -> void:
@@ -140,6 +140,7 @@ func _conectar_botones() -> void:
 	boton_reportar.pressed.connect(_on_boton_reportar)
 	AbilityManager.habilidad_fallida.connect(_on_habilidad_fallida)
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
+	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
 
 
 func _inicializar_ui() -> void:
@@ -222,6 +223,8 @@ func _on_turno_cambiado(turno: String) -> void:
 	_afk_activo         = false
 	tiempo_restante_panel.visible = false
 	boton_reportar.visible        = false
+	SelectionManager.deseleccionar_todo()
+
 
 
 
@@ -266,7 +269,7 @@ func _on_acabar_turno() -> void:
 	if not GameManager.es_mi_turno("jugador"):
 		_set_feedback("No es tu turno")
 		return
-	_carta_seleccionada = null
+	SelectionManager.deseleccionar_todo()
 	_set_feedback("")
 	GameManager.acabar_turno("jugador")
 
@@ -278,10 +281,8 @@ func _on_boton_atacar() -> void:
 	if GameManager.solo_despliegue:
 		_set_feedback("Ronda 1: solo se pueden desplegar cartas")
 		return
-	if _carta_seleccionada == null:
-		_set_feedback("Selecciona una carta para atacar")
-		return
-	# TODO: lógica de ataque — próxima fase
+	var resultado: String = SelectionManager.ejecutar_ataque()
+	_añadir_log(resultado) if not resultado.begins_with("Selecciona") and not resultado.begins_with("Solo") and not resultado.begins_with("El") and not resultado.begins_with("Esta") else _set_feedback(resultado)
 
 
 func _on_boton_habilidad() -> void:
@@ -291,10 +292,16 @@ func _on_boton_habilidad() -> void:
 	if GameManager.solo_despliegue:
 		_set_feedback("Ronda 1: solo se pueden desplegar cartas")
 		return
-	if _carta_seleccionada == null:
+	if SelectionManager.carta_seleccionada == null:
 		_set_feedback("Selecciona una carta para usar su habilidad")
 		return
-	AbilityManager.activar_habilidad_activa(_carta_seleccionada, "jugador")
+	if SelectionManager.carta_seleccionada.habilidad_es_pasiva:
+		_set_feedback("Habilidad pasiva: se activa automáticamente")
+		return
+	if SelectionManager.carta_seleccionada.usada_este_turno:
+		_set_feedback("Esta carta ya actuó este turno")
+		return
+	_set_feedback("Habilidades no disponibles aún")
 
 
 func _on_boton_reportar() -> void:
@@ -376,6 +383,7 @@ func _refrescar_info_jugador(quien: String) -> void:
 # ═════════════════════════════════════════════
 #  INSTANCIACIÓN VISUAL DE CARTAS
 # ═════════════════════════════════════════════
+
 func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 	var carta_nodo: Card = CARD_SCENE.instantiate()
 	var org: HBoxContainer = jugador_disponibles_org if quien == "jugador" \
@@ -405,6 +413,23 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 
 func _on_carta_nodo_muerta(carta: Card) -> void:
 	_añadir_log("%s murió: '%s'" % [carta.propietario.capitalize(), carta.nombre])
+	# Mueve el nodo visualmente del slot al cementerio
+	var cementerio: HBoxContainer = jugador_cementerio if carta.propietario == "jugador" \
+										else oponente_cementerio
+	var padre_actual: Node = carta.get_parent()
+	if padre_actual != null:
+		padre_actual.remove_child(carta)
+	cementerio.add_child(carta)
+	carta.layout_mode = 0   # vuelve a tamaño libre
+	carta.custom_minimum_size = Vector2(80, 110)
+	carta.mostrar_reverso = false
+	carta.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+## Conecta la señal carta_muerta a un nodo Card (usado por BotManager y CardDragDrop)
+func conectar_carta_muerta(carta: Card) -> void:
+	if not carta.carta_muerta.is_connected(_on_carta_nodo_muerta):
+		carta.carta_muerta.connect(_on_carta_nodo_muerta)
 
 
 func _instanciar_carta_en_cementerio(quien: String, datos: Dictionary) -> void:
@@ -442,11 +467,17 @@ func _set_feedback(texto: String) -> void:
 # ═════════════════════════════════════════════
 #  HELPERS
 # ═════════════════════════════════════════════
+func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool) -> void:
+	boton_atacar.disabled    = atacar_disabled
+	boton_habilidad.disabled = habilidad_disabled
+
+
 func _set_botones_accion(activos: bool) -> void:
-	# Atacar y Habilidad solo disponibles desde ronda 2
-	var puede_combatir: bool = activos and not GameManager.solo_despliegue
-	boton_atacar.disabled    = not puede_combatir
-	boton_habilidad.disabled = not puede_combatir
+	# Los botones de combate los gestiona SelectionManager._actualizar_botones()
+	# Este método se mantiene para el estado inicial (desactivar al arrancar)
+	if not activos:
+		boton_atacar.disabled    = true
+		boton_habilidad.disabled = true
 
 
 func _formato_tiempo(segundos: float) -> String:

@@ -180,9 +180,10 @@ func _instanciar_visual_si_necesario(carta_dict: Dictionary) -> void:
 	# Busca el nodo Card de esta carta en el DisponiblesOrganizador del oponente
 	var org: Node = _get_disponibles_oponente()
 	if org == null:
+		print("[BotManager] ERROR: DisponiblesOrganizador del oponente no encontrado")
 		return
 
-	var card_id: int = carta_dict.get("id", -1)
+	var card_id: int = int(carta_dict.get("id", -1))
 	for hijo in org.get_children():
 		if hijo is Card and hijo.id == card_id:
 			# Mueve el nodo al slot libre correspondiente
@@ -200,6 +201,14 @@ func _instanciar_visual_si_necesario(carta_dict: Dictionary) -> void:
 
 	# Si el nodo no existe en la mano visual (puede pasar si el reverso
 	# no se instanció), no hace nada — GameUI ya actualizará el log.
+
+
+func _on_carta_enemiga_click(event: InputEvent, carta: Card) -> void:
+	print("[BotManager] gui_input recibido en carta enemiga '%s' — evento: %s" % [carta.nombre, event.get_class()])
+	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+		return
+	print("[BotManager] Click izquierdo en carta enemiga '%s' → seleccionando" % carta.nombre)
+	SelectionManager.seleccionar_carta_enemiga(carta)
 
 
 func _get_disponibles_oponente() -> Node:
@@ -268,3 +277,10 @@ func _buscar_hijo_directo(nodo: Node, nombre: String) -> Node:
 		if r:
 			return r
 	return null
+
+
+func _set_mouse_filter_recursivo(nodo: Node, filtro: int) -> void:
+	for hijo in nodo.get_children():
+		if hijo is Control:
+			hijo.mouse_filter = filtro
+		_set_mouse_filter_recursivo(hijo, filtro)

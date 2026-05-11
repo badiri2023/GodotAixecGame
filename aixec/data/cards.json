@@ -115,7 +115,7 @@
 			"name": "Supresion sacrificial"
 		},
 		"attack": 0,
-		"defense": 0,
+		"defense": 1,
 		"description": "Un glich que trajo del futuro este slime.",
 		"expansion": "Fantasticas",
 		"id": 7,
@@ -487,7 +487,7 @@
 	},
 	{
 		"ability": {
-			"description": "Al equipar la carta al monstruo, puedes mirar y seleccionar una carta de la mano del enemigo para eliminarla.",
+			"description": "Al atacar con esta carta equipada, hace 1 de dano a cualquier monstruo enemigo en el campo.",
 			"id": 25,
 			"isPassive": false,
 			"name": "Ataque sorpresa"
@@ -718,23 +718,5 @@
 		"name": "Cinturon de Puchi",
 		"rarity": 2,
 		"type": 3
-	},
-	{
-		"ability": {
-			"description": "No hace nada.",
-			"id": 32,
-			"isPassive": true,
-			"name": "Existencia"
-		},
-		"attack": 0,
-		"defense": 0,
-		"description": "Si estas viendo esto, hay un error en el juego",
-		"expansion": "Fantasticas",
-		"id": 50,
-		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card050.jpg",
-		"mana": 0,
-		"name": "None",
-		"rarity": 1,
-		"type": 1
 	}
 ]

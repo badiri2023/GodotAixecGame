@@ -1,0 +1,823 @@
+[gd_scene format=3 uid="uid://bmbi2xwiu1jf6"]
+
+[ext_resource type="Script" uid="uid://dhwvavyl2l072" path="res://scripts/Partida/CardDragDrop.gd" id="1_aug50"]
+[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/None.jpg" id="1_cpr0p"]
+[ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/getCardsJson.gd" id="1_ibkli"]
+[ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/ui/options_icon.png" id="1_qbsmt"]
+[ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
+[ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_78awf"]
+font_size = 25
+
+[sub_resource type="LabelSettings" id="LabelSettings_cpr0p"]
+line_spacing = -14.0
+font_size = 29
+
+[sub_resource type="LabelSettings" id="LabelSettings_qbsmt"]
+font_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cpr0p"]
+bg_color = Color(0, 0.78431374, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78awf"]
+bg_color = Color(0, 0, 0.78431374, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s0nni"]
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_s0nni"]
+line_spacing = -14.0
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_400sg"]
+line_spacing = -2.0
+font_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_400sg"]
+bg_color = Color(0, 0.39215687, 0, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aug50"]
+bg_color = Color(0.39215687, 0, 0, 1)
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kiw3p"]
+bg_color = Color(0, 0, 0.39215687, 1)
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_detail = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_kiw3p"]
+line_spacing = -14.0
+font_size = 19
+
+[sub_resource type="LabelSettings" id="LabelSettings_aug50"]
+line_spacing = -14.0
+font_size = 19
+
+[node name="Control" type="Control" unique_id=2131995356]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_aug50")
+metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0, 1410.0, 1420.0, 1670.0, 1660.0, 510.0, 500.0, 250.0, 260.0]
+metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0, 1070.0, 1060.0, 260.0, 250.0]
+
+[node name="GameUI" type="Node" parent="." unique_id=1677084643]
+script = ExtResource("2_aug50")
+
+[node name="Info" type="Node" parent="." unique_id=595100759]
+
+[node name="TiempoRestante" type="Panel" parent="Info" unique_id=97008166]
+offset_left = 1660.0
+offset_top = 280.0
+offset_right = 1910.0
+offset_bottom = 380.0
+
+[node name="DuracionLabel" type="Label" parent="Info/TiempoRestante" unique_id=617018942]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 240.0
+offset_bottom = 90.0
+text = "Tiempo restante:
+00:00"
+label_settings = SubResource("LabelSettings_78awf")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="InfoPartida" type="Panel" parent="Info" unique_id=2134656128]
+offset_left = 1660.0
+offset_top = 390.0
+offset_right = 1910.0
+offset_bottom = 690.0
+
+[node name="DuracionLabel" type="Label" parent="Info/InfoPartida" unique_id=2062356927]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 30.0
+offset_right = 240.0
+offset_bottom = 90.0
+text = "Duracion: 00:00"
+label_settings = SubResource("LabelSettings_78awf")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="RondaLabel" type="Label" parent="Info/InfoPartida" unique_id=719830813]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 120.0
+offset_right = 240.0
+offset_bottom = 180.0
+text = "Ronda: 0"
+label_settings = SubResource("LabelSettings_78awf")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="TurnoLabel" type="Label" parent="Info/InfoPartida" unique_id=1715018818]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 210.0
+offset_right = 240.0
+offset_bottom = 270.0
+text = "Turno: 0"
+label_settings = SubResource("LabelSettings_78awf")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="Reportar" type="Button" parent="Info" unique_id=1777354558]
+offset_left = 1660.0
+offset_top = 700.0
+offset_right = 1910.0
+offset_bottom = 800.0
+theme_override_font_sizes/font_size = 25
+text = "Reportar AFK"
+
+[node name="Jugador" type="Node" parent="." unique_id=1368325319]
+
+[node name="InfoJugador" type="Panel" parent="Jugador" unique_id=622751635]
+offset_left = 1410.0
+offset_top = 820.0
+offset_right = 1910.0
+offset_bottom = 1070.0
+
+[node name="NombreLabel" type="Label" parent="Jugador/InfoJugador" unique_id=382805723]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 250.0
+offset_bottom = 80.0
+text = "Name"
+label_settings = SubResource("LabelSettings_cpr0p")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="VidaLabel" type="Label" parent="Jugador/InfoJugador" unique_id=324939274]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 105.0
+offset_right = 250.0
+offset_bottom = 135.0
+text = "Vida: 0/0"
+label_settings = SubResource("LabelSettings_qbsmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="VidaBar" type="ProgressBar" parent="Jugador/InfoJugador" unique_id=1657333944]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 135.0
+offset_right = 250.0
+offset_bottom = 160.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_cpr0p")
+value = 100.0
+show_percentage = false
+
+[node name="ManaLabel" type="Label" parent="Jugador/InfoJugador" unique_id=241661789]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 185.0
+offset_right = 250.0
+offset_bottom = 215.0
+text = "Mana: 0/0"
+label_settings = SubResource("LabelSettings_qbsmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="ManaBar" type="ProgressBar" parent="Jugador/InfoJugador" unique_id=1240844958]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 215.0
+offset_right = 250.0
+offset_bottom = 240.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_78awf")
+value = 100.0
+show_percentage = false
+
+[node name="ImgPanel" type="Panel" parent="Jugador/InfoJugador" unique_id=807608015]
+clip_children = 1
+layout_mode = 0
+offset_left = 260.0
+offset_top = 10.0
+offset_right = 490.0
+offset_bottom = 240.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_s0nni")
+
+[node name="ImagenJugador" type="TextureRect" parent="Jugador/InfoJugador/ImgPanel" unique_id=1397209794]
+layout_mode = 0
+offset_right = 230.0
+offset_bottom = 230.0
+texture = ExtResource("1_cpr0p")
+
+[node name="ManoJugador" type="Panel" parent="Jugador" unique_id=828836975]
+offset_left = 10.0
+offset_top = 820.0
+offset_right = 1210.0
+offset_bottom = 1070.0
+
+[node name="ManoLabel" type="Label" parent="Jugador/ManoJugador" unique_id=1461395269]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 245.0
+offset_bottom = 50.0
+text = "MANO JUGADOR"
+label_settings = SubResource("LabelSettings_s0nni")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="CartasBaraja" type="HBoxContainer" parent="Jugador/ManoJugador" unique_id=1795950268]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 55.0
+offset_right = 295.5569
+offset_bottom = 285.0
+scale = Vector2(0.826, 0.826)
+theme_override_constants/separation = 7
+
+[node name="CartaBaraja1" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1619691161 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja2" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1856462266 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja3" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1318264206 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja4" parent="Jugador/ManoJugador/CartasBaraja" unique_id=895711298 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja5" parent="Jugador/ManoJugador/CartasBaraja" unique_id=75085905 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja6" parent="Jugador/ManoJugador/CartasBaraja" unique_id=698661606 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja7" parent="Jugador/ManoJugador/CartasBaraja" unique_id=623464164 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja8" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1894934074 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja9" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1525675724 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja10" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1541071783 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja11" parent="Jugador/ManoJugador/CartasBaraja" unique_id=902311447 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja12" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1298097819 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja13" parent="Jugador/ManoJugador/CartasBaraja" unique_id=551222793 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja14" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1250947481 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja15" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1574499070 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja16" parent="Jugador/ManoJugador/CartasBaraja" unique_id=454743010 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja17" parent="Jugador/ManoJugador/CartasBaraja" unique_id=191857787 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja18" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1500492779 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja19" parent="Jugador/ManoJugador/CartasBaraja" unique_id=1561510983 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja20" parent="Jugador/ManoJugador/CartasBaraja" unique_id=2080825607 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="DisponiblesPanel" type="Panel" parent="Jugador/ManoJugador" unique_id=237167393]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 5.0
+offset_right = 1195.0
+offset_bottom = 245.0
+
+[node name="DisponiblesOrganizador" type="HBoxContainer" parent="Jugador/ManoJugador/DisponiblesPanel" unique_id=2065186602]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 940.0
+offset_bottom = 235.0
+theme_override_constants/separation = 41
+
+[node name="DespliegueJugador" type="Panel" parent="Jugador" unique_id=1553447372]
+offset_left = 310.0
+offset_top = 550.0
+offset_right = 1610.0
+offset_bottom = 800.0
+
+[node name="BotonAtaque" type="Button" parent="Jugador/DespliegueJugador" unique_id=1065974587]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 120.0
+offset_bottom = 55.0
+text = "Atacar
+"
+
+[node name="BotonHabilidad" type="Button" parent="Jugador/DespliegueJugador" unique_id=1459177260]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 60.0
+offset_right = 120.0
+offset_bottom = 110.0
+text = "Habilidad
+"
+
+[node name="FeedbackLabel" type="Label" parent="Jugador/DespliegueJugador" unique_id=1024759578]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 115.0
+offset_right = 120.0
+offset_bottom = 245.0
+text = "Feedback"
+label_settings = SubResource("LabelSettings_400sg")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="DespliegueEquipamiento" type="Panel" parent="Jugador/DespliegueJugador" unique_id=291050773]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 5.0
+offset_right = 295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_400sg")
+
+[node name="SlotEquipamiento" type="Panel" parent="Jugador/DespliegueJugador/DespliegueEquipamiento" unique_id=1321906415]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="DespliegueMonstruos" type="Panel" parent="Jugador/DespliegueJugador" unique_id=828595953]
+layout_mode = 0
+offset_left = 295.0
+offset_top = 5.0
+offset_right = 795.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aug50")
+
+[node name="SlotMonstruos1" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=1514703785]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos2" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=760143440]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos3" type="Panel" parent="Jugador/DespliegueJugador/DespliegueMonstruos" unique_id=873139263]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 5.0
+offset_right = 495.0
+offset_bottom = 235.0
+
+[node name="DespliegueHechizos" type="Panel" parent="Jugador/DespliegueJugador" unique_id=815090765]
+layout_mode = 0
+offset_left = 795.0
+offset_top = 5.0
+offset_right = 1295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiw3p")
+
+[node name="SlotHechizos1" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=15908567]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="SlotHechizos2" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=2126829977]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 235.0
+
+[node name="SlotHechizos3" type="Panel" parent="Jugador/DespliegueJugador/DespliegueHechizos" unique_id=1431101646]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 5.0
+offset_right = 495.0
+offset_bottom = 235.0
+
+[node name="MuertosJugador" type="Panel" parent="Jugador" unique_id=272563872]
+offset_left = 10.0
+offset_top = 550.0
+offset_right = 260.0
+offset_bottom = 800.0
+
+[node name="CementerioLabel" type="Label" parent="Jugador/MuertosJugador" unique_id=1101706535]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 245.0
+offset_bottom = 50.0
+text = "CEMENTERIO JUGADOR"
+label_settings = SubResource("LabelSettings_kiw3p")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="CartasCementerio" type="HBoxContainer" parent="Jugador/MuertosJugador" unique_id=1241814026]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 55.0
+offset_right = 295.5569
+offset_bottom = 285.0
+scale = Vector2(0.826, 0.826)
+theme_override_constants/separation = 7
+
+[node name="Opciones" type="Button" parent="Jugador" unique_id=1225897864]
+offset_left = 1325.0
+offset_top = 995.0
+offset_right = 1400.0
+offset_bottom = 1070.0
+icon = ExtResource("1_qbsmt")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="AcabarTurno" type="Button" parent="Jugador" unique_id=584842421]
+offset_left = 1220.0
+offset_top = 820.0
+offset_right = 1400.0
+offset_bottom = 980.0
+theme_override_font_sizes/font_size = 40
+text = "Acabar 
+Turno
+"
+
+[node name="Oponente" type="Node" parent="." unique_id=499788673]
+
+[node name="InfoOponente" type="Panel" parent="Oponente" unique_id=1343046787]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 510.0
+offset_bottom = 260.0
+
+[node name="NombreLabel" type="Label" parent="Oponente/InfoOponente" unique_id=1992547245]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 10.0
+offset_right = 490.0
+offset_bottom = 80.0
+text = "Name"
+label_settings = SubResource("LabelSettings_cpr0p")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="VidaLabel" type="Label" parent="Oponente/InfoOponente" unique_id=1738053729]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 105.0
+offset_right = 490.0
+offset_bottom = 135.0
+text = "Vida: 0/0"
+label_settings = SubResource("LabelSettings_qbsmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="VidaBar" type="ProgressBar" parent="Oponente/InfoOponente" unique_id=1120744141]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 135.0
+offset_right = 490.0
+offset_bottom = 160.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_cpr0p")
+value = 100.0
+show_percentage = false
+
+[node name="ManaLabel" type="Label" parent="Oponente/InfoOponente" unique_id=870900218]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 185.0
+offset_right = 490.0
+offset_bottom = 215.0
+text = "Mana: 0/0"
+label_settings = SubResource("LabelSettings_qbsmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+
+[node name="ManaBar" type="ProgressBar" parent="Oponente/InfoOponente" unique_id=194488365]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 215.0
+offset_right = 490.0
+offset_bottom = 240.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_78awf")
+value = 100.0
+show_percentage = false
+
+[node name="ImgPanel" type="Panel" parent="Oponente/InfoOponente" unique_id=643461116]
+clip_children = 1
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 240.0
+offset_bottom = 240.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_s0nni")
+
+[node name="ImagenOponente" type="TextureRect" parent="Oponente/InfoOponente/ImgPanel" unique_id=648113114]
+layout_mode = 0
+offset_right = 230.0
+offset_bottom = 230.0
+texture = ExtResource("1_cpr0p")
+
+[node name="ManoOponente" type="Panel" parent="Oponente" unique_id=1801732806]
+offset_left = 710.0
+offset_top = 10.0
+offset_right = 1910.0
+offset_bottom = 260.0
+
+[node name="ManoLabel" type="Label" parent="Oponente/ManoOponente" unique_id=1302211983]
+layout_mode = 0
+offset_left = 955.0
+offset_top = 5.0
+offset_right = 1195.0
+offset_bottom = 50.0
+text = "MANO OPONENTE"
+label_settings = SubResource("LabelSettings_s0nni")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="CartasBaraja" type="HBoxContainer" parent="Oponente/ManoOponente" unique_id=225938978]
+layout_mode = 0
+offset_left = 955.0
+offset_top = 55.0
+offset_right = 1245.5569
+offset_bottom = 285.0
+scale = Vector2(0.826, 0.826)
+theme_override_constants/separation = 7
+
+[node name="CartaBaraja1" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1622179484 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja2" parent="Oponente/ManoOponente/CartasBaraja" unique_id=467507214 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja3" parent="Oponente/ManoOponente/CartasBaraja" unique_id=2006886880 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja4" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1552756021 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja5" parent="Oponente/ManoOponente/CartasBaraja" unique_id=412161452 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja6" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1966407089 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja7" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1029068523 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja8" parent="Oponente/ManoOponente/CartasBaraja" unique_id=316161471 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja9" parent="Oponente/ManoOponente/CartasBaraja" unique_id=785070248 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja10" parent="Oponente/ManoOponente/CartasBaraja" unique_id=721881067 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja11" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1991340114 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja12" parent="Oponente/ManoOponente/CartasBaraja" unique_id=170434596 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja13" parent="Oponente/ManoOponente/CartasBaraja" unique_id=247233506 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja14" parent="Oponente/ManoOponente/CartasBaraja" unique_id=397997771 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja15" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1927159254 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja16" parent="Oponente/ManoOponente/CartasBaraja" unique_id=159867122 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja17" parent="Oponente/ManoOponente/CartasBaraja" unique_id=111913542 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja18" parent="Oponente/ManoOponente/CartasBaraja" unique_id=353063403 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja19" parent="Oponente/ManoOponente/CartasBaraja" unique_id=1698522379 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="CartaBaraja20" parent="Oponente/ManoOponente/CartasBaraja" unique_id=176539461 instance=ExtResource("5_s0nni")]
+layout_mode = 2
+
+[node name="DisponiblesPanel" type="Panel" parent="Oponente/ManoOponente" unique_id=1468192760]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 950.0
+offset_bottom = 245.0
+
+[node name="DisponiblesOrganizador" type="HBoxContainer" parent="Oponente/ManoOponente/DisponiblesPanel" unique_id=431173805]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 940.0
+offset_bottom = 235.0
+theme_override_constants/separation = 41
+
+[node name="DespliegueOponente" type="Panel" parent="Oponente" unique_id=1545885691]
+offset_left = 310.0
+offset_top = 280.0
+offset_right = 1610.0
+offset_bottom = 530.0
+
+[node name="LogLabel" type="Label" parent="Oponente/DespliegueOponente" unique_id=452321889]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 120.0
+offset_bottom = 245.0
+text = "Log Partida"
+label_settings = SubResource("LabelSettings_400sg")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="DespliegueEquipamiento" type="Panel" parent="Oponente/DespliegueOponente" unique_id=541726669]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 5.0
+offset_right = 295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_400sg")
+
+[node name="SlotEquipamiento" type="Panel" parent="Oponente/DespliegueOponente/DespliegueEquipamiento" unique_id=1484379512]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="DespliegueMonstruos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=1461943183]
+layout_mode = 0
+offset_left = 295.0
+offset_top = 5.0
+offset_right = 795.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aug50")
+
+[node name="SlotMonstruos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=1147726023]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=445076456]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 235.0
+
+[node name="SlotMonstruos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueMonstruos" unique_id=430792572]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 5.0
+offset_right = 495.0
+offset_bottom = 235.0
+
+[node name="DespliegueHechizos" type="Panel" parent="Oponente/DespliegueOponente" unique_id=573797759]
+layout_mode = 0
+offset_left = 795.0
+offset_top = 5.0
+offset_right = 1295.0
+offset_bottom = 245.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kiw3p")
+
+[node name="SlotHechizos1" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=1411130500]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 165.0
+offset_bottom = 235.0
+
+[node name="SlotHechizos2" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=770056972]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 235.0
+
+[node name="SlotHechizos3" type="Panel" parent="Oponente/DespliegueOponente/DespliegueHechizos" unique_id=246875939]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 5.0
+offset_right = 495.0
+offset_bottom = 235.0
+
+[node name="MuertosOponente" type="Panel" parent="Oponente" unique_id=1467971964]
+offset_left = 10.0
+offset_top = 280.0
+offset_right = 260.0
+offset_bottom = 530.0
+
+[node name="CementerioLabel" type="Label" parent="Oponente/MuertosOponente" unique_id=1966790803]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 245.0
+offset_bottom = 50.0
+text = "CEMENTERIO OPONENTE"
+label_settings = SubResource("LabelSettings_aug50")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true
+text_overrun_behavior = 1
+
+[node name="CartasCementerio" type="HBoxContainer" parent="Oponente/MuertosOponente" unique_id=1847428724]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 55.0
+offset_right = 295.5569
+offset_bottom = 285.0
+scale = Vector2(0.826, 0.826)
+theme_override_constants/separation = 7
+
+[node name="(DEBUG)ObtenerCartasBBDD" type="Button" parent="." unique_id=1997028684]
+layout_mode = 0
+offset_left = 565.0
+offset_top = 145.0
+offset_right = 690.0
+offset_bottom = 201.0
+text = "Obtener cartas"
+script = ExtResource("1_ibkli")

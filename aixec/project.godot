@@ -13,7 +13,7 @@ config_version=5
 config/name="Aixec"
 run/main_scene="uid://c3ik5voqp7xo1"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://assets/ui/icon.svg"
+config/icon="uid://lnpygyo51aox"
 
 [autoload]
 
@@ -22,6 +22,7 @@ GameManager="*uid://dlv1hmkfx7y1o"
 AbilityManager="*uid://r3o0obt33oyo"
 CardLoader="*uid://w1q0oyqd38bq"
 BotManager="*uid://cv0vkugurmowx"
+SelectionManager="*uid://dnow2ypdlup6a"
 
 [display]
 
