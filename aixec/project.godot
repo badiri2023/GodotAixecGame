@@ -23,6 +23,7 @@ AbilityManager="*uid://r3o0obt33oyo"
 CardLoader="*uid://w1q0oyqd38bq"
 BotManager="*uid://cv0vkugurmowx"
 SelectionManager="*uid://dnow2ypdlup6a"
+NetworkManager="*uid://c2b4nvixo8h5u"
 
 [display]
 

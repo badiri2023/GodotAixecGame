@@ -72,7 +72,7 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	var baraja_j := CardLoader.construir_baraja(ids)
 	var baraja_o := CardLoader.construir_baraja(ids)
 	GameManager.iniciar_partida(baraja_j, baraja_o)
-
+	NetworkManager.conectar_al_servidor()
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 # ─────────────────────────────────────────
