@@ -136,44 +136,37 @@ func _comunicar_resultado_al_servidor(ganador: String) -> void:
 	var http = HTTPRequest.new()
 	add_child(http)
 	
-	# Definimos quién gana y quién pierde para el DTO del servidor
-	# Si el ganador es "jugador", el Winner es nuestro ID y el Loser es el Bot (ID 10)
-	var winner_id: int
-	var loser_id: int
+	var gano_jugador : bool = (ganador == "jugador")
 	
-	if ganador == "jugador":
-		winner_id = ApiServicio.usuario_id
-		loser_id = 10 # ID fijo de tu Bot en la DB
-	else:
-		winner_id = 10
-		loser_id = ApiServicio.usuario_id
-
-	var url = ApiServicio.API_BASE + "/game/report-result"
+	var url = ApiServicio.API_BASE + "/game/report-bot-result"
 	var headers = ApiServicio.get_headers()
 	
-	# El JSON debe coincidir con tu record 'ReportResultDto' en C#
-	var cuerpo = {
-		"GameId": game_id_actual,
-		"WinnerUserId": winner_id,
-		"LoserUserId": loser_id
-	}
+	# IMPORTANTE: La clave "Win" debe coincidir con el nombre en C#
+	var datos = {"Win": gano_jugador}
+	var cuerpo = JSON.stringify(datos)
 	
-	var error = http.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(cuerpo))
+	print("📡 Enviando a: ", url)
+	print("📦 Cuerpo: ", cuerpo)
+	
+	var error = http.request(url, headers, HTTPClient.METHOD_POST, cuerpo)
 	
 	if error != OK:
-		print("❌ Error al intentar enviar el reporte")
+		print("❌ No se pudo realizar la petición HTTP")
 		http.queue_free()
-	
-	# Limpiamos el nodo al terminar
-	http.request_completed.connect(func(_r, code, _h, _b):
+		return
+
+	http.request_completed.connect(func(_result, code, _headers, body):
 		if code == 200:
-			print("✅ Servidor actualizado: Monedas y estadísticas guardadas.")
+			var res = JSON.parse_string(body.get_string_from_utf8())
+			print("✅ Recompensa cobrada. Nuevo saldo: ", res.get("nuevoSaldo"))
 		else:
-			print("⚠️ El servidor respondió con error: ", code)
+			# Si hay error, imprimimos el código y el texto que devuelva el servidor
+			var error_text = body.get_string_from_utf8()
+			print("❌ Error ", code, " al recibir recompensa: ", error_text)
+		
 		http.queue_free()
 	)
-
-
+	
 func rendirse(quien: String) -> void:
 	if not partida_activa:
 		return
