@@ -69,6 +69,8 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 	# 1. Guardamos el token en el Autoload
 	ApiServicio.token = datos["token"]
 	ApiServicio.usuario_id = datos.get("id", 0)
+	ApiServicio.usuario_nombre = datos.get("username", "Jugador")
+	print("✅ Bienvenido, ", ApiServicio.usuario_nombre)
 	print("✅ Login correcto. Obteniendo mazos reales del servidor...")
 	print("✅ Login exitoso. Usuario ID: ", ApiServicio.usuario_id)
 	# 2. En lugar de hardcodear e irnos al juego, llamamos a la API

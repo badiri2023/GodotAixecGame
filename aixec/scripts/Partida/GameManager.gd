@@ -102,6 +102,9 @@ func iniciar_partida(baraja_jugador: Array, baraja_oponente: Array) -> void:
 
 	jugador  = _crear_jugador()
 	oponente = _crear_jugador()
+	
+	jugador["nombre"] = ApiServicio.usuario_nombre
+	oponente["nombre"] = "Bot Malvado"
 
 	jugador["baraja"]  = baraja_jugador.slice(0, MAX_BARAJA)
 	oponente["baraja"] = baraja_oponente.slice(0, MAX_BARAJA)

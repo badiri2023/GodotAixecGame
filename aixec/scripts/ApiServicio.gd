@@ -7,6 +7,8 @@ const SAVE_PATH = "user://cards.json"
 
 var token: String = ""
 var usuario_id: int = 0
+var usuario_nombre: String = ""
+
 # Cambiamos Array por PackedStringArray para que Godot 4 no tire errores
 func get_headers() -> PackedStringArray:
 	var headers = PackedStringArray()
