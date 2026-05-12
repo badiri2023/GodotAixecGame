@@ -257,22 +257,35 @@ func _on_carta_desplegada(quien: String, carta: Dictionary, destino: String) -> 
 func _on_carta_al_cementerio(quien: String, carta: Dictionary) -> void:
 	_actualizar_baraja_ui(quien)
 	_añadir_log("%s → cementerio: '%s'" % [quien.capitalize(), carta.get("name", carta.get("nombre","???"))])
-	# No instanciamos carta nueva aquí: si el nodo Card ya existe en escena
-	# (caso de muerte en combate), _on_carta_nodo_muerta ya lo movió visualmente.
-	# Solo instanciamos si el nodo NO está en escena (descarte desde GameManager sin nodo).
 	var card_id: int = int(carta.get("id", -1))
-	var nodo_existe: bool = false
-	for nodo in get_tree().get_nodes_in_group("desplegadas"):
-		if nodo is Card and nodo.id == card_id and nodo.propietario == quien:
-			nodo_existe = true
-			break
-	# Busca también en los cementerios por si ya fue movido
 	var cementerio: HBoxContainer = jugador_cementerio if quien == "jugador" else oponente_cementerio
+
+	# Comprueba si el nodo ya está en el cementerio (lo movió _on_carta_nodo_muerta)
 	for nodo in cementerio.get_children():
 		if nodo is Card and nodo.id == card_id:
-			nodo_existe = true
+			return   # ya está, nada que hacer
+
+	# Busca el nodo en los slots desplegados por ID (con int() para floats del JSON)
+	var nodo_en_slot: Card = null
+	for nodo in get_tree().get_nodes_in_group("desplegadas"):
+		if nodo is Card and int(nodo.id) == card_id and nodo.propietario == quien:
+			nodo_en_slot = nodo
 			break
-	if not nodo_existe:
+	# Si no lo encontró en el grupo, busca en todos los slots directamente
+	if nodo_en_slot == null:
+		var todos_slots: Array = _get_todos_los_slots(quien)
+		for slot in todos_slots:
+			for hijo in slot.get_children():
+				if hijo is Card and int(hijo.id) == card_id:
+					nodo_en_slot = hijo
+					break
+			if nodo_en_slot != null:
+				break
+
+	if nodo_en_slot != null:
+		_mover_nodo_a_cementerio(nodo_en_slot, cementerio)
+	else:
+		# El nodo no existe en escena: instancia uno nuevo en el cementerio
 		_instanciar_carta_en_cementerio(quien, carta)
 
 
@@ -319,7 +332,10 @@ func _on_boton_habilidad() -> void:
 	if SelectionManager.carta_seleccionada.usada_este_turno:
 		_set_feedback("Esta carta ya actuó este turno")
 		return
-	AbilityManager.activar_habilidad_activa(SelectionManager.carta_seleccionada, "jugador")
+	var carta_a_usar: Card = SelectionManager.carta_seleccionada
+	# Deseleccionar ANTES de activar para limpiar resaltados y referencias
+	SelectionManager.deseleccionar_todo()
+	AbilityManager.activar_habilidad_activa(carta_a_usar, "jugador")
 
 
 func _on_boton_reportar() -> void:
@@ -431,29 +447,59 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 
 func _on_carta_nodo_muerta(carta: Card) -> void:
 	_añadir_log("%s murió: '%s'" % [carta.propietario.capitalize(), carta.nombre])
-	# Mueve el nodo visualmente del slot al cementerio
 	var cementerio: HBoxContainer = jugador_cementerio if carta.propietario == "jugador" \
 										else oponente_cementerio
-	var padre_actual: Node = carta.get_parent()
-	if padre_actual != null:
-		padre_actual.remove_child(carta)
-	cementerio.add_child(carta)
-	# Resetea el layout para que el HBoxContainer lo gestione como los demás hijos
-	carta.layout_mode          = 0
-	carta.anchor_left          = 0.0
-	carta.anchor_top           = 0.0
-	carta.anchor_right         = 0.0
-	carta.anchor_bottom        = 0.0
-	carta.custom_minimum_size  = Vector2(80, 110)
-	carta.size                 = Vector2(80, 110)
-	carta.mostrar_reverso      = false
-	carta.mouse_filter         = Control.MOUSE_FILTER_IGNORE
+	_mover_nodo_a_cementerio(carta, cementerio)
 
 
 ## Conecta la señal carta_muerta a un nodo Card (usado por BotManager y CardDragDrop)
 func conectar_carta_muerta(carta: Card) -> void:
 	if not carta.carta_muerta.is_connected(_on_carta_nodo_muerta):
 		carta.carta_muerta.connect(_on_carta_nodo_muerta)
+
+
+func _get_todos_los_slots(propietario: String) -> Array:
+	var raiz: Node = get_parent()
+	var zona: String = "Jugador" if propietario == "jugador" else "Oponente"
+	var despliegue_base: String = "DespliegueJugador" if propietario == "jugador" else "DespliegueOponente"
+	var slots: Array = []
+	var base: Node = raiz.get_node_or_null("%s/%s" % [zona, despliegue_base])
+	if base == null:
+		return slots
+	for hijo in base.get_children():
+		if "Slot" in hijo.name:
+			slots.append(hijo)
+		else:
+			for nieto in hijo.get_children():
+				if "Slot" in nieto.name:
+					slots.append(nieto)
+	return slots
+
+
+func _mover_nodo_a_cementerio(nodo: Card, cementerio: HBoxContainer) -> void:
+	# Quita resaltados
+	var panel_carta: Panel = nodo.get_node_or_null("Carta")
+	if panel_carta:
+		panel_carta.remove_theme_stylebox_override("panel")
+	if nodo.has_method("restaurar_color_fondo"):
+		nodo.restaurar_color_fondo()
+	# Saca del grupo desplegadas
+	if nodo.is_in_group("desplegadas"):
+		nodo.remove_from_group("desplegadas")
+	# Mueve visualmente
+	var padre: Node = nodo.get_parent()
+	if padre:
+		padre.remove_child(nodo)
+	cementerio.add_child(nodo)
+	nodo.layout_mode         = 0
+	nodo.anchor_left         = 0.0
+	nodo.anchor_top          = 0.0
+	nodo.anchor_right        = 0.0
+	nodo.anchor_bottom       = 0.0
+	nodo.custom_minimum_size = Vector2(80, 110)
+	nodo.size                = Vector2(80, 110)
+	nodo.mostrar_reverso     = false
+	nodo.mouse_filter        = Control.MOUSE_FILTER_IGNORE
 
 
 func _instanciar_carta_en_cementerio(quien: String, datos: Dictionary) -> void:
