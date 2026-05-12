@@ -47,33 +47,133 @@ func _hacer_login(email: String, password: String) -> void:
 
 func _on_login_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
-	_set_cargando(false)
-
+	# Eliminamos el _set_cargando(false) de aquí porque seguiremos cargando los mazos
+	
 	if result != HTTPRequest.RESULT_SUCCESS:
+		_set_cargando(false)
 		_mostrar_error("Error de red. Comprueba tu conexión.")
 		return
 
 	if response_code != 200:
+		_set_cargando(false)
 		_mostrar_error("Credenciales incorrectas")
-		print("Login fallido - Código: ", response_code, " Body: ", body.get_string_from_utf8())
 		return
 
 	var datos = JSON.parse_string(body.get_string_from_utf8())
+	print("DEBUG: Respuesta completa del servidor: ", datos) # <--- AÑADE ESTO
 	if datos == null or not datos.has("token"):
+		_set_cargando(false)
 		_mostrar_error("Respuesta del servidor inválida")
 		return
 
-	# Guardamos el token en Autoload para usarlo en game.tscn
+	# 1. Guardamos el token en el Autoload
 	ApiServicio.token = datos["token"]
-	print("✅ Login correcto, cambiando de escena...")
-	# ✅ Ahora — convierte IDs a Dictionaries primero
-	GameManager.es_multijugador = false
-	var ids := [1,2,3,4,5,11,12,13,14,15,26,27,28,29,30,31,35,36,37,38]
-	var baraja_j := CardLoader.construir_baraja(ids)
-	var baraja_o := CardLoader.construir_baraja(ids)
-	GameManager.iniciar_partida(baraja_j, baraja_o)
-	NetworkManager.conectar_al_servidor()
-	get_tree().change_scene_to_file("res://scenes/Game.tscn")
+	ApiServicio.usuario_id = datos.get("id", 0)
+	print("✅ Login correcto. Obteniendo mazos reales del servidor...")
+	print("✅ Login exitoso. Usuario ID: ", ApiServicio.usuario_id)
+	# 2. En lugar de hardcodear e irnos al juego, llamamos a la API
+	_obtener_mazos_y_entrar_al_juego()
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NUEVA FUNCIÓN: Conecta con tu GameController.cs
+# ─────────────────────────────────────────────────────────────────────────────
+func _obtener_mazos_y_entrar_al_juego() -> void:
+	var http = HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_mazos_recibidos.bind(http))
+
+	# Usamos los headers que ya incluyen el Token de ApiServicio
+	var headers = ApiServicio.get_headers()
+	var url = API_BASE + "/game/start/bot_random"
+	
+	# Enviamos la petición POST (según tu GameController.cs)
+	var error = http.request(url, headers, HTTPClient.METHOD_POST, "")
+	if error != OK:
+		http.queue_free()
+		_set_cargando(false)
+		_mostrar_error("Error al solicitar partida")
+
+func _on_mazos_recibidos(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+	http.queue_free()
+	_set_cargando(false) # Ahora sí dejamos de mostrar el spinner
+
+	if response_code == 200:
+		var respuesta = JSON.parse_string(body.get_string_from_utf8())
+		
+	# 1. Extraemos los IDs crudos (que Godot lee como floats, ej: 26.0)
+		var ids_jugador_raw = respuesta.get("playerDeck", [])
+		var ids_bot_raw = respuesta.get("botDeck", [])
+		
+		# 2. LIMPIEZA: Forzamos que todos los IDs sean Enteros (int)
+		# Esto es lo que soluciona el problema de que no encuentre las cartas
+		var ids_jugador : Array[int] = []
+		for id_f in ids_jugador_raw:
+			ids_jugador.append(int(id_f))
+			
+		var ids_bot : Array[int] = []
+		for id_f in ids_bot_raw:
+			ids_bot.append(int(id_f))
+
+		print("✅ Mazos procesados (Int). Jugador: ", ids_jugador)
+
+		# 3. USAMOS EL CARDLOADER CON LOS IDS YA LIMPIOS
+		var baraja_j := CardLoader.construir_baraja(ids_jugador)
+		var baraja_o := CardLoader.construir_baraja(ids_bot)
+
+		# 4. Configuramos la partida en el GameManager
+		GameManager.es_multijugador = false
+		GameManager.iniciar_partida(baraja_j, baraja_o)
+		
+		# 5. Conectamos SignalR y entramos al juego
+		NetworkManager.conectar_al_servidor()
+		get_tree().change_scene_to_file("res://scenes/Game.tscn")
+
+	
+	else:
+		_mostrar_error("No se pudo obtener tu mazo del servidor")
+		print("Error Mazos - Código: ", response_code, " Body: ", body.get_string_from_utf8())
+		
+func _preparar_partida_con_servidor() -> void:
+	var http = HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_partida_recibida.bind(http))
+
+	# Usamos el token que acabamos de guardar
+	var headers = ApiServicio.get_headers()
+	
+	# Llamamos al endpoint de tu GameController.cs que inicia partidas
+	var url = ApiServicio.API_BASE + "/game/start/bot_random"
+	
+	http.request(url, headers, HTTPClient.METHOD_POST, "")
+
+func _on_partida_recibida(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+	http.queue_free()
+	_set_cargando(false)
+
+	if response_code == 200:
+		var respuesta = JSON.parse_string(body.get_string_from_utf8())
+		
+		# ¡AQUÍ ESTÁN TUS IDS REALES VIENEN DEL SERVIDOR!
+		var ids_jugador = respuesta["playerDeck"] # Viene de tu C# StartGameResponse
+		var ids_bot = respuesta["botDeck"]
+
+		print("✅ Mazos recibidos del servidor. Jugador:", ids_jugador.size(), " cartas.")
+
+		GameManager.es_multijugador = false
+		
+		# Ahora construimos las barajas con los IDs que nos dio la base de datos
+		var baraja_j := CardLoader.construir_baraja(ids_jugador)
+		var baraja_o := CardLoader.construir_baraja(ids_bot)
+		# En el callback de mazos recibidos
+		GameManager.game_id_actual = respuesta["gameId"] 
+		GameManager.iniciar_partida(baraja_j, baraja_o)
+		NetworkManager.conectar_al_servidor()
+		
+		# Ahora sí, cambiamos de escena
+		get_tree().change_scene_to_file("res://scenes/Game.tscn")
+	else:
+		_mostrar_error("Error al obtener tu mazo del servidor")
+
 
 # ─────────────────────────────────────────
 # HELPERS UI

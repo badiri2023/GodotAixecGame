@@ -20,6 +20,9 @@ var handshake_enviado := false
 # El caracter especial que usa SignalR para separar mensajes JSON
 const TERMINADOR = "\u001e"
 
+func _ready() -> void:
+	set_process(true)
+
 # --- BUCLE PRINCIPAL DE CONEXIÓN ---
 func _process(_delta):
 	socket.poll()

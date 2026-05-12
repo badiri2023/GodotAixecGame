@@ -211,7 +211,7 @@
 		"id": 13,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card013.jpg",
 		"mana": 3,
-		"name": "Un baúl",
+		"name": "Un baul",
 		"rarity": 2,
 		"type": 1
 	},
@@ -301,7 +301,7 @@
 		"id": 19,
 		"imageUrl": "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card019.jpg",
 		"mana": 3,
-		"name": "Acciombre limitado",
+		"name": "Acciombre shiny",
 		"rarity": 2,
 		"type": 1
 	},

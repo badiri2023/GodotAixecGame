@@ -1,13 +1,19 @@
-# api_servicio.gd  →  añádelo en Proyecto > Ajustes > Autoload
 extends Node
 
 const API_BASE = "http://aixec.eu-north-1.elasticbeanstalk.com/api"
-const SAVE_PATH = "res://data/cards.json"
+
+# Cambiado a user:// para que puedas escribir y sobreescribir el archivo en el juego final
+const SAVE_PATH = "user://cards.json" 
 
 var token: String = ""
-
-func get_headers() -> Array:
-	return [
-		"Content-Type: application/json",
-		"Authorization: Bearer " + token
-	]
+var usuario_id: int = 0
+# Cambiamos Array por PackedStringArray para que Godot 4 no tire errores
+func get_headers() -> PackedStringArray:
+	var headers = PackedStringArray()
+	headers.append("Content-Type: application/json")
+	
+	# Solo añadimos el token si realmente existe (por si llamas a la API antes del login)
+	if token != "":
+		headers.append("Authorization: Bearer " + token)
+		
+	return headers

@@ -62,7 +62,7 @@ var solo_despliegue:          bool   = true
 # ═════════════════════════════════════════════
 var jugador:  Dictionary = {}
 var oponente: Dictionary = {}
-
+var game_id_actual: int = 0
 
 func _crear_jugador() -> Dictionary:
 	return {
@@ -128,6 +128,50 @@ func _terminar_partida(ganador: String) -> void:
 	partida_activa = false
 	print("[GameManager] ══ Partida terminada — Ganador: %s ══" % ganador)
 	emit_signal("partida_terminada", ganador)
+
+	# --- NOTIFICAR AL SERVIDOR ---
+	_comunicar_resultado_al_servidor(ganador)
+
+func _comunicar_resultado_al_servidor(ganador: String) -> void:
+	var http = HTTPRequest.new()
+	add_child(http)
+	
+	# Definimos quién gana y quién pierde para el DTO del servidor
+	# Si el ganador es "jugador", el Winner es nuestro ID y el Loser es el Bot (ID 10)
+	var winner_id: int
+	var loser_id: int
+	
+	if ganador == "jugador":
+		winner_id = ApiServicio.usuario_id
+		loser_id = 10 # ID fijo de tu Bot en la DB
+	else:
+		winner_id = 10
+		loser_id = ApiServicio.usuario_id
+
+	var url = ApiServicio.API_BASE + "/game/report-result"
+	var headers = ApiServicio.get_headers()
+	
+	# El JSON debe coincidir con tu record 'ReportResultDto' en C#
+	var cuerpo = {
+		"GameId": game_id_actual,
+		"WinnerUserId": winner_id,
+		"LoserUserId": loser_id
+	}
+	
+	var error = http.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(cuerpo))
+	
+	if error != OK:
+		print("❌ Error al intentar enviar el reporte")
+		http.queue_free()
+	
+	# Limpiamos el nodo al terminar
+	http.request_completed.connect(func(_r, code, _h, _b):
+		if code == 200:
+			print("✅ Servidor actualizado: Monedas y estadísticas guardadas.")
+		else:
+			print("⚠️ El servidor respondió con error: ", code)
+		http.queue_free()
+	)
 
 
 func rendirse(quien: String) -> void:
