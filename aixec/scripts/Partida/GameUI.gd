@@ -319,7 +319,7 @@ func _on_boton_habilidad() -> void:
 	if SelectionManager.carta_seleccionada.usada_este_turno:
 		_set_feedback("Esta carta ya actuó este turno")
 		return
-	_set_feedback("Habilidades no disponibles aún")
+	AbilityManager.activar_habilidad_activa(SelectionManager.carta_seleccionada, "jugador")
 
 
 func _on_boton_reportar() -> void:

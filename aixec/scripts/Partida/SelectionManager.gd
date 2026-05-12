@@ -184,29 +184,66 @@ func ejecutar_ataque() -> String:
 	if tiene_monstruos and carta_enemiga_seleccionada == null:
 		return "El enemigo tiene monstruos. Selecciona uno como objetivo"
 
-	var danyo: int = carta_seleccionada.ataque_actual
-	var msg: String = ""
+	var danyo_base: int = carta_seleccionada.ataque_actual
+	var msg: String     = ""
 
 	if tiene_monstruos:
-		# Aplica el daño directamente al nodo Card enemigo
-		var vida_antes: int = carta_enemiga_seleccionada.vida_actual
-		carta_enemiga_seleccionada.recibir_danyo(danyo)
-		var danyo_real: int = min(danyo, vida_antes)
-		var sobrante:   int = danyo - danyo_real
+		# ── Pre-ataque: comprueba pasivas ──────────────────────────────────────
+		var pre: Dictionary = AbilityManager.pre_ataque(
+			carta_seleccionada, carta_enemiga_seleccionada, danyo_base
+		)
+
+		if pre["cancelar"]:
+			carta_seleccionada.marcar_como_usada()
+			deseleccionar_todo()
+			return "El daño fue anulado (Antiabductor)"
+
+		var danyo_total: int = danyo_base + pre["danyo_extra"]
+
+		# ── Aplica daño al defensor ────────────────────────────────────────────
+		var vida_antes: int  = carta_enemiga_seleccionada.vida_actual
+		var defensor_murio:  bool = false
+		var sobrante: int    = 0
+
+		if not pre["anular_danyo_defensor"]:
+			# Comprueba Nostalgia antes de matar
+			if danyo_total >= carta_enemiga_seleccionada.vida_actual:
+				var nostalgia_interv: bool = AbilityManager.notificar_muerte(
+					carta_enemiga_seleccionada, "oponente"
+				)
+				if not nostalgia_interv:
+					carta_enemiga_seleccionada.recibir_danyo(danyo_total)
+					sobrante      = danyo_total - vida_antes
+					defensor_murio = true
+					_gestionar_muerte_carta(carta_enemiga_seleccionada, "oponente", sobrante)
+				else:
+					# Nostalgia intervino: la carta sobrevive con 1 de vida
+					defensor_murio = false
+				sobrante = max(0, danyo_total - vida_antes)
+			else:
+				carta_enemiga_seleccionada.recibir_danyo(danyo_total)
+
+		# ── Daño al atacante por pasivas del defensor ─────────────────────────
+		if pre["danyo_atacante"] > 0:
+			carta_seleccionada.recibir_danyo(pre["danyo_atacante"])
+			if carta_seleccionada.vida_actual <= 0:
+				_gestionar_muerte_carta(carta_seleccionada, "jugador", 0)
 
 		msg = "Jugador atacó '%s' con '%s' (%d daño)" % [
 			carta_enemiga_seleccionada.nombre,
 			carta_seleccionada.nombre,
-			danyo
+			danyo_total
 		]
 
-		# Si la carta murió (vida <= 0), enviarla al cementerio y aplicar sobrante
-		if carta_enemiga_seleccionada.vida_actual <= 0:
-			_gestionar_muerte_carta(carta_enemiga_seleccionada, "oponente", sobrante)
+		# ── Post-ataque: efectos del atacante ─────────────────────────────────
+		AbilityManager.post_ataque(
+			carta_seleccionada, carta_enemiga_seleccionada,
+			min(danyo_total, vida_antes), defensor_murio, "jugador"
+		)
 	else:
 		# Ataque directo al jugador enemigo
-		GameManager.aplicar_danyo("oponente", danyo)
-		msg = "Jugador atacó directamente al Oponente (%d daño)" % danyo
+		GameManager.aplicar_danyo("oponente", danyo_base)
+		msg = "Jugador atacó directamente al Oponente (%d daño)" % danyo_base
 
 	carta_seleccionada.marcar_como_usada()
 	deseleccionar_todo()
