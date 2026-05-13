@@ -33,6 +33,7 @@ const ID_SOLDADOR           := 24
 const ID_CANON_PLASMA       := 26
 const ID_ROBOT_EXTERMINADOR := 30
 const IDS_SLIME: Array      = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const ID_CONTRATO_MALDITO   := 40
 
 
 # ═════════════════════════════════════════════
@@ -373,20 +374,68 @@ func _hab_paguitas(propietario: String) -> bool:
 # al jugador que la activa.
 var _mano_enemiga_visible: Dictionary = {"jugador": false, "oponente": false}
 
+## Señal emitida cuando ligamento cruzado se activa, para que GameUI conecte
+## el flag en las cartas nuevas del oponente.
+signal ligamento_activado(propietario: String)
+
 func _hab_ligamento_cruzado(propietario: String) -> bool:
 	if _mano_enemiga_visible[propietario]:
 		return false   # ya activada
 	_mano_enemiga_visible[propietario] = true
 	GameManager.aplicar_danyo(propietario, 1)
-	# Muestra el frente de las cartas enemigas en mano (quita el reverso)
+
 	var enemigo: String = "oponente" if propietario == "jugador" else "jugador"
+
+	# 1. Muestra las cartas ya en mano del enemigo
 	var org: Node = _buscar_organizador_mano(enemigo)
 	if org:
 		for hijo in org.get_children():
 			if hijo is Card:
 				hijo.mostrar_reverso = false
-	print("[AbilityManager] Ligamento cruzado: mano de %s visible para %s" % [enemigo, propietario])
+
+	# 2. Descarta todos los Contrato Maldito (id 40) del propietario:
+	#    en baraja, mano y slots desplegados
+	var p_pr: Dictionary = GameManager._get_jugador(propietario)
+	_descartar_contratos_malditos(p_pr, propietario)
+
+	# 3. Avisa a GameUI para que las cartas nuevas del enemigo también se vean
+	emit_signal("ligamento_activado", propietario)
+	print("[AbilityManager] Ligamento cruzado activado por %s" % propietario)
 	return true
+
+
+func _descartar_contratos_malditos(p: Dictionary, propietario: String) -> void:
+	# Baraja: elimina todos los id 40
+	var ids_baraja: Array = []
+	for c in p["baraja"]:
+		if int(c.get("id", -1)) == ID_CONTRATO_MALDITO:
+			ids_baraja.append(c)
+	for c in ids_baraja:
+		p["baraja"].erase(c)
+		p["cementerio"].append(c)
+
+	# Mano: elimina todos los id 40 (recoge índices primero)
+	var indices_mano: Array = []
+	for i in p["mano"].size():
+		if int(p["mano"][i].get("id", -1)) == ID_CONTRATO_MALDITO:
+			indices_mano.append(i)
+	indices_mano.reverse()   # eliminar de mayor a menor para no desplazar
+	for i in indices_mano:
+		var c: Dictionary = p["mano"][i]
+		p["mano"].remove_at(i)
+		p["cementerio"].append(c)
+
+	# Hechizos desplegados: elimina todos los id 40
+	var hechizos_a_descartar: Array = []
+	for c in p["hechizos"]:
+		if int(c.get("id", -1)) == ID_CONTRATO_MALDITO:
+			hechizos_a_descartar.append(c)
+	for c in hechizos_a_descartar:
+		GameManager.enviar_al_cementerio(propietario, c, "hechizos")
+
+	print("[AbilityManager] Contratos malditos descartados: baraja=%d mano=%d hechizos=%d" % [
+		ids_baraja.size(), indices_mano.size(), hechizos_a_descartar.size()
+	])
 
 
 func _buscar_organizador_mano(propietario: String) -> Node:

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://jy7jb878ba1q" path="res://scripts/Login.gd" id="1_1hxp7"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_brlkh"]
+[ext_resource type="AudioStream" uid="uid://ct4f2ae0caugg" path="res://assets/audio/loginMusic.ogg" id="3_gpj6k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dpe5d"]
 font_size = 150
@@ -76,3 +77,8 @@ offset_bottom = 870.0
 label_settings = SubResource("LabelSettings_1hxp7")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=185656408]
+stream = ExtResource("3_gpj6k")
+volume_db = -40.0
+autoplay = true

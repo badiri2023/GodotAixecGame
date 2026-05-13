@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_kiw3p"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
+[ext_resource type="AudioStream" uid="uid://cfm7efehisl0q" path="res://assets/audio/battleMusic.ogg" id="8_400sg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_78awf"]
 font_size = 25
@@ -829,3 +830,8 @@ offset_right = 680.0
 offset_bottom = 205.0
 text = "Obtener cartas"
 script = ExtResource("1_ibkli")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=442855573]
+stream = ExtResource("8_400sg")
+volume_db = -40.0
+autoplay = true

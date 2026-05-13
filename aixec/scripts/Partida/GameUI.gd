@@ -142,6 +142,7 @@ func _conectar_botones() -> void:
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
 	AbilityManager.carta_evolucionada.connect(_on_carta_evolucionada)
 	AbilityManager.hechizo_usado.connect(_on_hechizo_usado)
+	AbilityManager.ligamento_activado.connect(_on_ligamento_activado)
 	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
 	# Texto por defecto del botón habilidad
 	boton_habilidad.text = "Habilidad"
@@ -440,9 +441,10 @@ func _instanciar_carta_en_mano(quien: String, datos: Dictionary) -> void:
 	# Carga los datos (usa claves del JSON: "name", "type", "attack"...)
 	carta_nodo.cargar_desde_json(datos)
 
-	# Cartas del oponente: mostrar_reverso DESPUÉS de add_child (nodos ya inicializados)
+	# Cartas del oponente: boca abajo SALVO que el jugador tenga ligamento activo
 	if quien == "oponente":
-		carta_nodo.mostrar_reverso = true
+		var ligamento_activo: bool = AbilityManager._mano_enemiga_visible.get("jugador", false)
+		carta_nodo.mostrar_reverso = not ligamento_activo
 
 	# Conecta señal de muerte
 	if not carta_nodo.carta_muerta.is_connected(_on_carta_nodo_muerta):
@@ -555,6 +557,42 @@ func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool, n
 	boton_habilidad.disabled = habilidad_disabled
 	# Muestra el nombre de la habilidad activa en el botón, o el texto por defecto
 	boton_habilidad.text = nombre_habilidad if nombre_habilidad != "" else "Habilidad"
+
+
+func _on_ligamento_activado(propietario: String) -> void:
+	var enemigo: String = "oponente" if propietario == "jugador" else "jugador"
+	# Quita reverso de todas las cartas ya en la mano visual del enemigo
+	var org_enemigo: HBoxContainer = jugador_disponibles_org if enemigo == "jugador" else oponente_disponibles_org
+	for hijo in org_enemigo.get_children():
+		if hijo is Card:
+			hijo.mostrar_reverso = false
+	# Sincroniza: descarta visualmente los Contratos malditos de la mano propia
+	_sincronizar_mano_visual(propietario)
+
+
+func _sincronizar_mano_visual(propietario: String) -> void:
+	# Mueve al cementerio los nodos de la mano que ya no están en p["mano"]
+	# Usa contador para manejar duplicados correctamente
+	var p: Dictionary = GameManager._get_jugador(propietario)
+	var org: HBoxContainer = jugador_disponibles_org if propietario == "jugador" else oponente_disponibles_org
+	var cem: HBoxContainer = jugador_cementerio if propietario == "jugador" else oponente_cementerio
+	var contador_mano: Dictionary = {}
+	for dato in p["mano"]:
+		var mid: int = int(dato.get("id", -1))
+		if mid != -1:
+			contador_mano[mid] = contador_mano.get(mid, 0) + 1
+	var contador_vistos: Dictionary = {}
+	var a_mover: Array = []
+	for hijo in org.get_children():
+		if not (hijo is Card) or hijo.id == -1:
+			continue
+		var hid: int = hijo.id
+		contador_vistos[hid] = contador_vistos.get(hid, 0) + 1
+		if contador_vistos[hid] > contador_mano.get(hid, 0):
+			a_mover.append(hijo)
+	for nodo in a_mover:
+		_mover_nodo_a_cementerio(nodo, cem)
+	_actualizar_baraja_ui(propietario)
 
 
 func _on_hechizo_usado(nodo: Card) -> void:
