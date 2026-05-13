@@ -130,30 +130,32 @@ func _ejecutar_activa(id: int, carta: Card, propietario: String, carta_objetivo:
 # ── 2 · Familia ───────────────────────────────────────────────────────────────
 # Por cada Slime desplegado (incluidos enemigos), esta carta gana +1 ataque.
 func _hab_familia(carta: Card, propietario: String) -> bool:
+	# Cuenta slimes por expansion "Fantasticas" en el campo (incluidos enemigos)
 	var slimes: int = 0
 	for c in get_tree().get_nodes_in_group("desplegadas"):
-		if c is Card and "Slime" in c.nombre:
+		if c is Card and c.expansion == "Fantasticas":
 			slimes += 1
 	if slimes == 0:
 		return false
 	carta.ataque_actual += slimes
 	carta._actualizar_textos()
-	print("[AbilityManager] Familia: '%s' +%d atk" % [carta.nombre, slimes])
+	print("[AbilityManager] Familia: '%s' +%d atk (total: %d)" % [carta.nombre, slimes, carta.ataque_actual])
 	return true
 
 
 # ── 3 · Sugestión ─────────────────────────────────────────────────────────────
-# Por cada Slime desplegado (incluidos enemigos), esta carta gana +1 vida.
+# Por cada Slime desplegado (expansion "Fantasticas"), esta carta gana +1 vida.
 func _hab_sugestion(carta: Card, propietario: String) -> bool:
+	# Cuenta slimes por expansion "Fantasticas" en el campo (incluidos enemigos)
 	var slimes: int = 0
 	for c in get_tree().get_nodes_in_group("desplegadas"):
-		if c is Card and "Slime" in c.nombre:
+		if c is Card and c.expansion == "Fantasticas":
 			slimes += 1
 	if slimes == 0:
 		return false
 	carta.vida_actual += slimes
 	carta._actualizar_textos()
-	print("[AbilityManager] Sugestión: '%s' +%d vida" % [carta.nombre, slimes])
+	print("[AbilityManager] Sugestión: '%s' +%d vida (total: %d)" % [carta.nombre, slimes, carta.vida_actual])
 	return true
 
 
@@ -736,18 +738,15 @@ func _validar_habilidad(id: int, propietario: String, carta_objetivo: Card) -> S
 			if not tiene_canon:
 				return "Necesitas Canon de plasma (id %d) en la mano" % ID_CANON_PLASMA
 
-		# ── Requieren Slimes en el campo ────────────────────────────────────
+		# ── Requieren Slimes (expansion Fantasticas) en el campo ─────────────
 		2, 3:
 			var hay_slime: bool = false
 			for carta in get_tree().get_nodes_in_group("desplegadas"):
-				if carta is Card and int(carta.id) in IDS_SLIME:
+				if carta is Card and carta.expansion == "Fantasticas":
 					hay_slime = true
 					break
 			if not hay_slime:
-				if id == 2:
-					return "No hay Slimes desplegados en el campo"
-				else:
-					return "No hay Slimes desplegados en el campo"
+				return "No hay Slimes desplegados en el campo"
 
 		# ── Requieren cartas enemigas con expansión específica ───────────────
 		8:

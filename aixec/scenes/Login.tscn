@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c3ik5voqp7xo1"]
 
-[ext_resource type="Script" uid="uid://jy7jb878ba1q" path="res://scripts/Login.gd" id="1_1hxp7"]
+[ext_resource type="Script" uid="uid://jy7jb878ba1q" path="res://scripts/Online/Login.gd" id="1_1hxp7"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_brlkh"]
 [ext_resource type="AudioStream" uid="uid://ct4f2ae0caugg" path="res://assets/audio/loginMusic.ogg" id="3_gpj6k"]
 
@@ -19,7 +19,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_1hxp7")
 metadata/_edit_vertical_guides_ = [350.0, 1570.0]
-metadata/_edit_horizontal_guides_ = [250.0, 830.0, 770.0, 720.0, 660.0, 610.0]
+metadata/_edit_horizontal_guides_ = [250.0, 830.0, 770.0, 720.0, 660.0, 610.0, 460.0]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=185656408]
+stream = ExtResource("3_gpj6k")
+volume_db = -40.0
+autoplay = true
+parameters/looping = true
 
 [node name="Background" type="TextureRect" parent="." unique_id=1886691643]
 layout_mode = 0
@@ -33,7 +39,7 @@ layout_mode = 0
 offset_left = 350.0
 offset_top = 249.0
 offset_right = 1570.0
-offset_bottom = 399.0
+offset_bottom = 460.0
 text = "AIXEC"
 label_settings = SubResource("LabelSettings_dpe5d")
 horizontal_alignment = 1
@@ -77,9 +83,3 @@ offset_bottom = 870.0
 label_settings = SubResource("LabelSettings_1hxp7")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=185656408]
-stream = ExtResource("3_gpj6k")
-volume_db = -40.0
-autoplay = true
-parameters/looping = true

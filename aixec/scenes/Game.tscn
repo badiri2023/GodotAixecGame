@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://bmbi2xwiu1jf6"]
 
 [ext_resource type="Script" uid="uid://dhwvavyl2l072" path="res://scripts/Partida/CardDragDrop.gd" id="1_aug50"]
-[ext_resource type="Texture2D" uid="uid://cvd1fk7tvyaau" path="res://assets/cards/None.jpg" id="1_cpr0p"]
-[ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/getCardsJson.gd" id="1_ibkli"]
+[ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/Online/getCardsJson.gd" id="1_ibkli"]
 [ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/icons/OptionsIcon.png" id="1_qbsmt"]
 [ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_kiw3p"]
-[ext_resource type="Texture2D" uid="uid://wrhl0fgvf4ps" path="res://assets/playerPofile.jpg" id="4_g4kob"]
+[ext_resource type="Texture2D" uid="uid://ccp1wvmvna82i" path="res://assets/PlayerProfile.jpg" id="4_g4kob"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
+[ext_resource type="Texture2D" uid="uid://d25ytnlccxn0s" path="res://assets/BotProfile.jpg" id="7_qy1jj"]
 [ext_resource type="AudioStream" uid="uid://cfm7efehisl0q" path="res://assets/audio/battleMusic.ogg" id="8_400sg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_78awf"]
@@ -81,6 +81,12 @@ anchors_preset = 0
 script = ExtResource("1_aug50")
 metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0, 1410.0, 1420.0, 1670.0, 1660.0, 510.0, 500.0, 250.0, 260.0]
 metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0, 1070.0, 1060.0, 260.0, 250.0]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=442855573]
+stream = ExtResource("8_400sg")
+volume_db = -40.0
+autoplay = true
+parameters/looping = true
 
 [node name="Background" type="TextureRect" parent="." unique_id=1752958006]
 layout_mode = 0
@@ -246,8 +252,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_s0nni")
 
 [node name="ImagenJugador" type="TextureRect" parent="Jugador/InfoJugador/ImgPanel" unique_id=1397209794]
 layout_mode = 0
-offset_left = -26.0
-offset_right = 262.0
+offset_right = 230.0
 offset_bottom = 230.0
 texture = ExtResource("4_g4kob")
 expand_mode = 2
@@ -597,7 +602,8 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_s0nni")
 layout_mode = 0
 offset_right = 230.0
 offset_bottom = 230.0
-texture = ExtResource("1_cpr0p")
+texture = ExtResource("7_qy1jj")
+expand_mode = 2
 
 [node name="ManoOponente" type="Panel" parent="Oponente" unique_id=1801732806]
 offset_left = 710.0
@@ -833,9 +839,3 @@ offset_right = 680.0
 offset_bottom = 205.0
 text = "Obtener cartas"
 script = ExtResource("1_ibkli")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=442855573]
-stream = ExtResource("8_400sg")
-volume_db = -40.0
-autoplay = true
-parameters/looping = true

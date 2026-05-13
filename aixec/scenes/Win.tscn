@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://vh76he45p2bk"]
+
+[ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="1_24ius"]
+[ext_resource type="Script" uid="uid://dw4n1r16gj7ls" path="res://scripts/Partida/Result.gd" id="1_gq6tj"]
+[ext_resource type="AudioStream" uid="uid://cfm7efehisl0q" path="res://assets/audio/battleMusic.ogg" id="2_gq6tj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_24ius"]
+font_size = 150
+outline_size = 40
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Result" type="Control" unique_id=308178960]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gq6tj")
+metadata/_edit_vertical_guides_ = [350.0, 1570.0]
+metadata/_edit_horizontal_guides_ = [249.0, 460.0, 830.0, 650.0]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=391264983]
+stream = ExtResource("2_gq6tj")
+volume_db = -40.0
+autoplay = true
+parameters/looping = true
+
+[node name="Background" type="TextureRect" parent="." unique_id=956902137]
+layout_mode = 0
+offset_top = 1.0
+offset_right = 1920.0
+offset_bottom = 1081.0
+texture = ExtResource("1_24ius")
+
+[node name="Label" type="Label" parent="." unique_id=411121457]
+layout_mode = 0
+offset_left = 350.0
+offset_top = 249.0
+offset_right = 1570.0
+offset_bottom = 460.0
+text = "HAS GANADO"
+label_settings = SubResource("LabelSettings_24ius")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BotonReplay" type="Button" parent="." unique_id=1881347271]
+layout_mode = 0
+offset_left = 350.0
+offset_top = 650.0
+offset_right = 870.0
+offset_bottom = 830.0
+theme_override_font_sizes/font_size = 50
+text = "Rejugar
+"
+
+[node name="BotonExit" type="Button" parent="." unique_id=1443492942]
+layout_mode = 0
+offset_left = 1050.0
+offset_top = 650.0
+offset_right = 1570.0
+offset_bottom = 830.0
+theme_override_font_sizes/font_size = 50
+text = "Salir
+"

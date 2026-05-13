@@ -134,6 +134,8 @@ func _terminar_partida(ganador: String) -> void:
 
 	# --- NOTIFICAR AL SERVIDOR ---
 	_comunicar_resultado_al_servidor(ganador)
+	
+	get_tree().change_scene_to_file("res://scenes/Win.tscn")
 
 func _comunicar_resultado_al_servidor(ganador: String) -> void:
 	var http = HTTPRequest.new()
@@ -143,8 +145,8 @@ func _comunicar_resultado_al_servidor(ganador: String) -> void:
 	
 	var url = ApiServicio.API_BASE + "/game/report-bot-result"
 	var headers = ApiServicio.get_headers()
-	
-	# IMPORTANTE: La clave "Win" debe coincidir con el nombre en C#
+
+
 	var datos = {"Win": gano_jugador}
 	var cuerpo = JSON.stringify(datos)
 	
@@ -169,6 +171,8 @@ func _comunicar_resultado_al_servidor(ganador: String) -> void:
 		
 		http.queue_free()
 	)
+	
+	
 	
 func rendirse(quien: String) -> void:
 	if not partida_activa:
