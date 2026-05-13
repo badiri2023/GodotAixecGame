@@ -140,6 +140,7 @@ func _conectar_botones() -> void:
 	boton_reportar.pressed.connect(_on_boton_reportar)
 	AbilityManager.habilidad_fallida.connect(_on_habilidad_fallida)
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
+	AbilityManager.carta_evolucionada.connect(_on_carta_evolucionada)
 	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
 	# Texto por defecto del botón habilidad
 	boton_habilidad.text = "Habilidad"
@@ -332,10 +333,11 @@ func _on_boton_habilidad() -> void:
 	if SelectionManager.carta_seleccionada.usada_este_turno:
 		_set_feedback("Esta carta ya actuó este turno")
 		return
-	var carta_a_usar: Card = SelectionManager.carta_seleccionada
-	# Deseleccionar ANTES de activar para limpiar resaltados y referencias
+	var carta_a_usar:   Card = SelectionManager.carta_seleccionada
+	var carta_objetivo: Card = SelectionManager.carta_enemiga_seleccionada
+	# Deseleccionar ANTES de activar para limpiar resaltados
 	SelectionManager.deseleccionar_todo()
-	AbilityManager.activar_habilidad_activa(carta_a_usar, "jugador")
+	AbilityManager.activar_habilidad_activa(carta_a_usar, "jugador", carta_objetivo)
 
 
 func _on_boton_reportar() -> void:
@@ -545,6 +547,67 @@ func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool, n
 	boton_habilidad.disabled = habilidad_disabled
 	# Muestra el nombre de la habilidad activa en el botón, o el texto por defecto
 	boton_habilidad.text = nombre_habilidad if nombre_habilidad != "" else "Habilidad"
+
+
+func _on_carta_evolucionada(carta_vieja: Card, id_nueva: int, propietario: String) -> void:
+	# 1. Mueve al cementerio las cartas de la mano que ya no están en p["mano"]
+	var p: Dictionary = GameManager._get_jugador(propietario)
+	var org: HBoxContainer = jugador_disponibles_org if propietario == "jugador" else oponente_disponibles_org
+	var cementerio_evo: HBoxContainer = jugador_cementerio if propietario == "jugador" else oponente_cementerio
+	# Construye un contador de IDs en mano (para manejar duplicados correctamente)
+	var contador_mano: Dictionary = {}
+	for dato in p["mano"]:
+		var mid: int = int(dato.get("id", -1))
+		if mid != -1:
+			contador_mano[mid] = contador_mano.get(mid, 0) + 1
+
+	# Recorre nodos visuales: descarta los que superan la cantidad en mano
+	var contador_vistos: Dictionary = {}
+	var a_descartar: Array = []
+	for hijo in org.get_children():
+		if not (hijo is Card) or hijo.id == -1:
+			continue
+		var hid: int = hijo.id
+		contador_vistos[hid] = contador_vistos.get(hid, 0) + 1
+		var en_mano: int    = contador_mano.get(hid, 0)
+		var vistos: int     = contador_vistos[hid]
+		if vistos > en_mano:
+			a_descartar.append(hijo)
+
+	for nodo in a_descartar:
+		_mover_nodo_a_cementerio(nodo, cementerio_evo)
+
+	# 2. Sustituye la carta en el slot: instancia la nueva y elimina la vieja
+	var slot_padre: Node = carta_vieja.get_parent()
+	if slot_padre == null:
+		return
+
+	# Instancia la nueva carta desde CardLoader
+	var datos_nuevos: Dictionary = CardLoader.get_carta(id_nueva)
+	if datos_nuevos.is_empty():
+		return
+
+	var carta_nueva: Card = CARD_SCENE.instantiate()
+	slot_padre.add_child(carta_nueva)
+	carta_nueva.propietario = propietario
+	carta_nueva.cargar_desde_json(datos_nuevos)
+	carta_nueva.layout_mode = 1
+	carta_nueva.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	carta_nueva.add_to_group("desplegadas")
+	conectar_carta_muerta(carta_nueva)
+	carta_nueva.usada_este_turno = true   # ya actuó este turno (evolucionó)
+
+	# Actualiza el dict interno de monstruos con la nueva id
+	for i in p["monstruos"].size():
+		if int(p["monstruos"][i].get("id", -1)) == carta_vieja.id:
+			p["monstruos"][i] = datos_nuevos
+			break
+
+	# Elimina la carta vieja del slot (sin cementerio)
+	carta_vieja.remove_from_group("desplegadas")
+	carta_vieja.queue_free()
+
+	_añadir_log("%s evolucionó a '%s'" % [propietario.capitalize(), datos_nuevos.get("name","???")])
 
 
 func _set_botones_accion(activos: bool) -> void:

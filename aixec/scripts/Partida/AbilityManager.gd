@@ -8,6 +8,7 @@ extends Node
 # ═════════════════════════════════════════════
 signal habilidad_activada(carta, habilidad_id: int)
 signal habilidad_fallida(carta, razon: String)
+signal carta_evolucionada(carta_vieja: Card, id_nueva: int, propietario: String)
 
 
 # ═════════════════════════════════════════════
@@ -17,6 +18,20 @@ const EVENTO_CARTA_ATACADA    := "carta_atacada"
 const EVENTO_CARTA_DESPLEGADA := "carta_desplegada"
 const EVENTO_CARTA_MUERTA     := "carta_muerta"
 const EVENTO_CARTA_ATACO      := "carta_ataco"
+
+
+# ═════════════════════════════════════════════
+#  CONSTANTES DE IDs DE CARTAS
+# ═════════════════════════════════════════════
+const ID_USB_CIFRADO        := 28
+const ID_DESCIFRADOR        := 27
+const ID_HACKER_EXPERTO     := 29
+const ID_ROBOT              := 21
+const ID_ROBOT_BLINDADO     := 25
+const ID_SOLDADOR           := 24
+const ID_CANON_PLASMA       := 26
+const ID_ROBOT_EXTERMINADOR := 30
+const IDS_SLIME: Array      = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
 # ═════════════════════════════════════════════
@@ -35,7 +50,7 @@ var _paciencia: Dictionary = {}
 # ═════════════════════════════════════════════
 
 ## Activa la habilidad activa de una carta. Llamado desde GameUI al pulsar el botón.
-func activar_habilidad_activa(carta: Card, propietario: String) -> bool:
+func activar_habilidad_activa(carta: Card, propietario: String, carta_objetivo: Card = null) -> bool:
 	if not GameManager.es_mi_turno(propietario):
 		emit_signal("habilidad_fallida", carta, "No es tu turno")
 		return false
@@ -46,9 +61,16 @@ func activar_habilidad_activa(carta: Card, propietario: String) -> bool:
 		emit_signal("habilidad_fallida", carta, "Esta habilidad es pasiva")
 		return false
 
-	var ok: bool = _ejecutar_activa(carta.habilidad_id, carta, propietario)
+	# Valida condiciones antes de ejecutar
+	var error_validacion: String = _validar_habilidad(carta.habilidad_id, propietario, carta_objetivo)
+	if error_validacion != "":
+		emit_signal("habilidad_fallida", carta, error_validacion)
+		return false
+
+	# Marca como usada SIEMPRE al intentar activar (evita reuso tras intento fallido)
+	carta.marcar_como_usada()
+	var ok: bool = _ejecutar_activa(carta.habilidad_id, carta, propietario, carta_objetivo)
 	if ok:
-		carta.marcar_como_usada()
 		emit_signal("habilidad_activada", carta, carta.habilidad_id)
 		# Los hechizos se descartan al usar su habilidad
 		if carta.tipo == Card.TIPO_HECHIZO:
@@ -56,16 +78,18 @@ func activar_habilidad_activa(carta: Card, propietario: String) -> bool:
 			var datos: Dictionary = _buscar_dict_por_id(p["hechizos"], carta.id)
 			if not datos.is_empty():
 				GameManager.enviar_al_cementerio(propietario, datos, "hechizos")
+	else:
+		emit_signal("habilidad_fallida", carta, "La habilidad no pudo ejecutarse")
 	return ok
 
 
-func _ejecutar_activa(id: int, carta: Card, propietario: String) -> bool:
+func _ejecutar_activa(id: int, carta: Card, propietario: String, carta_objetivo: Card = null) -> bool:
 	match id:
 		2:  return _hab_familia(carta, propietario)
 		3:  return _hab_sugestion(carta, propietario)
-		5:  return _hab_supresion_sacrificial(carta, propietario)
+		5:  return _hab_supresion_sacrificial(carta, propietario, carta_objetivo)
 		8:  return _hab_penitencia_racial(propietario)
-		15: return _hab_maldicion(propietario)
+		15: return _hab_maldicion(propietario, carta_objetivo)
 		16: return _hab_sudo_update(carta, propietario)
 		17: return _hab_reforjado(carta, propietario)
 		19: return _hab_mega_update(carta, propietario)
@@ -73,7 +97,7 @@ func _ejecutar_activa(id: int, carta: Card, propietario: String) -> bool:
 		22: return _hab_antivirus(propietario)
 		26: return _hab_heal(propietario)
 		27: return _hab_terremoto(propietario)
-		28: return _hab_otra_vez(propietario)
+		28: return _hab_otra_vez(propietario, carta_objetivo)
 		29: return _hab_paguitas(propietario)
 		30: return _hab_ligamento_cruzado(propietario)
 		_:
@@ -117,8 +141,8 @@ func _hab_sugestion(carta: Card, propietario: String) -> bool:
 
 # ── 5 · Supresión sacrificial ─────────────────────────────────────────────────
 # Esta carta obtiene las estadísticas y habilidad de la carta enemiga seleccionada.
-func _hab_supresion_sacrificial(carta: Card, propietario: String) -> bool:
-	var enemiga: Card = SelectionManager.carta_enemiga_seleccionada
+func _hab_supresion_sacrificial(carta: Card, propietario: String, carta_objetivo: Card = null) -> bool:
+	var enemiga: Card = carta_objetivo
 	if enemiga == null:
 		return false
 	carta.ataque_actual   = enemiga.ataque_actual
@@ -150,8 +174,8 @@ func _hab_penitencia_racial(propietario: String) -> bool:
 # ── 15 · Maldición ────────────────────────────────────────────────────────────
 # Reduce a la mitad (redondeando arriba) la vida de la carta enemiga seleccionada,
 # ignorando habilidades pasivas.
-func _hab_maldicion(propietario: String) -> bool:
-	var enemiga: Card = SelectionManager.carta_enemiga_seleccionada
+func _hab_maldicion(propietario: String, carta_objetivo: Card = null) -> bool:
+	var enemiga: Card = carta_objetivo
 	if enemiga == null:
 		return false
 	# ceil() para redondear arriba
@@ -167,24 +191,25 @@ func _hab_maldicion(propietario: String) -> bool:
 # evoluciona esta carta a "Hacker Experto" (id 29: atk 4, def 2, hab 22).
 func _hab_sudo_update(carta: Card, propietario: String) -> bool:
 	var p: Dictionary = GameManager._get_jugador(propietario)
-	var usb  := _buscar_dict_por_nombre(p["mano"], "USB Cifrado")
-	var desc := _buscar_dict_por_nombre(p["mano"], "Descifrador de datos")
+	var usb  := _buscar_dict_por_id(p["mano"], ID_USB_CIFRADO)
+	var desc := _buscar_dict_por_id(p["mano"], ID_DESCIFRADOR)
 	if usb.is_empty() or desc.is_empty():
 		return false
-	p["mano"].erase(usb)
-	p["mano"].erase(desc)
+	# Descarta por índice para evitar problemas con referencias duplicadas
+	var idx_usb:  int = p["mano"].find(usb)
+	var idx_desc: int = p["mano"].find(desc)
+	if idx_usb > idx_desc:
+		p["mano"].remove_at(idx_usb)
+		p["mano"].remove_at(idx_desc)
+	else:
+		p["mano"].remove_at(idx_desc)
+		p["mano"].remove_at(idx_usb)
 	p["cementerio"].append(usb)
 	p["cementerio"].append(desc)
-	carta.nombre           = "Hacker Experto"
-	carta.ataque_base      = 4
-	carta.ataque_actual    = 4
-	carta.defensa_base     = 2
-	carta.vida_actual      = max(carta.vida_actual, 2)
-	carta.habilidad_id     = 22
-	carta.habilidad_nombre      = "Antivirus"
-	carta.habilidad_descripcion = "Al activarse la habilidad, hace 1 de daño a todas las cartas enemigas que sean Futuristico."
-	carta.habilidad_es_pasiva   = false
-	carta._actualizar_textos()
+	# Actualiza el dict de monstruos con los nuevos datos
+	_actualizar_dict_monstruo(p, carta.id, ID_HACKER_EXPERTO)
+	# Emite señal para que GameUI haga la sustitución visual
+	emit_signal("carta_evolucionada", carta, ID_HACKER_EXPERTO, propietario)
 	print("[AbilityManager] Sudo Update: Hacker → Hacker Experto")
 	return true
 
@@ -194,21 +219,15 @@ func _hab_sudo_update(carta: Card, propietario: String) -> bool:
 # (id 25: atk 2, def 4, hab 19).
 func _hab_reforjado(carta: Card, propietario: String) -> bool:
 	var p: Dictionary = GameManager._get_jugador(propietario)
-	var robot := _buscar_dict_por_nombre(p["mano"], "Robot")
+	var robot := _buscar_dict_por_id(p["mano"], ID_ROBOT)
 	if robot.is_empty():
 		return false
-	p["mano"].erase(robot)
+	var idx_robot: int = p["mano"].find(robot)
+	if idx_robot >= 0:
+		p["mano"].remove_at(idx_robot)
 	p["cementerio"].append(robot)
-	carta.nombre           = "Robot Blindado"
-	carta.ataque_base      = 2
-	carta.ataque_actual    = 2
-	carta.defensa_base     = 4
-	carta.vida_actual      = max(carta.vida_actual, 4)
-	carta.habilidad_id     = 19
-	carta.habilidad_nombre      = "Mega Update"
-	carta.habilidad_descripcion = "Si Soldador y Canon de plasma estan en tu mano, las descartas y esta carta evoluciona a Robot Exterminador."
-	carta.habilidad_es_pasiva   = false
-	carta._actualizar_textos()
+	_actualizar_dict_monstruo(p, carta.id, ID_ROBOT_BLINDADO)
+	emit_signal("carta_evolucionada", carta, ID_ROBOT_BLINDADO, propietario)
 	print("[AbilityManager] Reforjado: carta → Robot Blindado")
 	return true
 
@@ -218,24 +237,25 @@ func _hab_reforjado(carta: Card, propietario: String) -> bool:
 # esta carta a "Robot Exterminador" (id 30: atk 5, def 3, hab 23).
 func _hab_mega_update(carta: Card, propietario: String) -> bool:
 	var p: Dictionary = GameManager._get_jugador(propietario)
-	var soldador := _buscar_dict_por_nombre(p["mano"], "Soldador")
-	var canon    := _buscar_dict_por_nombre(p["mano"], "Canon de plasma")
+	var soldador := _buscar_dict_por_id(p["mano"], ID_SOLDADOR)
+	var canon    := _buscar_dict_por_id(p["mano"], ID_CANON_PLASMA)
+
 	if soldador.is_empty() or canon.is_empty():
 		return false
-	p["mano"].erase(soldador)
-	p["mano"].erase(canon)
+	# Descarta por índice para evitar problemas con referencias
+	var idx_soldador: int = p["mano"].find(soldador)
+	var idx_canon:    int = p["mano"].find(canon)
+	# Eliminar el de mayor índice primero para no desplazar el otro
+	if idx_soldador > idx_canon:
+		p["mano"].remove_at(idx_soldador)
+		p["mano"].remove_at(idx_canon)
+	else:
+		p["mano"].remove_at(idx_canon)
+		p["mano"].remove_at(idx_soldador)
 	p["cementerio"].append(soldador)
 	p["cementerio"].append(canon)
-	carta.nombre           = "Robot Exterminador"
-	carta.ataque_base      = 5
-	carta.ataque_actual    = 5
-	carta.defensa_base     = 3
-	carta.vida_actual      = max(carta.vida_actual, 3)
-	carta.habilidad_id     = 23
-	carta.habilidad_nombre      = "Exterminator"
-	carta.habilidad_descripcion = "Si al recibir daño y este no es letal, mata instantáneamente a la carta atacante."
-	carta.habilidad_es_pasiva   = true
-	carta._actualizar_textos()
+	_actualizar_dict_monstruo(p, carta.id, ID_ROBOT_EXTERMINADOR)
+	emit_signal("carta_evolucionada", carta, ID_ROBOT_EXTERMINADOR, propietario)
 	print("[AbilityManager] Mega Update: carta → Robot Exterminador")
 	return true
 
@@ -300,8 +320,8 @@ func _hab_terremoto(propietario: String) -> bool:
 
 # ── 28 · Otra vez ─────────────────────────────────────────────────────────────
 # Una de tus cartas seleccionadas al azar hace su daño al enemigo seleccionado.
-func _hab_otra_vez(propietario: String) -> bool:
-	var enemiga: Card = SelectionManager.carta_enemiga_seleccionada
+func _hab_otra_vez(propietario: String, carta_objetivo: Card = null) -> bool:
+	var enemiga: Card = carta_objetivo
 	var aliadas: Array = []
 	for carta in get_tree().get_nodes_in_group("desplegadas"):
 		if carta is Card and carta.propietario == propietario and carta.tipo == Card.TIPO_MONSTRUO:
@@ -586,9 +606,110 @@ func comprobar_ligamento(_carta_nodo: Card, _propietario_defensor: String) -> vo
 	pass   # habilidad 30 pendiente (activa)
 
 
+
+# ═════════════════════════════════════════════
+#  VALIDACIÓN DE HABILIDADES ACTIVAS
+# ═════════════════════════════════════════════
+
+## Devuelve "" si la habilidad puede usarse, o un mensaje de error si no.
+func _validar_habilidad(id: int, propietario: String, carta_objetivo: Card) -> String:
+	var enemigo: String = "oponente" if propietario == "jugador" else "jugador"
+	var p_propio: Dictionary   = GameManager._get_jugador(propietario)
+	var p_enemigo: Dictionary  = GameManager._get_jugador(enemigo)
+
+	match id:
+		# ── Requieren carta enemiga seleccionada ────────────────────────────
+		5, 15, 28:
+			if carta_objetivo == null:
+				match id:
+					5:  return "Selecciona una carta enemiga para copiar sus estadísticas"
+					15: return "Selecciona una carta enemiga para aplicar la maldición"
+					28: return "Selecciona una carta enemiga como objetivo del ataque"
+
+		# ── Requieren cartas específicas en mano ────────────────────────────
+		16:
+			var tiene_usb:  bool = not _buscar_dict_por_id(p_propio["mano"], ID_USB_CIFRADO).is_empty()
+			var tiene_desc: bool = not _buscar_dict_por_id(p_propio["mano"], ID_DESCIFRADOR).is_empty()
+			if not tiene_usb and not tiene_desc:
+				return "Necesitas USB Cifrado (id %d) y Descifrador de datos (id %d) en la mano" % [ID_USB_CIFRADO, ID_DESCIFRADOR]
+			if not tiene_usb:
+				return "Necesitas USB Cifrado (id %d) en la mano" % ID_USB_CIFRADO
+			if not tiene_desc:
+				return "Necesitas Descifrador de datos (id %d) en la mano" % ID_DESCIFRADOR
+
+		17:
+			if _buscar_dict_por_id(p_propio["mano"], ID_ROBOT).is_empty():
+				return "Necesitas Robot (id %d) en la mano" % ID_ROBOT
+
+		19:
+			var tiene_soldador: bool = not _buscar_dict_por_id(p_propio["mano"], ID_SOLDADOR).is_empty()
+			var tiene_canon:    bool = not _buscar_dict_por_id(p_propio["mano"], ID_CANON_PLASMA).is_empty()
+			if not tiene_soldador and not tiene_canon:
+				return "Necesitas Soldador (id %d) y Canon de plasma (id %d) en la mano" % [ID_SOLDADOR, ID_CANON_PLASMA]
+			if not tiene_soldador:
+				return "Necesitas Soldador (id %d) en la mano" % ID_SOLDADOR
+			if not tiene_canon:
+				return "Necesitas Canon de plasma (id %d) en la mano" % ID_CANON_PLASMA
+
+		# ── Requieren Slimes en el campo ────────────────────────────────────
+		2, 3:
+			var hay_slime: bool = false
+			for carta in get_tree().get_nodes_in_group("desplegadas"):
+				if carta is Card and int(carta.id) in IDS_SLIME:
+					hay_slime = true
+					break
+			if not hay_slime:
+				if id == 2:
+					return "No hay Slimes desplegados en el campo"
+				else:
+					return "No hay Slimes desplegados en el campo"
+
+		# ── Requieren cartas enemigas con expansión específica ───────────────
+		8:
+			var hay_no_juguete: bool = false
+			for carta in get_tree().get_nodes_in_group("desplegadas"):
+				if carta is Card and carta.propietario == enemigo and carta.expansion != "Juguetes":
+					hay_no_juguete = true
+					break
+			if not hay_no_juguete:
+				return "No hay cartas enemigas que no sean Juguetes"
+
+		22:
+			var hay_futuristico: bool = false
+			for carta in get_tree().get_nodes_in_group("desplegadas"):
+				if carta is Card and carta.propietario == enemigo and carta.expansion == "Futuristico":
+					hay_futuristico = true
+					break
+			if not hay_futuristico:
+				return "No hay cartas enemigas de expansión Futuristico"
+
+		# ── Terremoto: requiere que haya algo que atacar (monstruo o jugador) ──
+		27:
+			# Siempre se puede usar: si no hay monstruos el daño va al jugador enemigo
+			if p_enemigo.is_empty():
+				return "No hay oponente al que atacar"
+
+		# ── Sin comprobación ────────────────────────────────────────────────
+		21, 26, 29, 30:
+			pass
+
+	return ""
+
+
 # ═════════════════════════════════════════════
 #  HELPERS INTERNOS
 # ═════════════════════════════════════════════
+
+## Actualiza el dict de la carta en p["monstruos"] con los datos de la carta nueva
+func _actualizar_dict_monstruo(p: Dictionary, id_viejo: int, id_nuevo: int) -> void:
+	var datos_nuevos: Dictionary = CardLoader.get_carta(id_nuevo)
+	if datos_nuevos.is_empty():
+		return
+	for i in p["monstruos"].size():
+		if int(p["monstruos"][i].get("id", -1)) == id_viejo:
+			p["monstruos"][i] = datos_nuevos
+			break
+
 
 func _buscar_dict_por_nombre(lista: Array, nombre: String) -> Dictionary:
 	for c in lista:
