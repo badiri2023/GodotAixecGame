@@ -67,18 +67,33 @@ func activar_habilidad_activa(carta: Card, propietario: String, carta_objetivo: 
 		emit_signal("habilidad_fallida", carta, error_validacion)
 		return false
 
-	# Marca como usada SIEMPRE al intentar activar (evita reuso tras intento fallido)
-	carta.marcar_como_usada()
+	# Para hechizos NO marcamos como usada (se van al cementerio igualmente)
+	# Para monstruos sí marcamos siempre para evitar reuso
+	if carta.tipo != Card.TIPO_HECHIZO:
+		carta.marcar_como_usada()
+
 	var ok: bool = _ejecutar_activa(carta.habilidad_id, carta, propietario, carta_objetivo)
 	if ok:
 		emit_signal("habilidad_activada", carta, carta.habilidad_id)
-		# Los hechizos se descartan al usar su habilidad
+		# Los hechizos se descartan usando el índice del nodo en p["hechizos"]
 		if carta.tipo == Card.TIPO_HECHIZO:
 			var p: Dictionary = GameManager._get_jugador(propietario)
-			var datos: Dictionary = _buscar_dict_por_id(p["hechizos"], carta.id)
-			if not datos.is_empty():
-				GameManager.enviar_al_cementerio(propietario, datos, "hechizos")
+			# Busca el índice del hechizo por id para soportar duplicados
+			var idx_hechizo: int = -1
+			for i in p["hechizos"].size():
+				if int(p["hechizos"][i].get("id", -1)) == carta.id:
+					idx_hechizo = i
+					break
+			if idx_hechizo >= 0:
+				var datos: Dictionary = p["hechizos"][idx_hechizo]
+				p["hechizos"].remove_at(idx_hechizo)
+				p["cementerio"].append(datos)
+				# Emite la señal correctamente en Godot 4
+				GameManager.carta_enviada_al_cementerio.emit(propietario, datos)
+				# Comprueba derrota por si se quedó sin cartas
+				GameManager._comprobar_derrota_sin_cartas(propietario)
 	else:
+		# Si falla y era monstruo, la marca ya fue puesta — no pasa nada
 		emit_signal("habilidad_fallida", carta, "La habilidad no pudo ejecutarse")
 	return ok
 
@@ -723,3 +738,53 @@ func _buscar_dict_por_id(lista: Array, card_id: int) -> Dictionary:
 		if int(c.get("id", -1)) == card_id:
 			return c
 	return {}
+
+
+## Devuelve el índice en p["hechizos"] que corresponde al nodo carta según
+## el orden visual de sus slots (SlotHechizos1→0, SlotHechizos2→1, SlotHechizos3→2).
+func _get_indice_hechizo_por_nodo(carta: Card, propietario: String) -> int:
+	# Busca en la escena el slot que contiene este nodo
+	var raiz: Node = get_tree().get_root()
+	var zona: String = "Jugador" if propietario == "jugador" else "Oponente"
+	var despliegue: String = "DespliegueJugador" if propietario == "jugador" else "DespliegueOponente"
+	var base: Node = null
+	# Busca el nodo base recursivamente
+	for n in raiz.get_children():
+		var encontrado: Node = _buscar_nodo_por_ruta(n, zona + "/" + despliegue)
+		if encontrado:
+			base = encontrado
+			break
+	if base == null:
+		return 0  # fallback: primer hechizo
+
+	# Recorre los slots de hechizos en orden y encuentra cuál contiene este nodo
+	var slot_index: int = 0
+	for hijo in base.get_children():
+		var slots_en_hijo: Array = []
+		if "Slot" in hijo.name and "Hechizo" in hijo.name:
+			slots_en_hijo.append(hijo)
+		else:
+			for nieto in hijo.get_children():
+				if "Slot" in nieto.name and "Hechizo" in nieto.name:
+					slots_en_hijo.append(nieto)
+		for slot in slots_en_hijo:
+			for c in slot.get_children():
+				if c == carta:
+					return slot_index
+			slot_index += 1
+	return 0
+
+
+func _buscar_nodo_por_ruta(nodo: Node, ruta: String) -> Node:
+	var partes: Array = ruta.split("/")
+	var actual: Node = nodo
+	for parte in partes:
+		var encontrado: Node = null
+		for hijo in actual.get_children():
+			if hijo.name == parte:
+				encontrado = hijo
+				break
+		if encontrado == null:
+			return null
+		actual = encontrado
+	return actual

@@ -260,28 +260,37 @@ func _on_carta_al_cementerio(quien: String, carta: Dictionary) -> void:
 	_añadir_log("%s → cementerio: '%s'" % [quien.capitalize(), carta.get("name", carta.get("nombre","???"))])
 	var card_id: int = int(carta.get("id", -1))
 	var cementerio: HBoxContainer = jugador_cementerio if quien == "jugador" else oponente_cementerio
+	print("[GameUI] _on_carta_al_cementerio id=%d quien=%s" % [card_id, quien])
 
-	# Comprueba si el nodo ya está en el cementerio (lo movió _on_carta_nodo_muerta)
+	# Cuenta cuántas veces debería estar este id en el cementerio (según estado interno)
+	var esperados_en_cementerio: int = 0
+	var p_check: Dictionary = GameManager._get_jugador(quien)
+	for c in p_check["cementerio"]:
+		if int(c.get("id", -1)) == card_id:
+			esperados_en_cementerio += 1
+
+	# Cuenta cuántos nodos con ese id ya hay visualmente en el cementerio
+	var actuales_en_cementerio: int = 0
 	for nodo in cementerio.get_children():
 		if nodo is Card and nodo.id == card_id:
-			return   # ya está, nada que hacer
+			actuales_en_cementerio += 1
 
-	# Busca el nodo en los slots desplegados por ID (con int() para floats del JSON)
+	# Si ya hay suficientes visualmente, no hacer nada
+	if actuales_en_cementerio >= esperados_en_cementerio:
+		return
+
+	# Busca el nodo en todos los slots directamente.
+	# Buscamos en los slots físicos (no en el grupo) para manejar correctamente
+	# múltiples instancias del mismo ID (hechizos duplicados).
 	var nodo_en_slot: Card = null
-	for nodo in get_tree().get_nodes_in_group("desplegadas"):
-		if nodo is Card and int(nodo.id) == card_id and nodo.propietario == quien:
-			nodo_en_slot = nodo
-			break
-	# Si no lo encontró en el grupo, busca en todos los slots directamente
-	if nodo_en_slot == null:
-		var todos_slots: Array = _get_todos_los_slots(quien)
-		for slot in todos_slots:
-			for hijo in slot.get_children():
-				if hijo is Card and int(hijo.id) == card_id:
-					nodo_en_slot = hijo
-					break
-			if nodo_en_slot != null:
+	var todos_slots: Array = _get_todos_los_slots(quien)
+	for slot in todos_slots:
+		for hijo in slot.get_children():
+			if hijo is Card and int(hijo.id) == card_id:
+				nodo_en_slot = hijo
 				break
+		if nodo_en_slot != null:
+			break
 
 	if nodo_en_slot != null:
 		_mover_nodo_a_cementerio(nodo_en_slot, cementerio)

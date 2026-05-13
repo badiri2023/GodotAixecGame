@@ -5,15 +5,13 @@ const API_BASE = "http://aixec.eu-north-1.elasticbeanstalk.com/api"
 
 var _cargando: bool = false
 
-@onready var email_input = $VBoxContainer/EmailInput
-@onready var password_input = $VBoxContainer/PasswordInput
-@onready var boton_login = $VBoxContainer/BotonLogin
-@onready var label_error = $VBoxContainer/LabelError
-@onready var spinner = $VBoxContainer/Spinner
+@onready var email_input = $EmailInput
+@onready var password_input = $PasswordInput
+@onready var boton_login = $BotonLogin
+@onready var label_error = $LabelError
 
 func _ready() -> void:
 	label_error.visible = false
-	spinner.visible = false
 	boton_login.pressed.connect(_on_login_pressed)
 
 func _on_login_pressed() -> void:
@@ -97,7 +95,6 @@ func _obtener_mazos_y_entrar_al_juego() -> void:
 
 func _on_mazos_recibidos(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
-	_set_cargando(false) # Ahora sí dejamos de mostrar el spinner
 
 	if response_code == 200:
 		var respuesta = JSON.parse_string(body.get_string_from_utf8())
@@ -187,7 +184,6 @@ func _mostrar_error(mensaje: String) -> void:
 func _set_cargando(estado: bool) -> void:
 	_cargando = estado
 	boton_login.disabled = estado
-	spinner.visible = estado
 	boton_login.text = "Iniciando sesión..." if estado else "ENTRAR"
 	if estado:
 		label_error.visible = false
