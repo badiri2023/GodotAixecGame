@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://dhwvavyl2l072" path="res://scripts/Partida/CardDragDrop.gd" id="1_aug50"]
 [ext_resource type="Script" uid="uid://bwh8wj0fwb73g" path="res://scripts/Online/getCardsJson.gd" id="1_ibkli"]
-[ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/icons/OptionsIcon.png" id="1_qbsmt"]
 [ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_kiw3p"]
 [ext_resource type="Texture2D" uid="uid://ccp1wvmvna82i" path="res://assets/PlayerProfile.jpg" id="4_g4kob"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
+[ext_resource type="Texture2D" uid="uid://cyb0d6q8e0jqn" path="res://assets/icons/ExitIcon.png" id="7_3xj3m"]
 [ext_resource type="Texture2D" uid="uid://d25ytnlccxn0s" path="res://assets/BotProfile.jpg" id="7_qy1jj"]
 [ext_resource type="AudioStream" uid="uid://cfm7efehisl0q" path="res://assets/audio/battleMusic.ogg" id="8_400sg"]
+[ext_resource type="Script" uid="uid://ik4pg42os3d" path="res://scripts/Partida/ExitButton.gd" id="8_qy1jj"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_78awf"]
 font_size = 25
@@ -79,8 +80,8 @@ font_size = 19
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_aug50")
-metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0, 1410.0, 1420.0, 1670.0, 1660.0, 510.0, 500.0, 250.0, 260.0]
-metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0, 1070.0, 1060.0, 260.0, 250.0]
+metadata/_edit_vertical_guides_ = [965.0, 970.0, 1130.0, 1135.0, 1295.0, 1300.0, 1460.0, 1465.0, 1610.0, 1605.0, 310.0, 315.0, 605.0, 600.0, 435.0, 430.0, 1410.0, 1420.0, 1670.0, 1660.0, 510.0, 500.0, 250.0, 260.0, 1220.0, 1400.0]
+metadata/_edit_horizontal_guides_ = [555.0, 560.0, 795.0, 790.0, 550.0, 800.0, 605.0, 610.0, 660.0, 665.0, 695.0, 700.0, 530.0, 525.0, 285.0, 280.0, 1070.0, 1060.0, 260.0, 250.0, 980.0, 990.0]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=442855573]
 stream = ExtResource("8_400sg")
@@ -355,10 +356,10 @@ offset_bottom = 245.0
 
 [node name="DisponiblesOrganizador" type="HBoxContainer" parent="Jugador/ManoJugador/DisponiblesPanel" unique_id=2065186602]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 940.0
-offset_bottom = 235.0
+offset_left = 25.0
+offset_top = 14.0
+offset_right = 960.0
+offset_bottom = 244.0
 theme_override_constants/separation = 41
 
 [node name="DespliegueJugador" type="Panel" parent="Jugador" unique_id=1553447372]
@@ -501,15 +502,16 @@ offset_bottom = 285.0
 scale = Vector2(0.826, 0.826)
 theme_override_constants/separation = -72
 
-[node name="Opciones" type="Button" parent="Jugador" unique_id=1225897864]
-offset_left = 1325.0
-offset_top = 995.0
+[node name="ExitButton" type="Button" parent="Jugador" unique_id=1225897864]
+offset_left = 1220.0
+offset_top = 990.0
 offset_right = 1400.0
 offset_bottom = 1070.0
-icon = ExtResource("1_qbsmt")
+icon = ExtResource("7_3xj3m")
 flat = true
 icon_alignment = 1
 expand_icon = true
+script = ExtResource("8_qy1jj")
 
 [node name="AcabarTurno" type="Button" parent="Jugador" unique_id=584842421]
 offset_left = 1220.0
