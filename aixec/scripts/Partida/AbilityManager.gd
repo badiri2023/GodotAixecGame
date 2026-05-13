@@ -9,6 +9,7 @@ extends Node
 signal habilidad_activada(carta, habilidad_id: int)
 signal habilidad_fallida(carta, razon: String)
 signal carta_evolucionada(carta_vieja: Card, id_nueva: int, propietario: String)
+signal hechizo_usado(nodo: Card)   ## emitida con el nodo exacto para moverlo al cementerio
 
 
 # ═════════════════════════════════════════════
@@ -88,8 +89,8 @@ func activar_habilidad_activa(carta: Card, propietario: String, carta_objetivo: 
 				var datos: Dictionary = p["hechizos"][idx_hechizo]
 				p["hechizos"].remove_at(idx_hechizo)
 				p["cementerio"].append(datos)
-				# Emite la señal correctamente en Godot 4
-				GameManager.carta_enviada_al_cementerio.emit(propietario, datos)
+				# Emite señal con el nodo exacto para que GameUI mueva el slot correcto
+				emit_signal("hechizo_usado", carta)
 				# Comprueba derrota por si se quedó sin cartas
 				GameManager._comprobar_derrota_sin_cartas(propietario)
 	else:

@@ -141,6 +141,7 @@ func _conectar_botones() -> void:
 	AbilityManager.habilidad_fallida.connect(_on_habilidad_fallida)
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
 	AbilityManager.carta_evolucionada.connect(_on_carta_evolucionada)
+	AbilityManager.hechizo_usado.connect(_on_hechizo_usado)
 	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
 	# Texto por defecto del botón habilidad
 	boton_habilidad.text = "Habilidad"
@@ -260,8 +261,6 @@ func _on_carta_al_cementerio(quien: String, carta: Dictionary) -> void:
 	_añadir_log("%s → cementerio: '%s'" % [quien.capitalize(), carta.get("name", carta.get("nombre","???"))])
 	var card_id: int = int(carta.get("id", -1))
 	var cementerio: HBoxContainer = jugador_cementerio if quien == "jugador" else oponente_cementerio
-	print("[GameUI] _on_carta_al_cementerio id=%d quien=%s" % [card_id, quien])
-
 	# Cuenta cuántas veces debería estar este id en el cementerio (según estado interno)
 	var esperados_en_cementerio: int = 0
 	var p_check: Dictionary = GameManager._get_jugador(quien)
@@ -556,6 +555,13 @@ func _on_botones_actualizados(atacar_disabled: bool, habilidad_disabled: bool, n
 	boton_habilidad.disabled = habilidad_disabled
 	# Muestra el nombre de la habilidad activa en el botón, o el texto por defecto
 	boton_habilidad.text = nombre_habilidad if nombre_habilidad != "" else "Habilidad"
+
+
+func _on_hechizo_usado(nodo: Card) -> void:
+	# Mueve el nodo exacto del hechizo usado al cementerio del propietario
+	var cementerio_h: HBoxContainer = jugador_cementerio if nodo.propietario == "jugador" \
+										else oponente_cementerio
+	_mover_nodo_a_cementerio(nodo, cementerio_h)
 
 
 func _on_carta_evolucionada(carta_vieja: Card, id_nueva: int, propietario: String) -> void:
