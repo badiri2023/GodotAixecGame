@@ -356,10 +356,10 @@ offset_bottom = 245.0
 
 [node name="DisponiblesOrganizador" type="HBoxContainer" parent="Jugador/ManoJugador/DisponiblesPanel" unique_id=2065186602]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 14.0
-offset_right = 960.0
-offset_bottom = 244.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 940.0
+offset_bottom = 235.0
 theme_override_constants/separation = 41
 
 [node name="DespliegueJugador" type="Panel" parent="Jugador" unique_id=1553447372]
