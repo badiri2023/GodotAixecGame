@@ -135,7 +135,10 @@ func _terminar_partida(ganador: String) -> void:
 	# --- NOTIFICAR AL SERVIDOR ---
 	_comunicar_resultado_al_servidor(ganador)
 	
-	get_tree().change_scene_to_file("res://scenes/Win.tscn")
+	if ganador == "jugador":
+		get_tree().change_scene_to_file("res://scenes/Win.tscn")
+	else:
+		get_tree().change_scene_to_file("res://scenes/Lose.tscn")
 
 func _comunicar_resultado_al_servidor(ganador: String) -> void:
 	var http = HTTPRequest.new()

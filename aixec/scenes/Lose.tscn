@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://vh76he45p2bk"]
+[gd_scene format=3 uid="uid://3tsicrvh6ddy"]
 
-[ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="1_24ius"]
-[ext_resource type="Script" uid="uid://dw4n1r16gj7ls" path="res://scripts/Partida/Result.gd" id="1_gq6tj"]
-[ext_resource type="AudioStream" uid="uid://7fce5bq5bo8o" path="res://assets/audio/victoria.ogg" id="2_gq6tj"]
+[ext_resource type="Script" uid="uid://dw4n1r16gj7ls" path="res://scripts/Partida/Result.gd" id="1_rvafb"]
+[ext_resource type="AudioStream" uid="uid://0xcawndjn3ru" path="res://assets/audio/derrota.ogg" id="2_rvafb"]
+[ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="3_s1xwk"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_24ius"]
 font_size = 150
@@ -16,12 +16,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_gq6tj")
+script = ExtResource("1_rvafb")
 metadata/_edit_vertical_guides_ = [350.0, 1570.0]
 metadata/_edit_horizontal_guides_ = [249.0, 460.0, 830.0, 650.0]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=391264983]
-stream = ExtResource("2_gq6tj")
+stream = ExtResource("2_rvafb")
 volume_db = -40.0
 autoplay = true
 
@@ -30,7 +30,7 @@ layout_mode = 0
 offset_top = 1.0
 offset_right = 1920.0
 offset_bottom = 1081.0
-texture = ExtResource("1_24ius")
+texture = ExtResource("3_s1xwk")
 
 [node name="Label" type="Label" parent="." unique_id=411121457]
 layout_mode = 0
@@ -38,7 +38,7 @@ offset_left = 350.0
 offset_top = 249.0
 offset_right = 1570.0
 offset_bottom = 460.0
-text = "HAS GANADO"
+text = "HAS PERDIDO"
 label_settings = SubResource("LabelSettings_24ius")
 horizontal_alignment = 1
 vertical_alignment = 1
