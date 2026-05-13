@@ -148,24 +148,24 @@ func _comunicar_resultado_al_servidor(ganador: String) -> void:
 	var datos = {"Win": gano_jugador}
 	var cuerpo = JSON.stringify(datos)
 	
-	print("📡 Enviando a: ", url)
-	print("📦 Cuerpo: ", cuerpo)
+	print("Enviando a: ", url)
+	print("Cuerpo: ", cuerpo)
 	
 	var error = http.request(url, headers, HTTPClient.METHOD_POST, cuerpo)
 	
 	if error != OK:
-		print("❌ No se pudo realizar la petición HTTP")
+		print("No se pudo realizar la petición HTTP")
 		http.queue_free()
 		return
 
 	http.request_completed.connect(func(_result, code, _headers, body):
 		if code == 200:
 			var res = JSON.parse_string(body.get_string_from_utf8())
-			print("✅ Recompensa cobrada. Nuevo saldo: ", res.get("nuevoSaldo"))
+			print("Recompensa cobrada. Nuevo saldo: ", res.get("nuevoSaldo"))
 		else:
 			# Si hay error, imprimimos el código y el texto que devuelva el servidor
 			var error_text = body.get_string_from_utf8()
-			print("❌ Error ", code, " al recibir recompensa: ", error_text)
+			print("Error ", code, " al recibir recompensa: ", error_text)
 		
 		http.queue_free()
 	)
