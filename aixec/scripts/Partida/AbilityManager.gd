@@ -10,6 +10,7 @@ signal habilidad_activada(carta, habilidad_id: int)
 signal habilidad_fallida(carta, razon: String)
 signal carta_evolucionada(carta_vieja: Card, id_nueva: int, propietario: String)
 signal hechizo_usado(nodo: Card)   ## emitida con el nodo exacto para moverlo al cementerio
+signal cartas_baraja_al_cementerio(cartas: Array, propietario: String)  ## cartas descartadas de baraja sin nodo instanciado
 
 
 # ═════════════════════════════════════════════
@@ -323,10 +324,16 @@ func _hab_terremoto(propietario: String) -> bool:
 				enemigas.append(carta)
 		if not enemigas.is_empty():
 			var objetivo: Card = enemigas[randi() % enemigas.size()]
+			var vida_antes: int = objetivo.vida_actual
 			objetivo.recibir_danyo(2)
 			print("[AbilityManager] Terremoto: 2 daño a '%s'" % objetivo.nombre)
+			# Daño sobrante al jugador enemigo
+			if objetivo.vida_actual <= 0:
+				var sobrante: int = 2 - vida_antes
+				if sobrante > 0:
+					GameManager.aplicar_danyo(enemigo, sobrante)
+					print("[AbilityManager] Terremoto sobrante: %d daño al jugador" % sobrante)
 		else:
-			# Sin monstruos → daño directo igualmente
 			GameManager.aplicar_danyo(enemigo, 1)
 			print("[AbilityManager] Terremoto: sin monstruos, 1 daño directo")
 	else:
@@ -336,26 +343,36 @@ func _hab_terremoto(propietario: String) -> bool:
 
 
 # ── 28 · Otra vez ─────────────────────────────────────────────────────────────
-# Una de tus cartas seleccionadas al azar hace su daño al enemigo seleccionado.
+# La carta del primer slot de monstruos hace su daño al enemigo seleccionado.
+# El daño sobrante se aplica al jugador enemigo.
 func _hab_otra_vez(propietario: String, carta_objetivo: Card = null) -> bool:
-	var enemiga: Card = carta_objetivo
-	var aliadas: Array = []
+	var enemigo: String = "oponente" if propietario == "jugador" else "jugador"
+	# Busca la primera carta monstruo del propietario en orden de slots
+	var atacante: Card = null
 	for carta in get_tree().get_nodes_in_group("desplegadas"):
 		if carta is Card and carta.propietario == propietario and carta.tipo == Card.TIPO_MONSTRUO:
-			aliadas.append(carta)
-	if aliadas.is_empty():
+			atacante = carta
+			break   # primer slot de monstruos
+	if atacante == null:
 		return false
-	var atacante: Card = aliadas[randi() % aliadas.size()]
-	if enemiga != null:
-		enemiga.recibir_danyo(atacante.ataque_actual)
+	var danyo: int = atacante.ataque_actual
+	if carta_objetivo != null:
+		# Ataque a carta enemiga con sobrante
+		var vida_antes: int = carta_objetivo.vida_actual
+		carta_objetivo.recibir_danyo(danyo)
 		print("[AbilityManager] Otra vez: '%s' hace %d daño a '%s'" % [
-			atacante.nombre, atacante.ataque_actual, enemiga.nombre
+			atacante.nombre, danyo, carta_objetivo.nombre
 		])
+		if carta_objetivo.vida_actual <= 0:
+			var sobrante: int = danyo - vida_antes
+			if sobrante > 0:
+				GameManager.aplicar_danyo(enemigo, sobrante)
+				print("[AbilityManager] Otra vez sobrante: %d daño al jugador" % sobrante)
 	else:
-		var enemigo: String = "oponente" if propietario == "jugador" else "jugador"
-		GameManager.aplicar_danyo(enemigo, atacante.ataque_actual)
+		# Sin objetivo: daño directo al jugador enemigo
+		GameManager.aplicar_danyo(enemigo, danyo)
 		print("[AbilityManager] Otra vez: '%s' hace %d daño directo" % [
-			atacante.nombre, atacante.ataque_actual
+			atacante.nombre, danyo
 		])
 	return true
 
@@ -413,6 +430,9 @@ func _descartar_contratos_malditos(p: Dictionary, propietario: String) -> void:
 	for c in ids_baraja:
 		p["baraja"].erase(c)
 		p["cementerio"].append(c)
+	# Notifica a GameUI para instanciar y mover al cementerio visualmente
+	if not ids_baraja.is_empty():
+		emit_signal("cartas_baraja_al_cementerio", ids_baraja, propietario)
 
 	# Mano: elimina todos los id 40 (recoge índices primero)
 	var indices_mano: Array = []

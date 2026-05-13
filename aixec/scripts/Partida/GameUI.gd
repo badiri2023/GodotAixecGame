@@ -142,6 +142,7 @@ func _conectar_botones() -> void:
 	AbilityManager.habilidad_activada.connect(_on_habilidad_activada)
 	AbilityManager.carta_evolucionada.connect(_on_carta_evolucionada)
 	AbilityManager.hechizo_usado.connect(_on_hechizo_usado)
+	AbilityManager.cartas_baraja_al_cementerio.connect(_on_cartas_baraja_al_cementerio)
 	AbilityManager.ligamento_activado.connect(_on_ligamento_activado)
 	SelectionManager.botones_actualizados.connect(_on_botones_actualizados)
 	# Texto por defecto del botón habilidad
@@ -592,6 +593,15 @@ func _sincronizar_mano_visual(propietario: String) -> void:
 			a_mover.append(hijo)
 	for nodo in a_mover:
 		_mover_nodo_a_cementerio(nodo, cem)
+	_actualizar_baraja_ui(propietario)
+
+
+func _on_cartas_baraja_al_cementerio(cartas: Array, propietario: String) -> void:
+	# Instancia cada carta y la mete directamente al cementerio visual
+	var cementerio: HBoxContainer = jugador_cementerio if propietario == "jugador" \
+									else oponente_cementerio
+	for datos in cartas:
+		_instanciar_carta_en_cementerio(propietario, datos)
 	_actualizar_baraja_ui(propietario)
 
 

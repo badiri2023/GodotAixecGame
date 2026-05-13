@@ -82,3 +82,4 @@ vertical_alignment = 1
 stream = ExtResource("3_gpj6k")
 volume_db = -40.0
 autoplay = true
+parameters/looping = true

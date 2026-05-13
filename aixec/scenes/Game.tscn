@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://f0l6vw7mbypo" path="res://assets/icons/OptionsIcon.png" id="1_qbsmt"]
 [ext_resource type="Script" uid="uid://dh8ykyteddxk2" path="res://scripts/Partida/GameUI.gd" id="2_aug50"]
 [ext_resource type="Texture2D" uid="uid://blwtxexevibup" path="res://assets/Background.png" id="2_kiw3p"]
+[ext_resource type="Texture2D" uid="uid://wrhl0fgvf4ps" path="res://assets/playerPofile.jpg" id="4_g4kob"]
 [ext_resource type="PackedScene" uid="uid://d4is8qq1stbge" path="res://scenes/CardReverse.tscn" id="5_s0nni"]
 [ext_resource type="AudioStream" uid="uid://cfm7efehisl0q" path="res://assets/audio/battleMusic.ogg" id="8_400sg"]
 
@@ -245,9 +246,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_s0nni")
 
 [node name="ImagenJugador" type="TextureRect" parent="Jugador/InfoJugador/ImgPanel" unique_id=1397209794]
 layout_mode = 0
-offset_right = 230.0
+offset_left = -26.0
+offset_right = 262.0
 offset_bottom = 230.0
-texture = ExtResource("1_cpr0p")
+texture = ExtResource("4_g4kob")
+expand_mode = 2
 
 [node name="ManoJugador" type="Panel" parent="Jugador" unique_id=828836975]
 offset_left = 10.0
@@ -835,3 +838,4 @@ script = ExtResource("1_ibkli")
 stream = ExtResource("8_400sg")
 volume_db = -40.0
 autoplay = true
+parameters/looping = true
