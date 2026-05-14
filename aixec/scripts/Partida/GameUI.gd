@@ -230,6 +230,13 @@ func _on_turno_cambiado(turno: String) -> void:
 	tiempo_restante_panel.visible = false
 	boton_reportar.visible        = false
 	SelectionManager.deseleccionar_todo()
+	# Paciencia: acumula ataque en cartas que no atacaron durante el turno que acaba de pasar
+	var turno_que_termino: String = "oponente" if turno == "jugador" else "jugador"
+	AbilityManager.tick_paciencia(turno_que_termino)
+	# Resetea usada_este_turno para las cartas del jugador que empieza su turno
+	for carta in get_tree().get_nodes_in_group("desplegadas"):
+		if carta is Card and carta.propietario == turno:
+			carta.resetear_turno()
 
 
 
@@ -463,6 +470,30 @@ func _on_carta_nodo_muerta(carta: Card) -> void:
 	var cementerio: HBoxContainer = jugador_cementerio if carta.propietario == "jugador" \
 										else oponente_cementerio
 	_mover_nodo_a_cementerio(carta, cementerio)
+	# Actualiza el estado interno de GameManager si la carta estaba en monstruos/hechizos
+	var propietario: String = carta.propietario
+	var p: Dictionary = GameManager._get_jugador(propietario)
+	var origen: String = ""
+	for zona in ["monstruos", "hechizos"]:
+		for c in p[zona]:
+			if int(c.get("id", -1)) == carta.id:
+				origen = zona
+				break
+		if origen != "":
+			break
+	if origen != "":
+		# Busca por id directamente (claves pueden ser en inglés o español)
+		var idx: int = -1
+		for i in p[origen].size():
+			if int(p[origen][i].get("id", -1)) == carta.id:
+				idx = i
+				break
+		if idx >= 0:
+			var datos: Dictionary = p[origen][idx]
+			p[origen].remove_at(idx)
+			p["cementerio"].append(datos)
+			carta.remove_from_group("desplegadas")
+			GameManager._comprobar_derrota_sin_cartas(propietario)
 
 
 ## Conecta la señal carta_muerta a un nodo Card (usado por BotManager y CardDragDrop)

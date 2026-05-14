@@ -510,13 +510,16 @@ func pre_ataque(atacante: Card, defensor: Card, danyo: int) -> Dictionary:
 		"anular_danyo_defensor":  false,
 	}
 
-	# ── 24 · Antiabductor (defensor) ─────────────────────────────────────────
-	# 1% de anular todo el daño
-	if defensor.habilidad_id == 24:
-		if randf() <= 0.01:
-			print("[AbilityManager] Antiabductor: daño anulado en '%s'" % defensor.nombre)
-			resultado["cancelar"] = true
-			return resultado
+	# ── 24 · Antiabductor (cualquier carta del propietario defensor) ───────────
+	# 1% de anular todo el daño si cualquier carta desplegada del defensor tiene esta habilidad
+	var propietario_defensor_str: String = defensor.propietario
+	for c in get_tree().get_nodes_in_group("desplegadas"):
+		if c is Card and c.propietario == propietario_defensor_str and c.habilidad_id == 24:
+			if randf() <= 0.01:
+				print("[AbilityManager] Antiabductor: daño anulado por '%s'" % c.nombre)
+				resultado["cancelar"] = true
+				return resultado
+			break   # Solo se tira una vez aunque haya varias cartas con la habilidad
 
 	# ── 4 · Resiliencia (defensor) ────────────────────────────────────────────
 	# Si el daño no es letal, la carta no recibe daño
@@ -583,7 +586,7 @@ func post_ataque(atacante: Card, defensor: Card, danyo_aplicado: int,
 				print("[AbilityManager] Firewall: 1 daño a '%s'" % carta.nombre)
 
 	# ── 20 · Troyan (atacante) ────────────────────────────────────────────────
-	# También hace 2 de daño a un enemigo aleatorio en el campo
+	# También hace 2 de daño a un enemigo aleatorio en el campo, con sobrante al jugador
 	if atacante.habilidad_id == 20:
 		var enemigas: Array = []
 		for carta in get_tree().get_nodes_in_group("desplegadas"):
@@ -591,20 +594,46 @@ func post_ataque(atacante: Card, defensor: Card, danyo_aplicado: int,
 				enemigas.append(carta)
 		if not enemigas.is_empty():
 			var objetivo: Card = enemigas[randi() % enemigas.size()]
+			var vida_antes: int = objetivo.vida_actual
 			objetivo.recibir_danyo(2)
 			print("[AbilityManager] Troyan: 2 daño a '%s'" % objetivo.nombre)
+			# Daño sobrante al jugador enemigo
+			if objetivo.vida_actual <= 0:
+				var sobrante: int = 2 - vida_antes
+				if sobrante > 0:
+					GameManager.aplicar_danyo(propietario_defensor, sobrante)
+					print("[AbilityManager] Troyan sobrante: %d daño al jugador" % sobrante)
+		else:
+			# Sin cartas enemigas, daño directo al jugador
+			GameManager.aplicar_danyo(propietario_defensor, 2)
+			print("[AbilityManager] Troyan: 2 daño directo al jugador")
 
-	# ── 25 · Ataque sorpresa (atacante) ───────────────────────────────────────
-	# Hace 1 de daño a una carta enemiga aleatoria
-	if atacante.habilidad_id == 25:
-		var enemigas: Array = []
+	# ── 25 · Ataque sorpresa ──────────────────────────────────────────────────
+	# Cuando cualquier carta del atacante ataca, si hay una carta con hab 25 desplegada,
+	# hace 1 daño a una carta enemiga aleatoria (con sobrante al jugador)
+	var tiene_ataque_sorpresa: bool = false
+	for c in get_tree().get_nodes_in_group("desplegadas"):
+		if c is Card and c.propietario == propietario_atacante and c.habilidad_id == 25:
+			tiene_ataque_sorpresa = true
+			break
+	if tiene_ataque_sorpresa:
+		var enemigas_25: Array = []
 		for carta in get_tree().get_nodes_in_group("desplegadas"):
 			if carta is Card and carta.propietario == propietario_defensor:
-				enemigas.append(carta)
-		if not enemigas.is_empty():
-			var objetivo: Card = enemigas[randi() % enemigas.size()]
+				enemigas_25.append(carta)
+		if not enemigas_25.is_empty():
+			var objetivo: Card = enemigas_25[randi() % enemigas_25.size()]
+			var vida_antes_25: int = objetivo.vida_actual
 			objetivo.recibir_danyo(1)
 			print("[AbilityManager] Ataque sorpresa: 1 daño a '%s'" % objetivo.nombre)
+			if objetivo.vida_actual <= 0:
+				var sobrante_25: int = 1 - vida_antes_25
+				if sobrante_25 > 0:
+					GameManager.aplicar_danyo(propietario_defensor, sobrante_25)
+		else:
+			# Sin cartas enemigas, daño directo
+			GameManager.aplicar_danyo(propietario_defensor, 1)
+			print("[AbilityManager] Ataque sorpresa: 1 daño directo al jugador")
 
 	# ── 7 · Dualidad (atacante) ───────────────────────────────────────────────
 	# El daño provocado se da en forma de vida a una carta monstruo aliada al azar
@@ -636,6 +665,8 @@ func post_ataque(atacante: Card, defensor: Card, danyo_aplicado: int,
 				var descartada: Dictionary = p_atacante["mano"][idx]
 				p_atacante["mano"].remove_at(idx)
 				p_atacante["cementerio"].append(descartada)
+				# Notifica visualmente (GameUI moverá el nodo al cementerio)
+				GameManager.carta_enviada_al_cementerio.emit(propietario_atacante, descartada)
 				print("[AbilityManager] Sacrificio prometido: '%s' descartada de la mano de %s" % [
 					descartada.get("name","???"), propietario_atacante
 				])

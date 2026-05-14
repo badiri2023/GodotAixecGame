@@ -51,7 +51,6 @@ offset_left = 350.0
 offset_top = 550.0
 offset_right = 1570.0
 offset_bottom = 610.0
-text = "mamadu3@gmail.com"
 placeholder_text = "Correo Electronico"
 alignment = 1
 
@@ -61,7 +60,6 @@ offset_left = 350.0
 offset_top = 660.0
 offset_right = 1570.0
 offset_bottom = 720.0
-text = "mamadu123456"
 placeholder_text = "Contraseña"
 alignment = 1
 secret = true
