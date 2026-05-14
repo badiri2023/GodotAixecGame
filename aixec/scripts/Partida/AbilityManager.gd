@@ -563,8 +563,7 @@ func post_ataque(atacante: Card, defensor: Card, danyo_aplicado: int,
 
 	# ── 11 · Escuadrón (atacante) ─────────────────────────────────────────────
 	if atacante.habilidad_id == 11:
-		atacante.vida_actual = min(atacante.vida_actual * 2,
-								   atacante.defensa_base + (GameManager.get_buff_vida_equip(propietario_atacante) if atacante.buffed else 0))
+		atacante.vida_actual = atacante.vida_actual * 2
 		atacante._actualizar_textos()
 		print("[AbilityManager] Escuadrón: '%s' vida duplicada → %d" % [atacante.nombre, atacante.vida_actual])
 
@@ -608,16 +607,24 @@ func post_ataque(atacante: Card, defensor: Card, danyo_aplicado: int,
 			print("[AbilityManager] Ataque sorpresa: 1 daño a '%s'" % objetivo.nombre)
 
 	# ── 7 · Dualidad (atacante) ───────────────────────────────────────────────
-	# El daño provocado se da en forma de vida a una carta aliada al azar
+	# El daño provocado se da en forma de vida a una carta monstruo aliada al azar
 	if atacante.habilidad_id == 7:
 		var aliadas: Array = []
 		for carta in get_tree().get_nodes_in_group("desplegadas"):
-			if carta is Card and carta.propietario == propietario_atacante and carta != atacante:
+			if carta is Card and carta.propietario == propietario_atacante \
+					and carta.tipo == Card.TIPO_MONSTRUO and carta != atacante:
 				aliadas.append(carta)
 		if not aliadas.is_empty():
 			var objetivo: Card = aliadas[randi() % aliadas.size()]
-			objetivo.recibir_curacion(danyo_aplicado)
-			print("[AbilityManager] Dualidad: %d vida a '%s'" % [danyo_aplicado, objetivo.nombre])
+			# Aplica la curación directamente sin límite de vida máxima
+			objetivo.vida_actual += danyo_aplicado
+			objetivo._actualizar_textos()
+			print("[AbilityManager] Dualidad: %d vida a '%s' → %d" % [danyo_aplicado, objetivo.nombre, objetivo.vida_actual])
+		else:
+			# Sin aliadas monstruo, se cura a sí misma
+			atacante.vida_actual += danyo_aplicado
+			atacante._actualizar_textos()
+			print("[AbilityManager] Dualidad: %d vida a sí misma '%s'" % [danyo_aplicado, atacante.nombre])
 
 	# ── 13 · Sacrificio prometido (defensor) ──────────────────────────────────
 	# Al recibir daño, 25% de que el enemigo descarte 1 carta de su mano al azar
