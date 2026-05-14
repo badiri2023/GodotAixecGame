@@ -13,7 +13,7 @@ Prepárate para enfrentarte en duelos intelectuales y mágicos en un campo donde
 
 **c. Tipos de cartas** Las cartas se dividen en tres tipos:
 
-- **Monstruos** — Se despliegan en el campo de batalla y son la fuente principal de daño y defensa.
+- **Monstruos** — Se despliegan en el campo de batalla y son la fuente principal de daño y defensa. Algunos tienen habilidades especiales que, o bien son pasivas y se resuelven automaticamente, o son activas y se debe decidir entre atacar con la carta o usar la habilidad. Hasta que no haya monstruos en la fila enemiga, tus monstruos no podrán atacar al oponente.
 - **Equipamientos** — Solo se puede desplegar uno por jugador en cada partida. Los monstruos reciben mejoras de daño y defensa, y algunas tienen efectos especiales que pueden cambiar el rumbo de la partida.
 - **Hechizos** — Cartas con habilidades que se consumen y van al cementerio en cuanto se resuelva su habilidad. Saber cuándo gastar esa bala es esencial para ser el ganador.
 
