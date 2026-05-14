@@ -2,6 +2,8 @@
 
 Prepárate para enfrentarte en duelos intelectuales y mágicos en un campo donde el azar y la fortuna es tan importante como la astucia!
 
+<img width="1920" height="1080" alt="imagen" src="https://github.com/user-attachments/assets/aa240d27-a4fa-4137-8fc0-bd1d91e0b3f1" />
+
 ---
 ## Introducción
 
