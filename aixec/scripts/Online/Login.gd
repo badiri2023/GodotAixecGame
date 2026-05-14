@@ -2,6 +2,7 @@
 extends Control
 
 const API_BASE = "http://aixec.eu-north-1.elasticbeanstalk.com/api"
+const CARDS_SAVE_PATH = "res://data/cards.json"
 
 var _cargando: bool = false
 
@@ -18,7 +19,6 @@ func _on_login_pressed() -> void:
 	var email = email_input.text.strip_edges()
 	var password = password_input.text
 
-	# Validaciones básicas
 	if email == "" or not "@" in email:
 		_mostrar_error("Introduce un email válido")
 		return
@@ -29,6 +29,9 @@ func _on_login_pressed() -> void:
 	_set_cargando(true)
 	_hacer_login(email, password)
 
+# ─────────────────────────────────────────────────────────────────────────────
+# PASO 1: LOGIN
+# ─────────────────────────────────────────────────────────────────────────────
 func _hacer_login(email: String, password: String) -> void:
 	var http = HTTPRequest.new()
 	add_child(http)
@@ -45,8 +48,7 @@ func _hacer_login(email: String, password: String) -> void:
 
 func _on_login_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
-	# Eliminamos el _set_cargando(false) de aquí porque seguiremos cargando los mazos
-	
+
 	if result != HTTPRequest.RESULT_SUCCESS:
 		_set_cargando(false)
 		_mostrar_error("Error de red. Comprueba tu conexión.")
@@ -58,35 +60,104 @@ func _on_login_completed(result: int, response_code: int, _headers: PackedString
 		return
 
 	var datos = JSON.parse_string(body.get_string_from_utf8())
-	print("DEBUG: Respuesta completa del servidor: ", datos) # <--- AÑADE ESTO
+	print("DEBUG: Respuesta completa del servidor: ", datos)
 	if datos == null or not datos.has("token"):
 		_set_cargando(false)
 		_mostrar_error("Respuesta del servidor inválida")
 		return
 
-	# 1. Guardamos el token en el Autoload
+	# Guardamos sesión en el Autoload
 	ApiServicio.token = datos["token"]
 	ApiServicio.usuario_id = datos.get("id", 0)
 	ApiServicio.usuario_nombre = datos.get("username", "Jugador")
 	print("✅ Bienvenido, ", ApiServicio.usuario_nombre)
-	print("✅ Login correcto. Obteniendo mazos reales del servidor...")
-	print("✅ Login exitoso. Usuario ID: ", ApiServicio.usuario_id)
-	# 2. En lugar de hardcodear e irnos al juego, llamamos a la API
-	_obtener_mazos_y_entrar_al_juego()
+
+	# PASO 2: Descargar cards.json ANTES de continuar
+	_set_boton_texto("Descargando cartas...")
+	_descargar_cartas()
 
 # ─────────────────────────────────────────────────────────────────────────────
-# NUEVA FUNCIÓN: Conecta con tu GameController.cs
+# PASO 2: DESCARGAR Y GUARDAR cards.json
+# ─────────────────────────────────────────────────────────────────────────────
+func _descargar_cartas() -> void:
+	var http = HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_cartas_completado.bind(http))
+
+	var error = http.request(
+		API_BASE + "/card/",
+		ApiServicio.get_headers(),
+		HTTPClient.METHOD_GET
+	)
+
+	if error != OK:
+		http.queue_free()
+		_set_cargando(false)
+		_mostrar_error("Error al descargar el catálogo de cartas")
+
+func _on_cartas_completado(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+	http.queue_free()
+
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		_set_cargando(false)
+		_mostrar_error("No se pudo obtener el catálogo de cartas (código: %d)" % response_code)
+		return
+
+	var json_list = JSON.parse_string(body.get_string_from_utf8())
+	if json_list == null:
+		_set_cargando(false)
+		_mostrar_error("El catálogo de cartas recibido es inválido")
+		return
+
+	# Procesamos y guardamos el catálogo exactamente igual que en getCardsJson.gd
+	var catalogo: Array = []
+	for item in json_list:
+		catalogo.append({
+			"id":          int(item.get("id", 50)) if item.get("id") != null else 50,
+			"name":        item.get("name", "Sin nombre"),
+			"description": item.get("description", "Sin descripción"),
+			"attack":      int(item.get("attack", 0)) if item.get("attack") != null else 0,
+			"defense":     int(item.get("defense", 0)) if item.get("defense") != null else 0,
+			"rarity":      int(item.get("rarity", 0)) if item.get("rarity") != null else 0,
+			"ability": {
+				"id":          int(item["ability"].get("id", 32)) if item.get("ability") and item["ability"].get("id") != null else 32,
+				"name":        item["ability"].get("name", "") if item.get("ability") else "",
+				"description": item["ability"].get("description", "") if item.get("ability") else "",
+				"isPassive":   item["ability"].get("isPassive", false),
+			},
+			"expansion":   item.get("expansion", "Base"),
+			"mana":        int(item.get("mana", 0)) if item.get("mana") != null else 0,
+			"type":        int(item.get("type", 0)) if item.get("type") != null else 0,
+			"imageUrl":    "http://aixec-card-images.s3.eu-north-1.amazonaws.com/card%s.jpg" % str(int(item.get("id", 50))).pad_zeros(3) if (item.get("imageUrl") != null and item.get("imageUrl", "").strip_edges() != "") else "",
+		})
+
+	_guardar_cards_json(catalogo)
+	print("✅ cards.json actualizado con ", catalogo.size(), " cartas.")
+
+	# PASO 3: Ahora sí, pedimos los mazos y entramos al juego
+	_set_boton_texto("Iniciando partida...")
+	_obtener_mazos_y_entrar_al_juego()
+
+func _guardar_cards_json(catalogo: Array) -> void:
+	var file = FileAccess.open(CARDS_SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		print("❌ Error al guardar cards.json: ", FileAccess.get_open_error())
+		return
+	file.store_string(JSON.stringify(catalogo, "\t"))
+	file.close()
+	print("✅ Guardado en: ", CARDS_SAVE_PATH)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PASO 3: OBTENER MAZOS Y ENTRAR AL JUEGO
 # ─────────────────────────────────────────────────────────────────────────────
 func _obtener_mazos_y_entrar_al_juego() -> void:
 	var http = HTTPRequest.new()
 	add_child(http)
 	http.request_completed.connect(_on_mazos_recibidos.bind(http))
 
-	# Usamos los headers que ya incluyen el Token de ApiServicio
 	var headers = ApiServicio.get_headers()
 	var url = API_BASE + "/game/start/bot_random"
-	
-	# Enviamos la petición POST (según tu GameController.cs)
+
 	var error = http.request(url, headers, HTTPClient.METHOD_POST, "")
 	if error != OK:
 		http.queue_free()
@@ -96,83 +167,37 @@ func _obtener_mazos_y_entrar_al_juego() -> void:
 func _on_mazos_recibidos(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
 	http.queue_free()
 
-	if response_code == 200:
-		var respuesta = JSON.parse_string(body.get_string_from_utf8())
-		
-	# 1. Extraemos los IDs crudos (que Godot lee como floats, ej: 26.0)
-		var ids_jugador_raw = respuesta.get("playerDeck", [])
-		var ids_bot_raw = respuesta.get("botDeck", [])
-		
-		# 2. LIMPIEZA: Forzamos que todos los IDs sean Enteros (int)
-		# Esto es lo que soluciona el problema de que no encuentre las cartas
-		var ids_jugador : Array[int] = []
-		for id_f in ids_jugador_raw:
-			ids_jugador.append(int(id_f))
-			
-		var ids_bot : Array[int] = []
-		for id_f in ids_bot_raw:
-			ids_bot.append(int(id_f))
-
-		print("✅ Mazos procesados (Int). Jugador: ", ids_jugador)
-
-		# 3. USAMOS EL CARDLOADER CON LOS IDS YA LIMPIOS
-		var baraja_j := CardLoader.construir_baraja(ids_jugador)
-		var baraja_o := CardLoader.construir_baraja(ids_bot)
-
-		# 4. Configuramos la partida en el GameManager
-		GameManager.es_multijugador = false
-		GameManager.iniciar_partida(baraja_j, baraja_o)
-		
-		# 5. Conectamos SignalR y entramos al juego
-		NetworkManager.conectar_al_servidor()
-		get_tree().change_scene_to_file("res://scenes/Game.tscn")
-
-	
-	else:
+	if response_code != 200:
+		_set_cargando(false)
 		_mostrar_error("No se pudo obtener tu mazo del servidor")
 		print("Error Mazos - Código: ", response_code, " Body: ", body.get_string_from_utf8())
-		
-func _preparar_partida_con_servidor() -> void:
-	var http = HTTPRequest.new()
-	add_child(http)
-	http.request_completed.connect(_on_partida_recibida.bind(http))
+		return
 
-	# Usamos el token que acabamos de guardar
-	var headers = ApiServicio.get_headers()
-	
-	# Llamamos al endpoint de tu GameController.cs que inicia partidas
-	var url = ApiServicio.API_BASE + "/game/start/bot_random"
-	
-	http.request(url, headers, HTTPClient.METHOD_POST, "")
+	var respuesta = JSON.parse_string(body.get_string_from_utf8())
 
-func _on_partida_recibida(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
-	http.queue_free()
-	_set_cargando(false)
+	var ids_jugador_raw = respuesta.get("playerDeck", [])
+	var ids_bot_raw     = respuesta.get("botDeck", [])
 
-	if response_code == 200:
-		var respuesta = JSON.parse_string(body.get_string_from_utf8())
-		
-		# ¡AQUÍ ESTÁN TUS IDS REALES VIENEN DEL SERVIDOR!
-		var ids_jugador = respuesta["playerDeck"] # Viene de tu C# StartGameResponse
-		var ids_bot = respuesta["botDeck"]
+	var ids_jugador: Array[int] = []
+	for id_f in ids_jugador_raw:
+		ids_jugador.append(int(id_f))
 
-		print("✅ Mazos recibidos del servidor. Jugador:", ids_jugador.size(), " cartas.")
+	var ids_bot: Array[int] = []
+	for id_f in ids_bot_raw:
+		ids_bot.append(int(id_f))
 
-		GameManager.es_multijugador = false
-		
-		# Ahora construimos las barajas con los IDs que nos dio la base de datos
-		var baraja_j := CardLoader.construir_baraja(ids_jugador)
-		var baraja_o := CardLoader.construir_baraja(ids_bot)
-		# En el callback de mazos recibidos
-		GameManager.game_id_actual = respuesta["gameId"] 
-		GameManager.iniciar_partida(baraja_j, baraja_o)
-		NetworkManager.conectar_al_servidor()
-		
-		# Ahora sí, cambiamos de escena
-		get_tree().change_scene_to_file("res://scenes/Game.tscn")
-	else:
-		_mostrar_error("Error al obtener tu mazo del servidor")
+	print("✅ Mazos procesados. Jugador: ", ids_jugador)
+	print("✅ Mazos procesados. Bot: ", ids_bot)
 
+	var baraja_j := CardLoader.construir_baraja(ids_jugador)
+	var baraja_o := CardLoader.construir_baraja(ids_bot)
+
+	GameManager.es_multijugador = false
+	GameManager.game_id_actual  = respuesta.get("gameId", 0)
+	GameManager.iniciar_partida(baraja_j, baraja_o)
+
+	NetworkManager.conectar_al_servidor()
+	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 # ─────────────────────────────────────────
 # HELPERS UI
@@ -187,3 +212,6 @@ func _set_cargando(estado: bool) -> void:
 	boton_login.text = "Iniciando sesión..." if estado else "ENTRAR"
 	if estado:
 		label_error.visible = false
+
+func _set_boton_texto(texto: String) -> void:
+	boton_login.text = texto

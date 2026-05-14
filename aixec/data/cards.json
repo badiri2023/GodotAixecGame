@@ -541,7 +541,7 @@
 	},
 	{
 		"ability": {
-			"description": "Cuando actives esta habilidad, una de tus cartas seleccionadas al azar hara su dano al enemigo seleccionado.",
+			"description": "Cuando actives esta habilidad, la carta del primer slot de monstruos hara su dano al enemigo seleccionado.",
 			"id": 28,
 			"isPassive": false,
 			"name": "Otra vez"
